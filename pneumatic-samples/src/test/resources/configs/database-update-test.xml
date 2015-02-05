@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:db-schema.sql" />
+		<jdbc:script location="classpath:db-test-data.sql" />
+	</jdbc:embedded-database>
+
+	<etl:schema id="mtbSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="File Reader">
+		<etl:fileResource location="classpath:data/mtb2.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="mtbSchema" />
+	</etl:fileReader>
+	
+	<etl:databaseWriter id="databaseWriter" name="Database Writer">
+		<etl:input ref="fileReaderOutput" />
+		<etl:inputSchema ref="mtbSchema" />
+		<etl:dataSource ref="dataSource" />
+		<etl:updateWith>
+			<etl:sql>
+				update mtb set year = ?, cost = ? where name = ?
+			</etl:sql>
+			<etl:parameter value="#inputRecord.year" />
+			<etl:parameter value="#inputRecord.cost" />
+			<etl:parameter value="#inputRecord.name" />
+		</etl:updateWith>
+	</etl:databaseWriter>
+
+</beans>

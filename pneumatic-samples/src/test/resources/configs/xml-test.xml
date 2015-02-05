@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<!-- <etl:xmlschema id="inputSchema" name="Input Schema"> -->
+	<!-- <etl:xsd location="classpath:data/item.xsd" /> -->
+	<!-- <etl:outputTemplate location="classpath:data/template.xml" /> -->
+	<!-- <etl:recordPath xpath="/items/item" /> -->
+	<!-- <etl:attribute name="Name" xpath="/items/item/name" /> -->
+	<!-- <etl:attribute name="Count" xpath="/items/item/count" /> -->
+	<!-- <etl:attribute name="Price" xpath="/items/item/price" /> -->
+	<!-- </etl:schema> -->
+
+	<bean id="inputSchema" class="com.surgingsystems.etl.schema.XmlSchema">
+		<property name="name" value="Input Schema" />
+		<property name="location" value="classpath:data/item.xsd" />
+		<property name="fragmentRootElementName" value="item" />
+		<property name="columnDefinitions">
+			<list>
+				<bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
+					<property name="name" value="name" />
+					<property name="columnType" ref="stringColumnType" />
+				</bean>
+				<bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
+					<property name="name" value="count" />
+					<property name="columnType" ref="integerColumnType" />
+				</bean>
+				<bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
+					<property name="name" value="price" />
+					<property name="columnType" ref="decimalColumnType" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<etl:schema id="outputSchema" name="Input Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Count" type="integer" />
+		<etl:column name="Price" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<bean id="fileReader" class="com.surgingsystems.etl.filter.XmlFileReaderFilter">
+		<property name="name" value="Xml File Reader" />
+		<property name="resource" value="classpath:data/xml-input1.xml" />
+		<property name="output" ref="fileReaderOutput" />
+		<property name="schema" ref="inputSchema" />
+	</bean>
+	<!-- <etl:fileReader id="fileReader" name="File Reader 1"> -->
+	<!-- <etl:fileResource location="classpath:data/xml-input1.xml" /> -->
+	<!-- <etl:output ref="fileReaderOutput" /> -->
+	<!-- <etl:schema ref="inputSchema" /> -->
+	<!-- </etl:fileReader> -->
+
+	<etl:pipe id="mapperOutput" />
+	<etl:mapper id="mapper" name="Mapper">
+		<etl:input ref="fileReaderOutput" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="mapperOutput" />
+		<etl:outputSchema ref="outputSchema" />
+		<etl:mappings>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="name" type="string" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="Name" type="string" />
+				</etl:to>
+			</etl:mapping>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="count" type="integer" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="Count" type="integer" />
+				</etl:to>
+			</etl:mapping>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="price" type="decimal" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="Price" type="decimal" />
+				</etl:to>
+			</etl:mapping>
+		</etl:mappings>
+	</etl:mapper>
+
+
+	<etl:fileWriter id="fileWriter1" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="mapperOutput" />
+		<etl:inputSchema ref="outputSchema" />
+	</etl:fileWriter>
+
+</beans>

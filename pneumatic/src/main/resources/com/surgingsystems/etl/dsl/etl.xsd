@@ -1,0 +1,776 @@
+<xsd:schema xmlns="http://www.surgingsystems.com/schema/etl"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	targetNamespace="http://www.surgingsystems.com/schema/etl"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool" />
+
+	<xsd:element name="etl">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element ref="schema" />
+					<xsd:element ref="pipe" />
+					<xsd:element ref="aggregator" />
+					<xsd:element ref="copy" />
+					<xsd:element ref="databaseReader" />
+					<xsd:element ref="databaseWriter" />
+					<xsd:element ref="fileReader" />
+					<xsd:element ref="fileWriter" />
+					<xsd:element ref="join" />
+					<xsd:element ref="funnel" />
+					<xsd:element ref="mapper" />
+					<xsd:element ref="sort" />
+					<xsd:element ref="restfulLookup" />
+					<xsd:element ref="transformer" />
+				</xsd:choice>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:simpleType name="ColumnDataType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="integer" />
+			<xsd:enumeration value="decimal" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="SchemaType">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:sequence>
+					<xsd:element name="column" type="ColumnType" minOccurs="1"
+						maxOccurs="unbounded" />
+				</xsd:sequence>
+				<xsd:attribute name="name" type="xsd:string" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="PipeType">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="PipeRefType">
+		<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+		<xsd:attribute name="ref" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ColumnType">
+		<xsd:annotation>
+			<xsd:documentation>A column definition.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="type" type="ColumnDataType" use="required" />
+		<xsd:attribute name="nullable" type="xsd:boolean" use="optional" />
+	</xsd:complexType>
+
+	<xsd:simpleType name="ColumnRejectionRuleType">
+		<xsd:annotation>
+			<xsd:documentation>A rule to apply when rejecting a column.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="rejectRecord" />
+			<xsd:enumeration value="useNull" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:complexType name="RejectionType">
+		<xsd:annotation>
+			<xsd:documentation>A record rejection configuration.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:sequence>
+					<xsd:element name="columnRule" minOccurs="0" maxOccurs="1">
+						<xsd:complexType>
+							<xsd:attribute name="type" type="ColumnRejectionRuleType"
+								use="required" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:choice>
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="log">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="level" type="xsd:string" />
+								<xsd:attribute name="name" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="FileType">
+		<xsd:annotation>
+			<xsd:documentation>The location of a file resource.
+			</xsd:documentation>
+		</xsd:annotation>
+
+		<xsd:sequence>
+			<xsd:element name="skipLines" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:attribute name="value" type="xsd:integer" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="selectLines" minOccurs="0" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:attribute name="value" type="xsd:string" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+
+		<xsd:attribute name="location" type="xsd:string" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="ExpressionType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string" />
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<xsd:element name="column" type="ColumnType" />
+
+	<xsd:element name="schema" type="SchemaType" />
+
+	<xsd:element name="pipe" type="PipeType" />
+
+	<xsd:complexType name="baseFilter">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:attribute name="name" type="xsd:string" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="aggregator">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+					 Calculates summary information based on the input. Use one of the supplied
+ function implementations or write your own. Outputs flow after the
+  input has been completed. Aggregators have the following features:
+  <ul>
+  <li>A single input.</li>
+  <li>An output that is a flow through of the input, or logically null.</li>
+  <li>An aggregator output that contains the result of the aggregator function
+  for all input.</li>
+  <li>A function for the aggregation calculation.</li>
+  </ul>
+					]]>
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+						<xsd:element name="inputSchema" minOccurs="0"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="output" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+						<xsd:element name="outputSchema" minOccurs="0"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="function" minOccurs="0" maxOccurs="1">
+							<xsd:complexType>
+								<xsd:choice>
+									<xsd:group ref="FunctionType" />
+									<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								</xsd:choice>
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="rejection" type="RejectionType"
+							minOccurs="0" maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="copy">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="unbounded"
+							type="PipeRefType" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="databaseReader">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+
+						<xsd:element name="output" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+
+						<xsd:element name="outputSchema" minOccurs="1"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="dataSource">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="sqlSelect">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string" />
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:attribute name="value" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="rejection" type="RejectionType"
+							minOccurs="0" maxOccurs="1" />
+
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="databaseWriter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="inputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="dataSource">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:choice>
+
+							<xsd:element name="insertInto">
+								<xsd:complexType>
+									<xsd:attribute name="table-name" type="xsd:string" />
+								</xsd:complexType>
+							</xsd:element>
+
+							<xsd:element name="updateWith">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="sql">
+											<xsd:complexType>
+												<xsd:simpleContent>
+													<xsd:extension base="xsd:string" />
+												</xsd:simpleContent>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="parameter" minOccurs="0"
+											maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:attribute name="value" type="xsd:string" />
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+
+						</xsd:choice>
+
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="fileReader">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="fileResource" type="FileType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+						<xsd:element name="outputSchema" minOccurs="1"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="fileWriter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="fileResource" type="FileType" />
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="inputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="join">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="leftInput" type="PipeRefType" />
+						<xsd:element name="rightInput" type="PipeRefType" />
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="outputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="comparator">
+							<xsd:complexType>
+								<xsd:choice>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:choice>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="leftOuterJoin" minOccurs="0"
+							maxOccurs="1" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="funnel">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" minOccurs="1" maxOccurs="unbounded"
+							type="PipeRefType" />
+						<xsd:element name="output" type="PipeRefType" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="mapper">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="inputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="outputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="mappings" minOccurs="0" maxOccurs="1">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="mapping" minOccurs="1"
+										maxOccurs="unbounded">
+										<xsd:complexType>
+											<xsd:sequence>
+
+												<xsd:element name="from">
+													<xsd:complexType>
+														<xsd:sequence>
+															<xsd:element name="column" type="ColumnType" />
+														</xsd:sequence>
+													</xsd:complexType>
+												</xsd:element>
+
+												<xsd:element name="to">
+													<xsd:complexType>
+														<xsd:sequence>
+															<xsd:element name="column" type="ColumnType" />
+														</xsd:sequence>
+													</xsd:complexType>
+												</xsd:element>
+											</xsd:sequence>
+
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="rejection" type="RejectionType"
+							minOccurs="0" maxOccurs="1" />
+
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="sort">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="comparator">
+							<xsd:complexType>
+								<xsd:choice>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:choice>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="restfulLookup">
+		<xsd:complexType>
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+					 Calculates summary information based on the input. Use one of the supplied
+ function implementations or write your own. Outputs flow after the
+  input has been completed. Aggregators have the following features:
+  <ul>
+  <li>A single input.</li>
+  <li>An output that is a flow through of the input, or logically null.</li>
+  <li>An aggregator output that contains the result of the aggregator function
+  for all input.</li>
+  <li>A function for the aggregation calculation.</li>
+  </ul>
+					]]>
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="requestUrl">
+							<xsd:complexType>
+								<xsd:attribute name="value" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="inputSchema" minOccurs="0"
+							maxOccurs="1">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="outputSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="responseSchema">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="transformer">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+
+						<xsd:element name="input" type="PipeRefType" />
+
+						<xsd:element name="variable" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="name" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="expression" minOccurs="0"
+							maxOccurs="unbounded" type="ExpressionType" />
+
+						<xsd:element name="config" minOccurs="1" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:sequence>
+
+									<xsd:element name="output" type="PipeRefType" />
+
+									<xsd:element name="schema">
+										<xsd:complexType>
+											<xsd:group ref="limitedType" minOccurs="0"
+												maxOccurs="1" />
+											<xsd:attribute name="ref" type="xsd:string" />
+										</xsd:complexType>
+									</xsd:element>
+
+									<xsd:element name="outputCondition" minOccurs="0"
+										maxOccurs="1" type="ExpressionType" />
+									
+									<xsd:element name="expression" minOccurs="0"
+										maxOccurs="unbounded" type="ExpressionType" />
+
+								</xsd:sequence>
+
+								<xsd:attribute name="outputName" type="xsd:string" />
+								<xsd:attribute name="recordName" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="average">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:sequence>
+						<xsd:element name="in">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="out">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="count">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:sequence>
+						<xsd:element name="out">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="sum">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:sequence>
+						<xsd:element name="in">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="out">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="column" type="ColumnType" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:group name="FunctionType">
+		<xsd:choice>
+			<xsd:element ref="average" />
+			<xsd:element ref="count" />
+			<xsd:element ref="sum" />
+		</xsd:choice>
+	</xsd:group>
+
+	<xsd:group name="limitedType">
+		<xsd:sequence>
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element ref="beans:bean" />
+				<xsd:element ref="beans:ref" />
+				<xsd:element ref="beans:idref" />
+				<xsd:element ref="beans:value" />
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+
+	<!-- Testing -->
+
+	<xsd:complexType name="ColumnValueType">
+		<xsd:attribute name="column" type="xsd:string" />
+		<xsd:attribute name="value" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="RecordType">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:sequence>
+					<xsd:element name="columnValue" type="ColumnValueType"
+						minOccurs="1" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="DataSetType">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:sequence>
+					<xsd:choice>
+						<xsd:element name="record" type="RecordType"
+							minOccurs="1" maxOccurs="unbounded" />
+						<xsd:element name="fileResource" type="FileType" />
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="schema-ref" type="xsd:string" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="TestType">
+		<xsd:complexContent>
+			<xsd:extension base="beans:identifiedType">
+				<xsd:sequence>
+
+					<xsd:element name="filter">
+						<xsd:complexType>
+							<xsd:attribute name="ref" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+
+					<xsd:element name="when">
+						<xsd:complexType>
+							<xsd:sequence>
+
+								<xsd:element name="input">
+									<xsd:complexType>
+										<xsd:attribute name="ref" type="xsd:string" />
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="dataSet">
+									<xsd:complexType>
+										<xsd:attribute name="ref" type="xsd:string" />
+									</xsd:complexType>
+								</xsd:element>
+
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+
+					<xsd:element name="expect">
+						<xsd:complexType>
+							<xsd:sequence>
+
+								<xsd:element name="output">
+									<xsd:complexType>
+										<xsd:attribute name="ref" type="xsd:string" />
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="dataSet">
+									<xsd:complexType>
+										<xsd:attribute name="ref" type="xsd:string" />
+									</xsd:complexType>
+								</xsd:element>
+
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+
+				</xsd:sequence>
+				<xsd:attribute name="name" type="xsd:string" use="required" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:element name="dataSet" type="DataSetType" />
+
+	<xsd:element name="test" type="TestType" />
+
+</xsd:schema>

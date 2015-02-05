@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="count" type="integer" />
+		<etl:column name="price" type="decimal" />
+	</etl:schema>
+
+	<etl:schema id="outputSchema" name="Input Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="count" type="integer" />
+		<etl:column name="price" type="decimal" />
+		<etl:column name="symbol" type="string" />
+	</etl:schema>
+
+	<etl:schema id="responseSchema" name="Criteria Schema">
+		<etl:column name="symbol" type="string" />
+	</etl:schema>
+
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:restfulLookup id="restfulLookup" name="Test Restful Lookup">
+		<etl:requestUrl value="http://localhost:8080/rest/{name}" />
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="output" />
+		<etl:outputSchema ref="outputSchema" />
+		<etl:responseSchema ref="responseSchema" />
+	</etl:restfulLookup>
+
+</beans>

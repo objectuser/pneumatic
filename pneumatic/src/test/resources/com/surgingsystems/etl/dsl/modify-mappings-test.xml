@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<context:component-scan base-package="com.surgingsystems.etl" />
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Count" type="integer" />
+		<etl:column name="Price" type="decimal" />
+	</etl:schema>
+
+	<etl:schema id="outputSchema" name="Output Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Price Each" type="decimal" />
+	</etl:schema>
+
+	<!-- This form of mapper has explicit mappings from input columns to output 
+		columns. Type translation is attempted if the types are not the same. -->
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:mapper id="mapper" name="Test Mapper">
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="output" />
+		<etl:outputSchema ref="outputSchema" />
+		<etl:mappings>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="Name" type="string" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="Name" type="string" />
+				</etl:to>
+			</etl:mapping>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="Price" type="decimal" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="Price Each" type="decimal" />
+				</etl:to>
+			</etl:mapping>
+		</etl:mappings>
+	</etl:mapper>
+
+</beans>

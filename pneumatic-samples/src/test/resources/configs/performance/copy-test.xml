@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+        
+    <!-- Copy a big file to see how long it takes. -->
+
+	<etl:schema id="inputSchema" name="Input File Schema">
+		<etl:column name="Provider ID" type="string" />
+		<etl:column name="Hospital Name" type="string" />
+		<etl:column name="Address" type="string" />
+		<etl:column name="City" type="string" />
+		<etl:column name="State" type="string" />
+		<etl:column name="ZIP Code" type="string" />
+		<etl:column name="County Name" type="string" />
+		<etl:column name="Phone Number" type="string" />
+		<etl:column name="Condition" type="string" />
+		<etl:column name="Measure ID" type="string" />
+		<etl:column name="Measure Name" type="string" />
+		<etl:column name="Score" type="string" />
+		<etl:column name="Sample" type="string" />
+		<etl:column name="Footnote" type="string" />
+		<etl:column name="Measure Start Date" type="string" />
+		<etl:column name="Measure End Date" type="string" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="Hospital File Reader">
+		<etl:fileResource
+			location="classpath:data/Timely and Effective Care - Hospital.csv">
+			<etl:skipLines value="1" />
+		</etl:fileResource>
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="inputSchema" />
+	</etl:fileReader>
+
+	<etl:pipe id="copyOutput" />
+	<etl:copy id="copy" name="Copy">
+		<etl:input ref="fileReaderOutput" />
+		<etl:output ref="copyOutput" />
+	</etl:copy>
+
+	<etl:fileWriter id="fileWriter1" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="copyOutput" />
+		<etl:inputSchema ref="inputSchema" />
+	</etl:fileWriter>
+	
+</beans>
