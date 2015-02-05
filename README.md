@@ -1,24 +1,9 @@
-<header>
-Pneumatic.IO
-============
-</header>
-<main>
 
-# About
-
-I created Pneumatic because I wanted to see if I could. I had the idea some years ago. Then I attended a conference where companies where showing their cloud integration solutions. That renewed my interested and so I finally tried out my idea.
-
-I thought I could create a simple model for creating ETL and structured IO solutions. I knew I didn't have the skill to replicate some of the scalability features of the best modern ETL tools. I did, however, think I could create a platform with simple elements most people could understand and use to provide simple and useful data integrations.
-
-I did not anticipate the impact of my decision to use Spring Framework to build Pnematic. I have used Spring a lot and it just made sense. Well, that decision has paid off over and over. Spring enabled the creation of RESTful interactions based on some very simple rules. It enabled a domain specific language for ETL, which is expressive, though not as good as a GUI. It enabled some unexpected (but obvious in retrospect) extensibility. It made creating tests, in Java and in the DSL, natural. It made creating a microservice incredibly easy.
-
-Pneumatic doesn't compete with those enterprise-scale ETL tools on the market. Pneumatic is about simple and powerful integrations running on their own, as a service, as part of a larger program. Pneumatic is pretty light weight and can run in a container like Tomcat or from Spring Boot. I think that's awesome and hope you will find it useful.
-
-# Current State
-
-Pneumatic is in the "proof of concept" stage of development. It can already do very useful things, but I recommend you be conservative in your uses of it. With your feedback, however, it should progress to wider usage scenarios quickly. I encourage you to try it out and provide your feedback on the official forum.
+<title>Pneumatic.IO</title>
 
 # Quick Intro
+
+Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of Pneumatic.
 
 Pneumatic is declarative, using an XML markup  based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the XML provides a proof of concept that still makes creating ETL jobs really easy, but there is a dependency on understanding something of how Spring declares beans.
 
@@ -55,11 +40,27 @@ The first declaration (id="dataSource") is a Spring embedded data source. Next, 
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
 
+# About
+
+I created Pneumatic because I wanted to see if I could. I had the idea some years ago. Then I attended a conference where companies where showing their cloud integration solutions. That renewed my interested and so I finally tried out my idea.
+
+I thought I could create a simple model for creating ETL and structured IO solutions. I knew I didn't have the skill to replicate some of the scalability features of the best modern ETL tools. I did, however, think I could create a platform with simple elements most people could understand and use to provide simple and useful data integrations.
+
+I did not anticipate the impact of my decision to use Spring Framework to build Pnematic. I have used Spring a lot and it just made sense. Well, that decision has paid off over and over. Spring enabled the creation of RESTful interactions based on some very simple rules. It enabled a domain specific language for ETL, which is expressive, though not as good as a GUI. It enabled some unexpected (but obvious in retrospect) extensibility. It made creating tests, in Java and in the DSL, natural. It made creating a microservice incredibly easy.
+
+Pneumatic doesn't compete with those enterprise-scale ETL tools on the market. Pneumatic is about simple and powerful integrations running on their own, as a service, as part of a larger program. Pneumatic is pretty light weight and can run in a container like Tomcat or from Spring Boot. I think that's awesome and hope you will find it useful.
+
+# Current State
+
+Pneumatic is in the "proof of concept" stage of development. It can already do very useful things, but I recommend you be conservative in your uses of it. With your feedback, however, it should progress to wider usage scenarios quickly. I encourage you to try it out and provide your feedback on the official forum.
+
 # License
 
 Pneumatic is licensed under the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.html). To acquire ETL under a different license, contact [Surging Systems](http://www.surgingsystems.com).
 
-# Jobs and Filters
+# Concepts
+
+## Jobs and Filters
 
 Pneumatic "programs" are composed into "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
 
@@ -67,7 +68,7 @@ The reading, writing, transforming, etc. are done in "filters". Filters are conn
 
 These concepts are fundamental, but the words "job" and "filter" don't often appear in Pneumatic configurations. But as we discuss Pneumatic in this guide, we will use those terms, so you stil need to understand them. 
 
-## Running a Job
+### Running a Job
 
 Jobs may be run in a variety of ways. The most basic of these is the command line runner. If your job is contained in "job.xml", you can run it with:
 
@@ -83,7 +84,7 @@ java -jar pneumatic.jar com.surgingsystems.etl.BootRunner job.xml
 
 The boot runner will stay resident until Spring Boot shuts down.
 
-# Schemas
+## Schemas
 
 Schemas describe the structure of data. Filters use schemas for validating and generating structured data in the form of "records". A record may be thought of as an "instance" of a schema. A schema is to a record like a car is to a 2015 Porsche 911.
 
@@ -101,22 +102,28 @@ If a record does not need to be validated or generated, no schema is required by
 
 Sometimes a schema is optional. If the schema is not provided, information is derived from other configuration elements. If the schema is supplied, it can be used to validate the configuration of the filter. This requires slightly more configuration, but schema information in validated before a job starts, so supplying a schema can save time spent processing with an invalid configuration.
 
-## Schema Types
+### Schema Types
 
 There are three types of schemas:
 * Tabular schemas (etl:schema) represent traditional (i.e., database like) schemas with fixed columns and data types.
 * XML schemas (etl:xmlSchema) represent schemas for XML documents based on the XML Schema Definition.
 * JSON schemas (etl:jsonSchema) represent schemas for JSON documents based on http://json-schema.org/.
 
-# Pipes
+## Pipes
 
 Pipes are conduits for data. Pipes hold data after it is processed by a filter, until it is extracted by another filter. Pipes have a fixed (and configurable) capacity. When the capacity is reached, a filter putting a record into a pipe will block until the filter on the other end of the pipe removes a record.
 
-# Filters
+## Filters
 
 Filters are where the action is. Filters perform the processing in a job. There are filters that perform basic IO with files, databases, RESTful end points, etc. There are also filters for joining data sources, transforming it, converting data types, etc.
 
 This section describes each kind of filter.
+
+# Examples
+
+
+
+# Filter Reference
 
 ## Aggregator
 
