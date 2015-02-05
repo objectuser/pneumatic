@@ -3,9 +3,9 @@
 
 # Quick Intro
 
-Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of Pneumatic.
+Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of Pneumatic.
 
-Pneumatic is declarative, using an XML markup  based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the XML provides a proof of concept that still makes creating ETL jobs really easy, but there is a dependency on understanding something of how Spring declares beans.
+Pneumatic is declarative, using an XML markup  based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the XML provides a proof of concept that still makes creating ETL jobs really easy. There might be, however, a conceptual hurdle of understanding how Spring declares beans.
 
 As a quick example, reading from a file and writing to a database might look like this (omitting some boilerplate XML):
 
@@ -36,11 +36,15 @@ As a quick example, reading from a file and writing to a database might look lik
 	</etl:databaseWriter>
 ```
 
-The first declaration (id="dataSource") is a Spring embedded data source. Next, (id="mtbSchema") is a schema declaration used to declare the structure of records in the job. A pipe (id="fileReaderOutput") provides a conduit from one processing element (called "filters") to another. A file reader (id="fileReader") reads a file, creating records and sending them to the pipe referenced in its "output". A database writer (id="databaseWriter") writes records from the pipe referenced in its "input" to a table available in the data source.
+The first declaration (id="dataSource") is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
+
+Next is a schema declaration (id="mtbSchema")  used to declare the structure of records in the job. A pipe (id="fileReaderOutput") provides a conduit from one processing element (called "filters") to another. A file reader (id="fileReader") reads a file, creating records and sending them to the pipe referenced in its "output".
+
+A database writer (id="databaseWriter") writes records from the pipe referenced in its "input" to a table available in the data source (the "mtb" table in this case).
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
 
-# About
+# Background (you can skip this)
 
 I created Pneumatic because I wanted to see if I could. I had the idea some years ago. Then I attended a conference where companies where showing their cloud integration solutions. That renewed my interested and so I finally tried out my idea.
 
@@ -84,6 +88,8 @@ java -jar pneumatic.jar com.surgingsystems.etl.BootRunner job.xml
 
 The boot runner will stay resident until Spring Boot shuts down.
 
+From these examples, it's obvious that Pneumatic requires Java. Pneumataic is currently compiled to Java 8.
+
 ## Schemas
 
 Schemas describe the structure of data. Filters use schemas for validating and generating structured data in the form of "records". A record may be thought of as an "instance" of a schema. A schema is to a record like a car is to a 2015 Porsche 911.
@@ -105,9 +111,9 @@ Sometimes a schema is optional. If the schema is not provided, information is de
 ### Schema Types
 
 There are three types of schemas:
-* Tabular schemas (etl:schema) represent traditional (i.e., database like) schemas with fixed columns and data types.
-* XML schemas (etl:xmlSchema) represent schemas for XML documents based on the XML Schema Definition.
-* JSON schemas (etl:jsonSchema) represent schemas for JSON documents based on http://json-schema.org/.
+* Tabular schemas - (etl:schema) represent traditional (i.e., database like) schemas with fixed columns and data types.
+* XML schemas (experimental) - (etl:xmlSchema) represent schemas for XML documents based on the XML Schema Definition. XML schemas work in some cases but are experimental at this point.
+* JSON schemas (planned but not implemented) - (etl:jsonSchema) represent schemas for JSON documents based on http://json-schema.org/.
 
 ## Pipes
 
@@ -117,13 +123,13 @@ Pipes are conduits for data. Pipes hold data after it is processed by a filter, 
 
 Filters are where the action is. Filters perform the processing in a job. There are filters that perform basic IO with files, databases, RESTful end points, etc. There are also filters for joining data sources, transforming it, converting data types, etc.
 
-This section describes each kind of filter.
-
 # Examples
 
 
 
 # Filter Reference
+
+This section provides a reference for the available filter types.
 
 ## Aggregator
 
