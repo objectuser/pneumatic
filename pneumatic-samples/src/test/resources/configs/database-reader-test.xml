@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:db-schema.sql" />
+		<jdbc:script location="classpath:db-test-data.sql" />
+	</jdbc:embedded-database>
+
+	<etl:schema id="mtbSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="model_year" type="integer" />
+		<etl:column name="price" type="decimal" />
+	</etl:schema>
+
+	<etl:schema id="sqlSelectSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="databaseOutput" />
+	<etl:databaseReader id="databaseReader" name="Database Reader">
+		<etl:output ref="databaseOutput" />
+		<etl:outputSchema ref="sqlSelectSchema" />
+		<etl:dataSource ref="dataSource" />
+		<etl:sqlSelect>
+			select * from mtb
+		</etl:sqlSelect>
+	</etl:databaseReader>
+	
+	<etl:pipe id="mapperOutput" />
+	<etl:mapper id="mapper" name="Mapper">
+		<etl:input ref="databaseOutput" />
+		<etl:inputSchema ref="sqlSelectSchema" />
+		<etl:output ref="mapperOutput" />
+		<etl:outputSchema ref="mtbSchema" />
+		<etl:mappings>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="name" type="string" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="name" type="string" />
+				</etl:to>
+			</etl:mapping>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="year" type="integer" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="model_year" type="integer" />
+				</etl:to>
+			</etl:mapping>
+			<etl:mapping>
+				<etl:from>
+					<etl:column name="cost" type="decimal" />
+				</etl:from>
+				<etl:to>
+					<etl:column name="price" type="decimal" />
+				</etl:to>
+			</etl:mapping>
+		</etl:mappings>
+	</etl:mapper>
+
+	<etl:fileWriter id="fileWriter1"   name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="mapperOutput" />
+		<etl:inputSchema ref="mtbSchema" />
+	</etl:fileWriter>
+
+</beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<items orderid="889923" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="items.xsd">
+	<item>
+		<name>Trance</name>
+		<count>10</count>
+		<price>4000.00</price>
+	</item>
+	<item>
+		<name>Bronson</name>
+		<count>5</count>
+		<price>5000.00</price>
+	</item>
+	<item>
+		<name>Warden</name>
+		<count>7</count>
+		<price>6000.00</price>
+	</item>
+</items>

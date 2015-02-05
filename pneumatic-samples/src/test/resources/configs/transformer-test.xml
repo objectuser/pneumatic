@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Count" type="integer" />
+		<etl:column name="Price" type="decimal" />
+	</etl:schema>
+
+	<etl:schema id="countSchema" name="Count Schema">
+		<etl:column name="Count" type="integer" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="File Reader 1">
+		<etl:fileResource location="classpath:data/input1.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="inputSchema" />
+	</etl:fileReader>
+
+	<!--  -->
+	<etl:pipe id="transformerOutput" />
+	<etl:pipe id="transformerCountOutput" />
+	<etl:transformer id="transformer" name="Transformer">
+		<etl:input ref="fileReaderOutput" />
+		<etl:variable name="totalCount">0</etl:variable>
+		<etl:expression>#totalCount = #totalCount + 1</etl:expression>
+		<etl:config outputName="transformerOutput" recordName="outputRecord">
+			<etl:output ref="transformerOutput" />
+			<etl:schema ref="inputSchema" />
+			<etl:expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</etl:expression>
+			<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
+			<etl:expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</etl:expression>
+		</etl:config>
+		<etl:config outputName="transformerCountOutput" recordName="countRecord">
+			<etl:output ref="transformerCountOutput" />
+			<etl:schema ref="countSchema" />
+			<etl:outputCondition>#input.complete</etl:outputCondition>
+			<etl:expression>#countRecord.Count = #totalCount</etl:expression>
+		</etl:config>
+	</etl:transformer>
+
+	<etl:fileWriter id="fileWriter1" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="transformerOutput" />
+		<etl:inputSchema ref="inputSchema" />
+	</etl:fileWriter>
+
+	<etl:fileWriter id="fileWriter2" name="File Writer 2">
+		<etl:fileResource location="file:output/output2.txt" />
+		<etl:input ref="transformerCountOutput" />
+		<etl:inputSchema ref="countSchema" />
+	</etl:fileWriter>
+	
+</beans>

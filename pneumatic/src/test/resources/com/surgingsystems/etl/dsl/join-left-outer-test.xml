@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<context:component-scan base-package="com.surgingsystems.etl" />
+
+	<etl:schema id="outputSchema" name="Output Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Count" type="integer" />
+		<etl:column name="Price" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="output1" />
+	<etl:pipe id="output2" />
+	<etl:pipe id="joinOutput" />
+	<etl:join id="join" name="Test Join">
+		<etl:leftInput ref="output1" />
+		<etl:rightInput ref="output2" />
+		<etl:output ref="joinOutput" />
+		<etl:outputSchema ref="outputSchema" />
+		<etl:comparator>
+			<etl:column name="Name" type="string" />
+		</etl:comparator>
+		<etl:leftOuterJoin />
+	</etl:join>
+
+</beans>

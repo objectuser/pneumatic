@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<!-- Process a file though a transformer with minimal work. This is used to compare the performance of a transformer against 
+		a copy. -->
+
+	<etl:schema id="inputSchema" name="Input File Schema">
+		<etl:column name="Provider ID" type="string" />
+		<etl:column name="Hospital Name" type="string" />
+		<etl:column name="Address" type="string" />
+		<etl:column name="City" type="string" />
+		<etl:column name="State" type="string" />
+		<etl:column name="ZIP Code" type="string" />
+		<etl:column name="County Name" type="string" />
+		<etl:column name="Phone Number" type="string" />
+		<etl:column name="Condition" type="string" />
+		<etl:column name="Measure ID" type="string" />
+		<etl:column name="Measure Name" type="string" />
+		<etl:column name="Score" type="string" />
+		<etl:column name="Sample" type="string" />
+		<etl:column name="Footnote" type="string" />
+		<etl:column name="Measure Start Date" type="string" />
+		<etl:column name="Measure End Date" type="string" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="Hospital File Reader">
+		<etl:fileResource location="classpath:data/Timely and Effective Care - Hospital.csv">
+			<etl:skipLines value="1" />
+		</etl:fileResource>
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="inputSchema" />
+	</etl:fileReader>
+
+	<etl:pipe id="transformerOutput" />
+	<etl:transformer id="transformer" name="Transformer">
+		<etl:input ref="fileReaderOutput" />
+		<etl:config outputName="transformerOutput" recordName="outputRecord">
+			<etl:output ref="transformerOutput" />
+			<etl:schema ref="inputSchema" />
+			<etl:expression>#outputRecord["Provider ID"] = #inputRecord["Provider ID"]</etl:expression>
+			<etl:expression>#outputRecord["Hospital Name"] = #inputRecord["Hospital Name"]</etl:expression>
+			<etl:expression>#outputRecord["Address"] = #inputRecord["Address"]</etl:expression>
+			<etl:expression>#outputRecord["City"] = #inputRecord["City"]</etl:expression>
+			<etl:expression>#outputRecord["State"] = #inputRecord["State"]</etl:expression>
+			<etl:expression>#outputRecord["ZIP Code"] = #inputRecord["ZIP Code"]</etl:expression>
+			<etl:expression>#outputRecord["County Name"] = #inputRecord["County Name"]</etl:expression>
+			<etl:expression>#outputRecord["Phone Number"] = #inputRecord["Phone Number"]</etl:expression>
+			<etl:expression>#outputRecord["Condition"] = #inputRecord["Condition"]</etl:expression>
+			<etl:expression>#outputRecord["Measure ID"] = #inputRecord["Measure ID"]</etl:expression>
+			<etl:expression>#outputRecord["Measure Name"] = #inputRecord["Measure Name"]</etl:expression>
+			<etl:expression>#outputRecord["Score"] = #inputRecord["Score"]</etl:expression>
+			<etl:expression>#outputRecord["Sample"] = #inputRecord["Sample"]</etl:expression>
+			<etl:expression>#outputRecord["Footnote"] = #inputRecord["Footnote"]</etl:expression>
+			<etl:expression>#outputRecord["Measure Start Date"] = #inputRecord["Measure Start Date"]</etl:expression>
+			<etl:expression>#outputRecord["Measure End Date"] = #inputRecord["Measure End Date"]</etl:expression>
+		</etl:config>
+	</etl:transformer>
+
+	<etl:fileWriter id="fileWriter1" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="transformerOutput" />
+		<etl:inputSchema ref="inputSchema" />
+	</etl:fileWriter>
+
+</beans>

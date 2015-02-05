@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="people" type="integer" />
+		<etl:column name="cap" type="decimal" />
+	</etl:schema>
+	
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="Companies Reader">
+		<etl:fileResource location="classpath:data/input-companies.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="inputSchema" />
+	</etl:fileReader>
+
+	<etl:schema id="outputSchema" name="Output Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="people" type="integer" />
+		<etl:column name="cap" type="decimal" />
+		<etl:column name="symbol" type="string" />
+	</etl:schema>
+
+	<etl:schema id="responseSchema" name="Criteria Schema">
+		<etl:column name="symbol" type="string" />
+	</etl:schema>
+
+	<etl:pipe id="restfulOutput" />
+	<etl:restfulLookup id="restfulLookup" name="Test Restful Lookup">
+		<etl:requestUrl value="http://localhost:8080/symbol/{name}" />
+		<etl:input ref="fileReaderOutput" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="restfulOutput" />
+		<etl:outputSchema ref="outputSchema" />
+		<etl:responseSchema ref="responseSchema" />
+	</etl:restfulLookup>
+	
+	<etl:fileWriter id="fileWriter1" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="restfulOutput" />
+		<etl:inputSchema ref="outputSchema" />
+	</etl:fileWriter>
+
+</beans>
