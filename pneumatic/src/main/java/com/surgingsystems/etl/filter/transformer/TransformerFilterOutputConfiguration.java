@@ -12,7 +12,7 @@ public class TransformerFilterOutputConfiguration {
 
     private String recordName;
 
-    private Schema schema;
+    private Schema outputSchema;
 
     private Pipe output;
 
@@ -28,8 +28,8 @@ public class TransformerFilterOutputConfiguration {
         this.name = name;
     }
 
-    public Schema getSchema() {
-        return schema;
+    public Schema getOutputSchema() {
+        return outputSchema;
     }
 
     public String getRecordName() {
@@ -40,8 +40,8 @@ public class TransformerFilterOutputConfiguration {
         this.recordName = recordName;
     }
 
-    public void setSchema(Schema schema) {
-        this.schema = schema;
+    public void setOutputSchema(Schema schema) {
+        this.outputSchema = schema;
     }
 
     public Pipe getPipe() {

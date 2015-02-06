@@ -36,14 +36,14 @@
 		<etl:expression>#totalCount = #totalCount + 1</etl:expression>
 		<etl:config outputName="transformerOutput" recordName="outputRecord">
 			<etl:output ref="transformerOutput" />
-			<etl:schema ref="inputSchema" />
+			<etl:outputSchema ref="inputSchema" />
 			<etl:expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</etl:expression>
 			<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
 			<etl:expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</etl:expression>
 		</etl:config>
 		<etl:config outputName="transformerCountOutput" recordName="countRecord">
 			<etl:output ref="transformerCountOutput" />
-			<etl:schema ref="countSchema" />
+			<etl:outputSchema ref="countSchema" />
 			<etl:outputCondition>#input.complete</etl:outputCondition>
 			<etl:expression>#countRecord.Count = #totalCount</etl:expression>
 		</etl:config>

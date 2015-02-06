@@ -567,7 +567,7 @@
 
 									<xsd:element name="output" type="PipeRefType" />
 
-									<xsd:element name="schema">
+									<xsd:element name="outputSchema">
 										<xsd:complexType>
 											<xsd:group ref="limitedType" minOccurs="0"
 												maxOccurs="1" />

@@ -69,7 +69,7 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
         // We setup all the variables before running any expression to make the
         // expressions behave as expected.
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
-            Schema schema = config.getSchema();
+            Schema schema = config.getOutputSchema();
             DataRecord dataRecord = new DataRecord(schema);
             outputRecords.put(config, dataRecord);
 

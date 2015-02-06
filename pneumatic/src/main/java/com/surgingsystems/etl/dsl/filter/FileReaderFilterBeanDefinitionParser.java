@@ -35,7 +35,7 @@ public class FileReaderFilterBeanDefinitionParser extends AbstractSingleBeanDefi
         }
 
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "schema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
         Element skipElement = DomUtils.getChildElementByTagName(element, "skipLines");
         if (skipElement != null) {
             bean.addPropertyValue("skipLineCount", skipElement.getAttribute("value"));

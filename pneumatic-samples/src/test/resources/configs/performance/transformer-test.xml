@@ -45,7 +45,7 @@
 		<etl:input ref="fileReaderOutput" />
 		<etl:config outputName="transformerOutput" recordName="outputRecord">
 			<etl:output ref="transformerOutput" />
-			<etl:schema ref="inputSchema" />
+			<etl:outputSchema ref="inputSchema" />
 			<etl:expression>#outputRecord["Provider ID"] = #inputRecord["Provider ID"]</etl:expression>
 			<etl:expression>#outputRecord["Hospital Name"] = #inputRecord["Hospital Name"]</etl:expression>
 			<etl:expression>#outputRecord["Address"] = #inputRecord["Address"]</etl:expression>

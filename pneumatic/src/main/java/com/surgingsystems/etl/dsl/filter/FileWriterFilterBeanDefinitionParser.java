@@ -26,6 +26,6 @@ public class FileWriterFilterBeanDefinitionParser extends AbstractSingleBeanDefi
         bean.addPropertyValue("fileResource", fileResourceElement.getAttribute("location"));
 
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "schema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
     }
 }
