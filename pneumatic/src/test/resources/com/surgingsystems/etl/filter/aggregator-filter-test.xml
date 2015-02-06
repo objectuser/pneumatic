@@ -25,7 +25,7 @@
 	<etl:pipe id="input" />
 	<etl:pipe id="output" />
 	<etl:pipe id="aggregatorOutput" />
-	<etl:aggregator id="aggregator" name="Test Aggregator">
+	<etl:aggregator id="aggregator1" name="Test Aggregator 1">
 		<etl:input ref="input" />
 		<etl:inputSchema ref="inputSchema" />
 		<etl:output ref="aggregatorOutput" />
@@ -39,6 +39,23 @@
 					<etl:column name="Price" type="decimal" />
 				</etl:out>
 			</etl:sum>
+		</etl:function>
+	</etl:aggregator>
+	
+	<etl:aggregator id="aggregator2" name="Test Aggregator 2">
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="aggregatorOutput" />
+		<etl:outputSchema ref="aggregatorSchema" />
+		<etl:function>
+			<bean class="com.surgingsystems.etl.filter.function.SumFunction">
+				<property name="inputColumnDefinition">
+					<etl:column name="Price" type="decimal" />
+				</property>
+				<property name="outputColumnDefinition">
+					<etl:column name="Price" type="decimal" />
+				</property>
+			</bean>
 		</etl:function>
 	</etl:aggregator>
 

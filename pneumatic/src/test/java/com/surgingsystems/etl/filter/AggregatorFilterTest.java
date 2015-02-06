@@ -5,12 +5,12 @@ import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.surgingsystems.etl.filter.function.Function;
 import com.surgingsystems.etl.filter.function.SumFunction;
 import com.surgingsystems.etl.pipe.Pipe;
 import com.surgingsystems.etl.record.DataRecord;
@@ -22,8 +22,11 @@ import com.surgingsystems.etl.schema.Schema;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class AggregatorFilterTest {
 
-    @Autowired
-    private AggregatorFilter aggregatorFilter;
+    @Resource(name = "aggregator1")
+    private AggregatorFilter aggregatorFilter1;
+
+    @Resource(name = "aggregator2")
+    private AggregatorFilter aggregatorFilter2;
 
     @Resource(name = "input")
     private Pipe input;
@@ -39,44 +42,54 @@ public class AggregatorFilterTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void inputIsRequired() {
-        aggregatorFilter.setInput(null);
-        aggregatorFilter.validate();
+        aggregatorFilter1.setInput(null);
+        aggregatorFilter1.validate();
     }
 
     public void inputSchemaIsNotRequired() {
-        aggregatorFilter.setInputSchema(null);
-        aggregatorFilter.validate();
+        aggregatorFilter1.setInputSchema(null);
+        aggregatorFilter1.validate();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void outputIsRequired() {
-        aggregatorFilter.setOutput(null);
-        aggregatorFilter.validate();
+        aggregatorFilter1.setOutput(null);
+        aggregatorFilter1.validate();
     }
 
     public void outputSchemaIsNotRequired() {
-        aggregatorFilter.setOutputSchema(null);
-        aggregatorFilter.validate();
+        aggregatorFilter1.setOutputSchema(null);
+        aggregatorFilter1.validate();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void functionIsRequired() {
-        aggregatorFilter.setFunction(null);
-        aggregatorFilter.validate();
+        aggregatorFilter1.setFunction(null);
+        aggregatorFilter1.validate();
+    }
+
+    public void function1IsSumFunction() {
+        Function<Double> function = aggregatorFilter1.<Double> getFunction();
+        Assert.assertTrue("Function is the sum function", function instanceof SumFunction);
+    }
+
+    public void function2IsSumFunction() {
+        Function<Double> function = aggregatorFilter2.<Double> getFunction();
+        Assert.assertTrue("Function 2 is the sum function", function instanceof SumFunction);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void functionInputMustMatchInputSchema() {
-        SumFunction<Double> function = (SumFunction<Double>) aggregatorFilter.<Double> getFunction();
+        SumFunction<Double> function = (SumFunction<Double>) aggregatorFilter1.<Double> getFunction();
         function.getInputColumnDefinition().setName("Wrong Name");
-        aggregatorFilter.validate();
+        aggregatorFilter1.validate();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void functionOutputMustMatchInputSchema() {
-        SumFunction<Double> function = (SumFunction<Double>) aggregatorFilter.<Double> getFunction();
+        SumFunction<Double> function = (SumFunction<Double>) aggregatorFilter1.<Double> getFunction();
         function.getInputColumnDefinition().setName("Wrong Name");
-        aggregatorFilter.validate();
+        aggregatorFilter1.validate();
     }
 
     @Test
@@ -86,7 +99,7 @@ public class AggregatorFilterTest {
         input.put(trance);
         input.put(bronson);
         input.closedForInput();
-        aggregatorFilter.run();
+        aggregatorFilter1.run();
         Assert.assertFalse("Output is not complete", aggregatorOutput.isComplete());
         Record outputRecord = aggregatorOutput.pull();
         Assert.assertTrue("Output is complete", aggregatorOutput.isComplete());

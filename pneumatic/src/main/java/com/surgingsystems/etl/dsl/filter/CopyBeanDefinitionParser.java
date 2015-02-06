@@ -10,9 +10,12 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.CopyFilter;
 
 public class CopyBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -23,8 +26,7 @@ public class CopyBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element inputElement = DomUtils.getChildElementByTagName(element, "input");
-        bean.addPropertyReference("input", inputElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
 
         ParserContext nestedParserContext = new ParserContext(parserContext.getReaderContext(),
                 parserContext.getDelegate(), bean.getBeanDefinition());

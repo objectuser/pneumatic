@@ -8,10 +8,13 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import com.surgingsystems.etl.dsl.filter.database.ConfigurableDatabaseWriteStrategyBeanDefinitionParser;
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.DatabaseWriterFilter;
 import com.surgingsystems.etl.filter.database.InsertDatabaseWriteStrategy;
 
 public class DatabaseWriterBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -22,14 +25,9 @@ public class DatabaseWriterBeanDefinitionParser extends AbstractSingleBeanDefini
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element inputElement = DomUtils.getChildElementByTagName(element, "input");
-        bean.addPropertyReference("input", inputElement.getAttribute("ref"));
-
-        Element inputSchemaElement = DomUtils.getChildElementByTagName(element, "inputSchema");
-        bean.addPropertyReference("inputSchema", inputSchemaElement.getAttribute("ref"));
-
-        Element dataSourceElement = DomUtils.getChildElementByTagName(element, "dataSource");
-        bean.addPropertyReference("dataSource", dataSourceElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "dataSource", "dataSource");
 
         Element insertIntoElement = DomUtils.getChildElementByTagName(element, "insertInto");
         if (insertIntoElement != null) {

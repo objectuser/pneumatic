@@ -9,9 +9,12 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.DatabaseReaderFilter;
 
 public class DatabaseReaderBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -22,14 +25,9 @@ public class DatabaseReaderBeanDefinitionParser extends AbstractSingleBeanDefini
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element inputElement = DomUtils.getChildElementByTagName(element, "output");
-        bean.addPropertyReference("output", inputElement.getAttribute("ref"));
-
-        Element inputSchemaElement = DomUtils.getChildElementByTagName(element, "outputSchema");
-        bean.addPropertyReference("outputSchema", inputSchemaElement.getAttribute("ref"));
-
-        Element dataSourceElement = DomUtils.getChildElementByTagName(element, "dataSource");
-        bean.addPropertyReference("dataSource", dataSourceElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "dataSource", "dataSource");
 
         Element sqlSelectElement = DomUtils.getChildElementByTagName(element, "sqlSelect");
         String sqlSelect = sqlSelectElement.getTextContent().trim();

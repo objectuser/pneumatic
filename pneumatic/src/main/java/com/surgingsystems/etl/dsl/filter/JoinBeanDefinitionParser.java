@@ -8,9 +8,12 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import com.surgingsystems.etl.dsl.ComparatorBeanDefinitionParser;
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.JoinFilter;
 
 public class JoinBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -19,19 +22,13 @@ public class JoinBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
 
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
+
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element leftInputElement = DomUtils.getChildElementByTagName(element, "leftInput");
-        bean.addPropertyReference("leftInput", leftInputElement.getAttribute("ref"));
-
-        Element rightInputElement = DomUtils.getChildElementByTagName(element, "rightInput");
-        bean.addPropertyReference("rightInput", rightInputElement.getAttribute("ref"));
-
-        Element outputElement = DomUtils.getChildElementByTagName(element, "output");
-        bean.addPropertyReference("output", outputElement.getAttribute("ref"));
-
-        Element outputSchemaElement = DomUtils.getChildElementByTagName(element, "outputSchema");
-        bean.addPropertyReference("outputSchema", outputSchemaElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "leftInput", "leftInput");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "rightInput", "rightInput");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
         
         ParserContext nestedParserContext = new ParserContext(parserContext.getReaderContext(),
                 parserContext.getDelegate(), bean.getBeanDefinition());
