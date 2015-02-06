@@ -10,9 +10,12 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.FunnelFilter;
 
 public class FunnelBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -28,10 +31,9 @@ public class FunnelBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
         for (Element inputElement : inputElements) {
             inputs.add(new RuntimeBeanReference(inputElement.getAttribute("ref")));
         }
-        
+
         bean.addPropertyValue("inputs", inputs);
 
-        Element outputElement = DomUtils.getChildElementByTagName(element, "output");
-        bean.addPropertyReference("output", outputElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
     }
 }

@@ -11,9 +11,12 @@ import org.w3c.dom.Element;
 
 import com.surgingsystems.etl.dsl.function.FunctionParser;
 import com.surgingsystems.etl.dsl.schema.RejectionBeanDefinitionParser;
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.AggregatorFilter;
 
 public class AggregatorBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -24,23 +27,10 @@ public class AggregatorBeanDefinitionParser extends AbstractSingleBeanDefinition
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element inputElement = DomUtils.getChildElementByTagName(element, "input");
-        bean.addPropertyReference("input", inputElement.getAttribute("ref"));
-
-        Element inputSchemaElement = DomUtils.getChildElementByTagName(element, "inputSchema");
-        if (inputSchemaElement != null) {
-            bean.addPropertyReference("inputSchema", inputSchemaElement.getAttribute("ref"));
-        }
-
-        Element outputElement = DomUtils.getChildElementByTagName(element, "output");
-        if (outputElement != null) {
-            bean.addPropertyReference("output", outputElement.getAttribute("ref"));
-        }
-
-        Element aggregatorOutputSchemaElement = DomUtils.getChildElementByTagName(element, "outputSchema");
-        if (aggregatorOutputSchemaElement != null) {
-            bean.addPropertyReference("outputSchema", aggregatorOutputSchemaElement.getAttribute("ref"));
-        }
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
 
         Element functionElement = DomUtils.getChildElementByTagName(element, "function");
 

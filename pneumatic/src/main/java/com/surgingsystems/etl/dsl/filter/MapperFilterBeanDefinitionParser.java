@@ -9,11 +9,14 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.MapperFilter;
 
 public class MapperFilterBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
     private Logger logger = LogManager.getFormatterLogger(MapperFilterBeanDefinitionParser.class);
+
+    private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
@@ -24,17 +27,10 @@ public class MapperFilterBeanDefinitionParser extends AbstractSingleBeanDefiniti
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
-        Element inputElement = DomUtils.getChildElementByTagName(element, "input");
-        bean.addPropertyReference("input", inputElement.getAttribute("ref"));
-
-        Element inputSchemaElement = DomUtils.getChildElementByTagName(element, "inputSchema");
-        bean.addPropertyReference("inputSchema", inputSchemaElement.getAttribute("ref"));
-
-        Element outputElement = DomUtils.getChildElementByTagName(element, "output");
-        bean.addPropertyReference("output", outputElement.getAttribute("ref"));
-
-        Element outputSchemaElement = DomUtils.getChildElementByTagName(element, "outputSchema");
-        bean.addPropertyReference("outputSchema", outputSchemaElement.getAttribute("ref"));
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
 
         Element mappingsElement = DomUtils.getChildElementByTagName(element, "mappings");
         if (mappingsElement != null) {
