@@ -37,7 +37,7 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
 
     private Resource fileResource;
 
-    private Schema schema;
+    private Schema inputSchema;
 
     private RecordAggregator recordAggregator = new ArrayRecordAggregator();
 
@@ -56,14 +56,14 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
     @PostConstruct
     public void validate() {
         Assert.notNull(getName(), "The name is required");
-        Assert.notNull(schema, "The output schema is required");
+        Assert.notNull(inputSchema, "The output schema is required");
         Assert.notNull(fileResource, "The file resource is required");
     }
 
     @PostConstruct
     public void createRecordValidator() {
-        if (schema != null) {
-            recordValidator = new SchemaRecordValidator(schema);
+        if (inputSchema != null) {
+            recordValidator = new SchemaRecordValidator(inputSchema);
         } else {
             recordValidator = new AcceptingRecordValidator();
         }
@@ -80,7 +80,7 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
     protected void process(Record record) throws Exception {
 
         if (!recordValidator.accepts(record)) {
-            logger.warn("Schema (%s) is incompatible with record [%s...]", schema.getName(),
+            logger.warn("Schema (%s) is incompatible with record [%s...]", inputSchema.getName(),
                     RecordCapture.capture(record));
         } else {
 
@@ -106,12 +106,12 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
         setInput(pipe);
     }
 
-    public Schema getSchema() {
-        return schema;
+    public Schema getInputSchema() {
+        return inputSchema;
     }
 
-    public void setSchema(Schema schema) {
-        this.schema = schema;
+    public void setInputSchema(Schema schema) {
+        this.inputSchema = schema;
     }
 
     public Resource getFileResource() {

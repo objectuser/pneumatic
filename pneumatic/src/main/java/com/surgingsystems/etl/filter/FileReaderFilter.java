@@ -33,7 +33,7 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
 
     private Pipe output;
 
-    private Schema schema;
+    private Schema outputSchema;
 
     private RecordParser<String[]> recordParser = new ArrayRecordParser();
 
@@ -45,14 +45,14 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
     public FileReaderFilter(String name, FlatFileRecordReader flatFileRecordReader, Schema schema) {
         setName(name);
         setItemReader(flatFileRecordReader);
-        setSchema(schema);
+        setOutputSchema(schema);
     }
 
     @PostConstruct
     public void validate() {
         Assert.notNull(getName(), "The name is required");
         Assert.notNull(output, "The output pipe is required");
-        Assert.notNull(schema, "The output schema is required");
+        Assert.notNull(outputSchema, "The output schema is required");
         Assert.notNull(itemReader, "The file resource is required");
     }
 
@@ -61,8 +61,8 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
         setOutput(pipe);
     }
 
-    public void setSchema(Schema schema) {
-        this.schema = schema;
+    public void setOutputSchema(Schema schema) {
+        this.outputSchema = schema;
     }
 
     public void setRecordParser(RecordParser<String[]> recordParser) {
@@ -84,9 +84,9 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
                             line.substring(0, Math.min(line.length(), 100)));
                 }
 
-                Record record = recordParser.parse(input, schema);
+                Record record = recordParser.parse(input, outputSchema);
                 if (record == null) {
-                    logger.warn("Parser returned null record when parsing according to schema (%s)", schema.getName());
+                    logger.warn("Parser returned null record when parsing according to schema (%s)", outputSchema.getName());
                 } else {
                     recordProcessed();
                     logRecord(record);
@@ -111,8 +111,8 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
         this.output = output;
     }
 
-    public Schema getSchema() {
-        return schema;
+    public Schema getOutputSchema() {
+        return outputSchema;
     }
 
     public FlatFileRecordReader getItemReader() {

@@ -30,7 +30,7 @@ public class FileWriterBeanDefinitionParserTest {
         Assert.assertEquals("Name is right", "Test File Writer", fileWriterFilter.getName());
         Assert.assertNotNull("Input is set", fileWriterFilter.getInput());
         Assert.assertNotNull("File resource is set", fileWriterFilter.getFileResource());
-        Assert.assertNotNull("Schema is set", fileWriterFilter.getSchema());
+        Assert.assertNotNull("Schema is set", fileWriterFilter.getInputSchema());
     }
 
 }

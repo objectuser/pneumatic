@@ -28,7 +28,7 @@
 		<etl:expression>#v2 = #v2 + 1</etl:expression>
 		<etl:config outputName="outputName" recordName="recordName">
 			<etl:output ref="transformerOutput" />
-			<etl:schema ref="outputSchema" />
+			<etl:outputSchema ref="outputSchema" />
 			<etl:outputCondition>#v2 > 0</etl:outputCondition>
 		</etl:config>
 	</etl:transformer>

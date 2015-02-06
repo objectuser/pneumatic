@@ -34,7 +34,7 @@ public class ConfigBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
         bean.addPropertyValue("recordName", element.getAttribute("recordName"));
 
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "schema", "schema");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
         
         parseExpressions(element, bean);
         
