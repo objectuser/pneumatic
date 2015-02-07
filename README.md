@@ -143,6 +143,17 @@ The copy filter has a single input pipe. It may have any number of output pipes.
 
 ## Database Lookup
 
+The database lookup filter enables lookups to a database based on its single input. The input and lookup results may be combined for its single output.
+
+The following are the key elements of the database lookup filter:
+
+1. dataSource - The DataSource that provides connections to the database that provides the lookup data.
+1. sqlSelect - The SQL select statement for performing the lookup.
+1. criteriaSchema - This schema provides parameters to the sqlSelect SQL statement. The columns on this schema are used to select column values from the input records.
+1. outputSchema - This is the schema that defines the output records. The filter uses the column definitions on this schema to select values from either input record values or the results of the lookup. The selection is based on the names of the inputs.
+
+It is important to avoid name colisions to ensure the results are as expected. Use aliasing on the select statement if needed to ensure those columns do not conflict with those on the input schema. Alternatively, use a mapper filter to change the schema of the input before it comes into this filter.
+
 ## Database Reader
 
 ## Database Writer
