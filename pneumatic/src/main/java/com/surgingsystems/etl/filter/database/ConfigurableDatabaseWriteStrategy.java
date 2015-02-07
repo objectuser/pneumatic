@@ -3,10 +3,12 @@ package com.surgingsystems.etl.filter.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.SpelCompilerMode;
 import org.springframework.expression.spel.SpelParserConfiguration;
@@ -32,11 +34,14 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
     private StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
 
     private RecordPropertyAccessor recordPropertyAccessor = new RecordPropertyAccessor();
+    
+    private List<Expression> parameterExpressions = new ArrayList<Expression>();
 
     @Override
     public void initialize(DataSource dataSource, Schema schema) {
 
         setupParser();
+        setupExpressions();
 
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -53,21 +58,14 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
                 PreparedStatement statement = connection.prepareStatement(sql);
 
                 int i = 0;
-                for (String parameter : parameters) {
-                    Object value = expressionParser.parseExpression(parameter).getValue(evaluationContext);
+                for (Expression expression : parameterExpressions) {
+                    Object value = expression.getValue(evaluationContext);
                     statement.setObject(++i, value);
                 }
 
                 return statement;
             }
         });
-    }
-
-    private void setupParser() {
-        SpelParserConfiguration spelParserConfiguration = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, this
-                .getClass().getClassLoader());
-        expressionParser = new SpelExpressionParser(spelParserConfiguration);
-        evaluationContext.addPropertyAccessor(recordPropertyAccessor);
     }
 
     public String getSql() {
@@ -84,5 +82,19 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
 
     public void setParameters(List<String> parameters) {
         this.parameters = parameters;
+    }
+
+    private void setupParser() {
+        SpelParserConfiguration spelParserConfiguration = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, this
+                .getClass().getClassLoader());
+        expressionParser = new SpelExpressionParser(spelParserConfiguration);
+        evaluationContext.addPropertyAccessor(recordPropertyAccessor);
+    }
+
+    private void setupExpressions() {
+        for (String parameter : parameters) {
+            Expression expression = expressionParser.parseExpression(parameter);
+            parameterExpressions.add(expression);
+        }
     }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+        
+    <!-- Update the bikes with 2015 pricing. -->
+
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:db-schema.sql" />
+		<jdbc:script location="classpath:db-test-data.sql" />
+	</jdbc:embedded-database>
+
+	<etl:schema id="fileMtbSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="model_year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+	
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="fileReader" name="File Reader">
+		<etl:fileResource location="classpath:data/mtb.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="fileMtbSchema" />
+	</etl:fileReader>
+	
+	<etl:schema id="mapperMtbSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="model_year" type="integer" />
+	</etl:schema>
+	
+	<etl:pipe id="mapperOutput" />
+	<etl:mapper id="mapper" name="Mapper">
+		<etl:input ref="fileReaderOutput" />
+		<etl:inputSchema ref="fileMtbSchema" />
+		<etl:output ref="mapperOutput" />
+		<etl:outputSchema ref="mapperMtbSchema" />
+	</etl:mapper>
+	
+	<etl:schema id="lookupSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="databaseLookupOutput" />
+	<etl:databaseLookup id="databaseLookup" name="Database Lookup">
+		<etl:input ref="mapperOutput" />
+		<etl:inputSchema ref="mapperMtbSchema" />
+		<etl:output ref="databaseLookupOutput" />
+		<etl:outputSchema ref="lookupSchema" />
+		<etl:dataSource ref="dataSource" />
+		<etl:lookup>
+			<etl:sql>
+				select year, cost from mtb where name = ?
+			</etl:sql>
+			<etl:parameter value="#inputRecord.name" />
+		</etl:lookup>
+	</etl:databaseLookup>
+
+	<etl:pipe id="copyOutputToFile" />	
+	<etl:pipe id="copyOutputForTest" />	
+	<etl:copy id="copy" name="Copy">
+		<etl:input ref="databaseLookupOutput" />
+		<etl:output ref="copyOutputToFile" />
+		<etl:output ref="copyOutputForTest" />
+	</etl:copy>
+
+	<etl:fileWriter id="fileWriter1"   name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="copyOutputToFile" />
+		<etl:inputSchema>
+			<etl:schema name="MTB Name Schema">
+				<etl:column name="name" type="string" />
+				<etl:column name="model_year" type="integer" />	
+				<etl:column name="cost" type="decimal" />
+			</etl:schema>
+		</etl:inputSchema>
+	</etl:fileWriter>
+
+</beans>

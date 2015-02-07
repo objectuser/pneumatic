@@ -11,26 +11,34 @@ import com.surgingsystems.etl.schema.ColumnDefinition;
 import com.surgingsystems.etl.schema.Schema;
 
 public class ColumnNameMappingStrategy implements ColumnMappingStrategy {
-    
+
     @Override
     public <T extends Comparable<T>> Column<T> mapColumn(Record input, ColumnDefinition<T> toColumnDefinition) {
-        return input.getColumnForName(toColumnDefinition.getName());
+        if (input.hasColumnFor(toColumnDefinition)) {
+            return input.getColumnForName(toColumnDefinition.getName());
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public void validate(Schema inputSchema, Schema outputSchema) {
-        
-      Set<String> outputColumnNames = new HashSet<String>();
-      for (ColumnDefinition<?> columnDefinition : outputSchema) {
-          outputColumnNames.add(columnDefinition.getName());
-      }
+    public void validate(Schema outputSchema, Schema... inputSchemas) {
+        Set<ColumnDefinition<?>> inputColumns = new HashSet<ColumnDefinition<?>>();
+        for (Schema inputSchema : inputSchemas) {
+            inputColumns.addAll(inputSchema.getColumnDefinitions());
+        }
 
-      Set<String> inputColumnNames = new HashSet<String>();
-      for (ColumnDefinition<?> columnDefinition : inputSchema) {
-          inputColumnNames.add(columnDefinition.getName());
-      }
+        Set<String> outputColumnNames = new HashSet<String>();
+        for (ColumnDefinition<?> columnDefinition : outputSchema) {
+            outputColumnNames.add(columnDefinition.getName());
+        }
 
-      Assert.isTrue(inputColumnNames.containsAll(outputColumnNames),
-              "The input schema must have columns matching the names of those in the output schema");        
+        Set<String> inputColumnNames = new HashSet<String>();
+        for (ColumnDefinition<?> columnDefinition : inputColumns) {
+            inputColumnNames.add(columnDefinition.getName());
+        }
+
+        Assert.isTrue(inputColumnNames.containsAll(outputColumnNames),
+                "The input schema must have columns matching the names of those in the output schema");
     }
 }

@@ -20,29 +20,30 @@
 
 	<etl:schema id="mtbSchema" name="MTB Schema">
 		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
+		<etl:column name="model_year" type="integer" />
+	</etl:schema>
+
+	<etl:schema id="sqlSelectSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="model_year" type="integer" />
 		<etl:column name="cost" type="decimal" />
 	</etl:schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader">
-		<etl:fileResource location="classpath:data/mtb.txt" />
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="mtbSchema" />
-	</etl:fileReader>
-	
-	<etl:databaseWriter id="databaseWriter" name="Database Writer">
-		<etl:input ref="fileReaderOutput" />
+	<etl:pipe id="databaseLookupInput" />
+	<etl:pipe id="databaseLookupOutput" />
+	<etl:databaseLookup id="databaseLookup" name="Database Lookup">
+		<etl:input ref="databaseLookupInput" />
 		<etl:inputSchema ref="mtbSchema" />
+		<etl:output ref="databaseLookupOutput" />
+		<etl:outputSchema ref="sqlSelectSchema" />
 		<etl:dataSource ref="dataSource" />
-		<etl:updateWith>
+		<etl:lookup>
 			<etl:sql>
-				update mtb set year = ?, cost = ? where name = ?
+				select cost from mtb where name = ? and year = ?
 			</etl:sql>
-			<etl:parameter value="#inputRecord.year" />
-			<etl:parameter value="#inputRecord.cost" />
 			<etl:parameter value="#inputRecord.name" />
-		</etl:updateWith>
-	</etl:databaseWriter>
+			<etl:parameter value="#inputRecord.model_year" />
+		</etl:lookup>
+	</etl:databaseLookup>
 
 </beans>

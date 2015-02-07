@@ -35,9 +35,11 @@
 		<etl:output ref="databaseOutput" />
 		<etl:outputSchema ref="sqlSelectSchema" />
 		<etl:dataSource ref="dataSource" />
-		<etl:sqlSelect>
-			select * from mtb
-		</etl:sqlSelect>
+		<etl:select>
+			<etl:sql>
+				select * from mtb
+			</etl:sql>
+		</etl:select>
 	</etl:databaseReader>
 	
 	<etl:pipe id="mapperOutput" />

@@ -49,6 +49,24 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	
+	<xsd:complexType name="ParameterizedSqlType">
+		<xsd:sequence>
+			<xsd:element name="sql">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string" />
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="parameter" minOccurs="0"
+				maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="value" type="xsd:string" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
 
 	<xsd:complexType name="PipeType">
 		<xsd:complexContent>
@@ -58,6 +76,14 @@
 
 	<xsd:complexType name="PipeRefType">
 		<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+		<xsd:attribute name="ref" type="xsd:string" />
+	</xsd:complexType>
+
+	<xsd:complexType name="SchemaRefType">
+		<xsd:choice>
+			<xsd:element name="schema" type="SchemaType" />
+			<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+		</xsd:choice>
 		<xsd:attribute name="ref" type="xsd:string" />
 	</xsd:complexType>
 
@@ -222,6 +248,42 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="databaseLookup">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+
+						<xsd:element name="input" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+
+						<xsd:element name="inputSchema" minOccurs="1"
+							maxOccurs="1" type="SchemaRefType" />
+
+						<xsd:element name="output" minOccurs="1" maxOccurs="1"
+							type="PipeRefType" />
+
+						<xsd:element name="outputSchema" minOccurs="1"
+							maxOccurs="1" type="SchemaRefType" />
+
+						<xsd:element name="dataSource">
+							<xsd:complexType>
+								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+								<xsd:attribute name="ref" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+
+						<xsd:element name="lookup" type="ParameterizedSqlType" />
+
+						<xsd:element name="rejection" type="RejectionType"
+							minOccurs="0" maxOccurs="1" />
+
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="databaseReader">
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -246,13 +308,7 @@
 							</xsd:complexType>
 						</xsd:element>
 
-						<xsd:element name="sqlSelect">
-							<xsd:complexType>
-								<xsd:simpleContent>
-									<xsd:extension base="xsd:string" />
-								</xsd:simpleContent>
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="select" type="ParameterizedSqlType" />
 
 						<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
 							<xsd:complexType>
@@ -296,25 +352,7 @@
 								</xsd:complexType>
 							</xsd:element>
 
-							<xsd:element name="updateWith">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="sql">
-											<xsd:complexType>
-												<xsd:simpleContent>
-													<xsd:extension base="xsd:string" />
-												</xsd:simpleContent>
-											</xsd:complexType>
-										</xsd:element>
-										<xsd:element name="parameter" minOccurs="0"
-											maxOccurs="unbounded">
-											<xsd:complexType>
-												<xsd:attribute name="value" type="xsd:string" />
-											</xsd:complexType>
-										</xsd:element>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
+							<xsd:element name="updateWith" type="ParameterizedSqlType" />
 
 						</xsd:choice>
 
@@ -352,12 +390,7 @@
 					<xsd:sequence>
 						<xsd:element name="fileResource" type="FileType" />
 						<xsd:element name="input" type="PipeRefType" />
-						<xsd:element name="inputSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="inputSchema" type="SchemaRefType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>

@@ -11,11 +11,11 @@ import com.surgingsystems.etl.record.RecordCapture;
 
 public class LogRejectRecordStrategy implements RejectRecordStrategy {
 
-    private Logger logger;
-
     private String loggerName = LogRejectRecordStrategy.class.getName();
 
     private Level level = Level.WARN;
+
+    private Logger logger = LogManager.getFormatterLogger(loggerName);
 
     public LogRejectRecordStrategy() {
     }

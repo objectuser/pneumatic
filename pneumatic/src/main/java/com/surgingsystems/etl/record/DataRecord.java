@@ -9,6 +9,7 @@ import java.util.Map;
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.ColumnDefinition;
 import com.surgingsystems.etl.schema.Schema;
+import com.surgingsystems.etl.utility.Equality;
 
 public class DataRecord implements Record {
 
@@ -61,10 +62,14 @@ public class DataRecord implements Record {
         return getColumnIterator();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends Comparable<T>> T getValueForName(String columnName) {
-        return (T) getColumnForName(columnName).getValue();
+        Column<T> column = getColumnForName(columnName);
+        if (column != null) {
+            return column.getValue();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -108,6 +113,21 @@ public class DataRecord implements Record {
     public void setColumn(Column<?> column) {
         definitionToColumnMap.put(column.getColumnDefinition(), column);
         nameToColumnMap.put(column.getName(), column);
+    }
+
+    @Override
+    public int hashCode() {
+        return definitionToColumnMap.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        DataRecord other = Equality.applicable(this, o);
+        if (other == null) {
+            return false;
+        } else {
+            return nameToColumnMap.equals(other.nameToColumnMap);
+        }
     }
 
     @Override

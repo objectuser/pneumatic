@@ -37,11 +37,11 @@ public class ColumnNameMappingStrategyTest {
 
     @Test
     public void validateCompatibleSchemas() {
-        columnNameMappingStrategy.validate(inputSchema, outputSchema);
+        columnNameMappingStrategy.validate(outputSchema, inputSchema);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void validateIncompatibleSchemas() {
-        columnNameMappingStrategy.validate(inputSchema, mismatchOutputSchema);
+        columnNameMappingStrategy.validate(mismatchOutputSchema, inputSchema);
     }
 }

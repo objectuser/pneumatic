@@ -4,6 +4,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 import com.surgingsystems.etl.dsl.filter.AggregatorBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.CopyBeanDefinitionParser;
+import com.surgingsystems.etl.dsl.filter.DatabaseLookupBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.DatabaseReaderBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.DatabaseWriterBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.FileReaderFilterBeanDefinitionParser;
@@ -25,6 +26,7 @@ public class EtlNamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
         registerBeanDefinitionParser("aggregator", new AggregatorBeanDefinitionParser());
         registerBeanDefinitionParser("copy", new CopyBeanDefinitionParser());
+        registerBeanDefinitionParser("databaseLookup", new DatabaseLookupBeanDefinitionParser());
         registerBeanDefinitionParser("databaseReader", new DatabaseReaderBeanDefinitionParser());
         registerBeanDefinitionParser("databaseWriter", new DatabaseWriterBeanDefinitionParser());
         registerBeanDefinitionParser("fileReader", new FileReaderFilterBeanDefinitionParser());

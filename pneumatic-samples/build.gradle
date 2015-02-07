@@ -31,6 +31,7 @@ dependencies {
 	compile "org.apache.logging.log4j:log4j-core:2.1"
 	
 	testCompile "junit:junit:4.11"
+	testCompile "commons-io:commons-io:2.4"
 	testCompile "org.springframework:spring-test:$springVersion"
 	testCompile "org.mockito:mockito-all:1.10.8"
 	testCompile "org.hsqldb:hsqldb:2.3.2"
