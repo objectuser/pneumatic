@@ -10,33 +10,35 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
 import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
-import com.surgingsystems.etl.filter.DatabaseReaderFilter;
+import com.surgingsystems.etl.filter.DatabaseLookupFilter;
 
-public class DatabaseReaderBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+public class DatabaseLookupBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
     private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
-        return DatabaseReaderFilter.class;
+        return DatabaseLookupFilter.class;
     }
 
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
 
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
+        compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "dataSource", "dataSource");
 
-        Element selectElement = DomUtils.getChildElementByTagName(element, "select");
+        Element lookupElement = DomUtils.getChildElementByTagName(element, "lookup");
         
-        Element sqlElement = DomUtils.getChildElementByTagName(selectElement, "sql");
+        Element sqlElement = DomUtils.getChildElementByTagName(lookupElement, "sql");
         String sql = sqlElement.getTextContent().trim();
         bean.addPropertyValue("sql", sql);
 
         ManagedList<String> parameters = new ManagedList<String>();
-        List<Element> parameterElements = DomUtils.getChildElementsByTagName(selectElement, "parameter");
+        List<Element> parameterElements = DomUtils.getChildElementsByTagName(lookupElement, "parameter");
         for (Element parameterElement : parameterElements) {
             parameters.add(parameterElement.getAttribute("value"));
         }

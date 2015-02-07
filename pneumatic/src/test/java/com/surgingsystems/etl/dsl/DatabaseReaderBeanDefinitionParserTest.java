@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -12,6 +14,7 @@ import com.surgingsystems.etl.filter.DatabaseReaderFilter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:etl-context.xml", "database-reader-test.xml" })
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class DatabaseReaderBeanDefinitionParserTest {
 
     @Autowired
@@ -27,7 +30,7 @@ public class DatabaseReaderBeanDefinitionParserTest {
         Assert.assertEquals("Name is right", "Database Reader", databaseReader.getName());
         Assert.assertNotNull("Output is set", databaseReader.getOutput());
         Assert.assertNotNull("Output schema set", databaseReader.getOutputSchema());
-        Assert.assertNotNull("SQL is set", databaseReader.getSqlSelect());
+        Assert.assertNotNull("SQL is set", databaseReader.getSql());
         Assert.assertNotNull("Parameters are set", databaseReader.getParameters());
         Assert.assertTrue("Parameters are not empty", databaseReader.getParameters().size() > 0);
     }

@@ -1,3 +1,6 @@
-"Yeti SB6c","2015","6499.00"
-"Trek Slash","2014","6000.00"
-"Cube Stereo","2015","4199.00"
+Yeti SB6c,2015,6499.0
+Trek Slash,2014,6000.0
+Cube Stereo,2015,4199.0
+Giant Trance,2014,3500.0
+Santa Cruz Bronson,2013,4500.0
+Ibis Mojo,2015,5500.0

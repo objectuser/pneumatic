@@ -1,6 +1,8 @@
 package com.surgingsystems.etl.filter.mapping;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.Assert;
 
@@ -26,7 +28,12 @@ public class ColumnDefinitionMappingStrategy implements ColumnMappingStrategy {
     }
 
     @Override
-    public void validate(Schema inputSchema, Schema outputSchema) {
+    public void validate(Schema outputSchema, Schema... inputSchemas) {
+        Set<ColumnDefinition<?>> inputColumns = new HashSet<ColumnDefinition<?>>();
+        for (Schema inputSchema : inputSchemas) {
+            inputColumns.addAll(inputSchema.getColumnDefinitions());
+        }
+
         for (Map.Entry<ColumnDefinition<?>, ColumnDefinition<?>> entry : outputColumnDefinitionToInputColumnDefinitionMap
                 .entrySet()) {
             ColumnDefinition<?> outputColumn = entry.getKey();
@@ -37,7 +44,7 @@ public class ColumnDefinitionMappingStrategy implements ColumnMappingStrategy {
 
             ColumnDefinition<?> inputColumn = entry.getValue();
             Assert.isTrue(
-                    inputSchema.contains(inputColumn),
+                    inputColumns.contains(inputColumn),
                     String.format("The input schema must contain a definition for column named %s",
                             inputColumn.getName()));
         }

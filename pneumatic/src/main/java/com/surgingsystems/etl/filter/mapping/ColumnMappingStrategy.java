@@ -9,5 +9,5 @@ public interface ColumnMappingStrategy {
 
     <T extends Comparable<T>> Column<T> mapColumn(Record input, ColumnDefinition<T> toColumnDefinition);
 
-    void validate(Schema inputSchema, Schema outputSchema);
+    void validate(Schema outputSchema, Schema... inputSchemas);
 }

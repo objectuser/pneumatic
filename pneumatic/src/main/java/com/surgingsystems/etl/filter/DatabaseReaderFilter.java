@@ -39,7 +39,7 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
 
     private static Logger logger = LogManager.getFormatterLogger(DatabaseReaderFilter.class);
 
-    private String sqlSelect;
+    private String sql;
 
     private List<Object> parameters = new ArrayList<Object>();
 
@@ -68,7 +68,7 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
         Assert.notNull(getName(), "The name is required");
         Assert.notNull(output, "The output pipe is required");
         Assert.notNull(outputSchema, "The output schema is required");
-        Assert.notNull(sqlSelect, "The select statement is required");
+        Assert.notNull(sql, "The select statement is required");
         Assert.notNull(jdbcTemplate, "The data source is required");
         
         mapping.setOutputSchema(outputSchema);
@@ -80,7 +80,7 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
     @Override
     protected void filter() {
         Object[] arguments = parameters.toArray();
-        jdbcTemplate.query(sqlSelect, arguments, new RowMapper<Record>() {
+        jdbcTemplate.query(sql, arguments, new RowMapper<Record>() {
 
             private ResultSetRecord resultSetRecord;
 
@@ -118,12 +118,12 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
         setOutput(pipe);
     }
 
-    public String getSqlSelect() {
-        return sqlSelect;
+    public String getSql() {
+        return sql;
     }
 
-    public void setSqlSelect(String sqlSelect) {
-        this.sqlSelect = sqlSelect;
+    public void setSql(String sqlSelect) {
+        this.sql = sqlSelect;
     }
 
     public Schema getOutputSchema() {

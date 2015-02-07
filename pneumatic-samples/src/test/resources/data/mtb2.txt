@@ -1,3 +1,4 @@
-"Giant Trance","2015","3600.00"
-"Santa Cruz Bronson","2015","4600.00"
-"Ibis Mojo","2015","5600.00"
+Giant Trance,2015,3600.0
+Santa Cruz Bronson,2015,4600.0
+Ibis Mojo,2015,5600.0
+Trek Slash,2015,6100.0

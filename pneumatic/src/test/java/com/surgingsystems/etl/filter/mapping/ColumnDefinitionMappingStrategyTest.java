@@ -67,12 +67,12 @@ public class ColumnDefinitionMappingStrategyTest {
 
     @Test
     public void validateCompatibleSchemas() {
-        columnDefinitionMappingStrategy.validate(inputSchema, outputSchema);
+        columnDefinitionMappingStrategy.validate(outputSchema, inputSchema);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void validateIncompatibleSchemas() {
-        columnDefinitionMappingStrategy.validate(inputSchema, mismatchOutputSchema);
+        columnDefinitionMappingStrategy.validate(mismatchOutputSchema, inputSchema);
     }
     
     @Test

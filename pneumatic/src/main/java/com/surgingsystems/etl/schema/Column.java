@@ -1,5 +1,7 @@
 package com.surgingsystems.etl.schema;
 
+import com.surgingsystems.etl.utility.Equality;
+
 /**
  * A column value defined by a {@link ColumnDefinition}.
  */
@@ -43,6 +45,22 @@ public class Column<T extends Comparable<T>> implements Comparable<Column<T>> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @Override
+    public int hashCode() {
+        return value == null ? -101 : value.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Column<T> other = Equality.applicable(this, o);
+        if (other == null) {
+            return false;
+        } else {
+            return columnDefinition.equals(other.columnDefinition)
+                    && ((value == null && other.value == null) || (value != null && value.equals(other.value)));
+        }
     }
 
     @Override

@@ -10,10 +10,17 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.SpelCompilerMode;
+import org.springframework.expression.spel.SpelParserConfiguration;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
+import com.surgingsystems.etl.dsl.filter.RecordPropertyAccessor;
 import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
 import com.surgingsystems.etl.filter.mapping.Mapping;
 import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
@@ -21,7 +28,7 @@ import com.surgingsystems.etl.pipe.Pipe;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.record.RecordValidator;
 import com.surgingsystems.etl.record.ResultSetRecord;
-import com.surgingsystems.etl.schema.ColumnDefinition;
+import com.surgingsystems.etl.schema.AcceptingRecordValidator;
 import com.surgingsystems.etl.schema.Schema;
 import com.surgingsystems.etl.schema.SchemaRecordValidator;
 
@@ -46,15 +53,25 @@ public class DatabaseLookupFilter extends SingleInputFilter {
 
     private Schema outputSchema;
 
-    private Schema criteriaSchema;
-    
     private Mapping mapping;
 
-    private RecordValidator recordValidator;
-    
+    private RecordValidator inputRecordValidator;
+
+    private RecordValidator outputRecordValidator;
+
     private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
 
-    private String sqlSelect;
+    private String sql;
+
+    private List<String> parameters;
+
+    private ExpressionParser expressionParser;
+
+    private StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+
+    private RecordPropertyAccessor recordPropertyAccessor = new RecordPropertyAccessor();
+
+    private List<Expression> parameterExpressions = new ArrayList<Expression>();
 
     private JdbcTemplate jdbcTemplate;
 
@@ -76,46 +93,63 @@ public class DatabaseLookupFilter extends SingleInputFilter {
         Assert.notNull(getInput(), "The input pipe is required");
         Assert.notNull(output, "The output pipe is required");
         Assert.notNull(outputSchema, "The output schema is required");
-        Assert.notNull(sqlSelect, "The select statement is required");
+        Assert.notNull(sql, "The select statement is required");
         Assert.notNull(jdbcTemplate, "The data source is required");
 
-        recordValidator = new SchemaRecordValidator(outputSchema);
-        
         mapping = new Mapping(outputSchema);
+
+        if (inputSchema == null) {
+            inputRecordValidator = new AcceptingRecordValidator();
+        } else {
+            // mapping.validate(inputSchema, criteriaSchema);
+            inputRecordValidator = new SchemaRecordValidator(inputSchema);
+        }
+
+        outputRecordValidator = new SchemaRecordValidator(outputSchema);
+
+        setupParser();
+        setupExpressions();
     }
 
     @Override
     protected void process(Record inputRecord) {
 
-        List<Object> arguments = new ArrayList<Object>();
-        for (ColumnDefinition<?> columnDefinition : criteriaSchema) {
-            Object value = inputRecord.getValueFor(columnDefinition);
-            arguments.add(value);
-        }
+        if (!inputRecordValidator.accepts(inputRecord)) {
+            rejectRecordStrategy.rejected(inputRecord);
+        } else {
 
-        Object[] args = arguments.toArray(new Object[] {});
+            evaluationContext.setVariable("inputRecord", inputRecord);
 
-        jdbcTemplate.query(sqlSelect, args, new RowMapper<Record>() {
-            
-            private ResultSetRecord resultSetRecord;
-
-            @Override
-            public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
-                if (resultSetRecord == null) {
-                    resultSetRecord = new ResultSetRecord(rs);
-                }
-                
-                Record outputRecord = mapping.map(resultSetRecord);
-                if (outputRecord != null && recordValidator.accepts(outputRecord)) {
-                    output.put(outputRecord);
-                } else {
-                    logger.trace("Record (%d) does not comply with schema (%s)", rowNum, outputSchema.getName());
-                    rejectRecordStrategy.rejected(resultSetRecord);
-                }
-                
-                return outputRecord;
+            List<Object> arguments = new ArrayList<Object>();
+            for (Expression expression : parameterExpressions) {
+                Object value = expression.getValue(evaluationContext);
+                arguments.add(value);
             }
-        });
+
+            Object[] args = arguments.toArray(new Object[] {});
+
+            jdbcTemplate.query(sql, args, new RowMapper<Record>() {
+
+                private ResultSetRecord resultSetRecord;
+
+                @Override
+                public Record mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    if (resultSetRecord == null) {
+                        resultSetRecord = new ResultSetRecord(rs);
+                    }
+
+                    Record outputRecord = mapping.map(inputRecord, resultSetRecord);
+                    if (outputRecord != null && outputRecordValidator.accepts(outputRecord)) {
+                        output.put(outputRecord);
+                    } else {
+                        logger.trace("Record (%d) does not comply with schema (%s)", rowNum, outputSchema.getName());
+                        rejectRecordStrategy.rejected(resultSetRecord);
+                    }
+
+                    return outputRecord;
+                }
+            });
+        }
     }
 
     @Override
@@ -147,19 +181,33 @@ public class DatabaseLookupFilter extends SingleInputFilter {
         this.outputSchema = outputSchema;
     }
 
-    public Schema getCriteriaSchema() {
-        return criteriaSchema;
+    public String getSql() {
+        return sql;
     }
 
-    public void setCriteriaSchema(Schema criteriaSchema) {
-        this.criteriaSchema = criteriaSchema;
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 
-    public String getSqlSelect() {
-        return sqlSelect;
+    public List<String> getParameters() {
+        return parameters;
     }
 
-    public void setSqlSelect(String sqlSelect) {
-        this.sqlSelect = sqlSelect;
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
+    }
+
+    private void setupParser() {
+        SpelParserConfiguration spelParserConfiguration = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, this
+                .getClass().getClassLoader());
+        expressionParser = new SpelExpressionParser(spelParserConfiguration);
+        evaluationContext.addPropertyAccessor(recordPropertyAccessor);
+    }
+
+    private void setupExpressions() {
+        for (String parameter : parameters) {
+            Expression expression = expressionParser.parseExpression(parameter);
+            parameterExpressions.add(expression);
+        }
     }
 }

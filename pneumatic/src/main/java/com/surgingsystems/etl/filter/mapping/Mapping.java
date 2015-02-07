@@ -33,8 +33,8 @@ public class Mapping {
     /**
      * Do the schemas conform to the mapping strategy?
      */
-    public void validate(Schema inputSchema) {
-        mappingStrategy.validate(inputSchema, outputSchema);
+    public void validate(Schema... inputSchemas) {
+        mappingStrategy.validate(outputSchema, inputSchemas);
     }
 
     /**

@@ -29,10 +29,12 @@
 		<etl:output ref="output" />
 		<etl:outputSchema ref="outputSchema" />
 		<etl:dataSource ref="dataSource" />
-		<etl:sqlSelect>
-			select * from table where name = ?
-		</etl:sqlSelect>
-		<etl:parameter value="Trance" />
+		<etl:select>
+			<etl:sql>
+				select * from table where name = ?
+			</etl:sql>
+			<etl:parameter value="Trance" />
+		</etl:select>
 	</etl:databaseReader>
 
 </beans>
