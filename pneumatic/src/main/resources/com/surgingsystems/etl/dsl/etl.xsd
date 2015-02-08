@@ -202,21 +202,11 @@
 						<xsd:element name="input" minOccurs="1" maxOccurs="1"
 							type="PipeRefType" />
 						<xsd:element name="inputSchema" minOccurs="0"
-							maxOccurs="1">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+							maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="output" minOccurs="1" maxOccurs="1"
 							type="PipeRefType" />
 						<xsd:element name="outputSchema" minOccurs="0"
-							maxOccurs="1">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+							maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="function" minOccurs="0" maxOccurs="1">
 							<xsd:complexType>
 								<xsd:choice>
@@ -294,12 +284,7 @@
 							type="PipeRefType" />
 
 						<xsd:element name="outputSchema" minOccurs="1"
-							maxOccurs="1">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+							maxOccurs="1" type="SchemaRefType" />
 
 						<xsd:element name="dataSource">
 							<xsd:complexType>
@@ -371,12 +356,7 @@
 						<xsd:element name="output" minOccurs="1" maxOccurs="1"
 							type="PipeRefType" />
 						<xsd:element name="outputSchema" minOccurs="1"
-							maxOccurs="1">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+							maxOccurs="1" type="SchemaRefType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -405,12 +385,7 @@
 						<xsd:element name="leftInput" type="PipeRefType" />
 						<xsd:element name="rightInput" type="PipeRefType" />
 						<xsd:element name="output" type="PipeRefType" />
-						<xsd:element name="outputSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="outputSchema" type="SchemaRefType" />
 						<xsd:element name="comparator">
 							<xsd:complexType>
 								<xsd:choice>
@@ -446,19 +421,9 @@
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
 						<xsd:element name="input" type="PipeRefType" />
-						<xsd:element name="inputSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="inputSchema" type="SchemaRefType" />
 						<xsd:element name="output" type="PipeRefType" />
-						<xsd:element name="outputSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="outputSchema" type="SchemaRefType" />
 
 						<xsd:element name="mappings" minOccurs="0" maxOccurs="1">
 							<xsd:complexType>
@@ -548,25 +513,10 @@
 						</xsd:element>
 						<xsd:element name="input" type="PipeRefType" />
 						<xsd:element name="inputSchema" minOccurs="0"
-							maxOccurs="1">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+							maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="output" type="PipeRefType" />
-						<xsd:element name="outputSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element name="responseSchema">
-							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="ref" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="outputSchema" type="SchemaRefType" />
+						<xsd:element name="responseSchema" type="SchemaRefType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -600,13 +550,7 @@
 
 									<xsd:element name="output" type="PipeRefType" />
 
-									<xsd:element name="outputSchema">
-										<xsd:complexType>
-											<xsd:group ref="limitedType" minOccurs="0"
-												maxOccurs="1" />
-											<xsd:attribute name="ref" type="xsd:string" />
-										</xsd:complexType>
-									</xsd:element>
+									<xsd:element name="outputSchema" type="SchemaRefType" />
 
 									<xsd:element name="outputCondition" minOccurs="0"
 										maxOccurs="1" type="ExpressionType" />
@@ -762,11 +706,7 @@
 						<xsd:complexType>
 							<xsd:sequence>
 
-								<xsd:element name="input">
-									<xsd:complexType>
-										<xsd:attribute name="ref" type="xsd:string" />
-									</xsd:complexType>
-								</xsd:element>
+								<xsd:element name="input" type="PipeRefType" />
 								<xsd:element name="dataSet">
 									<xsd:complexType>
 										<xsd:attribute name="ref" type="xsd:string" />
@@ -781,11 +721,7 @@
 						<xsd:complexType>
 							<xsd:sequence>
 
-								<xsd:element name="output">
-									<xsd:complexType>
-										<xsd:attribute name="ref" type="xsd:string" />
-									</xsd:complexType>
-								</xsd:element>
+								<xsd:element name="output" type="PipeRefType" />
 								<xsd:element name="dataSet">
 									<xsd:complexType>
 										<xsd:attribute name="ref" type="xsd:string" />
