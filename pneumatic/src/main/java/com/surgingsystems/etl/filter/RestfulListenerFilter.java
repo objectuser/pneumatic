@@ -15,7 +15,7 @@ import com.surgingsystems.etl.schema.Schema;
 public class RestfulListenerFilter implements Filter {
 
     private String name = "RestfulFilter";
-    
+
     private String path;
 
     private Pipe output;
@@ -84,5 +84,4 @@ public class RestfulListenerFilter implements Filter {
     public void setSchema(Schema schema) {
         this.schema = schema;
     }
-
 }

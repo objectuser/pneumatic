@@ -1,5 +1,6 @@
 package com.surgingsystems.etl.dsl.filter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.item.file.mapping.ArrayFieldSetMapper;
@@ -26,8 +27,15 @@ public class FileBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
     protected void doParse(Element element, BeanDefinitionBuilder bean) {
 
         String location = element.getAttribute("location");
-        bean.addPropertyValue("resource", location);
-        
+        String locationExpression = element.getAttribute("locationExpression");
+        if (!StringUtils.isEmpty(location)) {
+            bean.addPropertyValue("resource", location);
+        } else if (!StringUtils.isEmpty(locationExpression)) {
+            bean.addPropertyValue("resourceExpression", locationExpression);
+        } else {
+            throw new IllegalArgumentException("The element must provide either a location or a locationExpression");
+        }
+
         DefaultLineMapper<String[]> lineMapper = new DefaultLineMapper<String[]>();
         lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
         lineMapper.setFieldSetMapper(new ArrayFieldSetMapper());
