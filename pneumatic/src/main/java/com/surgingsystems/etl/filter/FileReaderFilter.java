@@ -80,13 +80,14 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
 
                 if (logger.isTraceEnabled()) {
                     String line = Arrays.toString(input);
-                    logger.trace("Reading from [%s]: [%s...]", itemReader.getResource().getFilename(),
+                    logger.trace("Reading from [%s]: [%s...]", itemReader.getResource(),
                             line.substring(0, Math.min(line.length(), 100)));
                 }
 
                 Record record = recordParser.parse(input, outputSchema);
                 if (record == null) {
-                    logger.warn("Parser returned null record when parsing according to schema (%s)", outputSchema.getName());
+                    logger.warn("Parser returned null record when parsing according to schema (%s)",
+                            outputSchema.getName());
                 } else {
                     recordProcessed();
                     logRecord(record);

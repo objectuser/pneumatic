@@ -155,7 +155,8 @@
 			</xsd:element>
 		</xsd:sequence>
 
-		<xsd:attribute name="location" type="xsd:string" use="required" />
+		<xsd:attribute name="location" type="xsd:string" />
+		<xsd:attribute name="locationExpression" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:complexType name="ExpressionType">

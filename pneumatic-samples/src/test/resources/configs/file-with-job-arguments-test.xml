@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="An Integer" type="integer" />
+		<etl:column name="A Decimal" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="fileOutput1" />
+	<etl:fileReader id="fileReader1" name="File Reader 1">
+		<etl:fileResource locationExpression="#job.file" />
+		<etl:output ref="fileOutput1" />
+		<etl:outputSchema ref="inputSchema" />
+	</etl:fileReader>
+
+	<etl:fileWriter id="fileWriter" name="File Writer 1">
+		<etl:fileResource location="file:output/output1.txt" />
+		<etl:input ref="fileOutput1" />
+		<etl:inputSchema ref="inputSchema" />
+	</etl:fileWriter>
+	
+</beans>
