@@ -1,4 +1,4 @@
-package com.surgingsystems.etl.dsl.filter;
+package com.surgingsystems.etl.dsl.filter.elements;
 
 import java.util.List;
 

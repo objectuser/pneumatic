@@ -39,11 +39,19 @@ public class EtlExpressionHelper {
     public Object evaluate(String unevaluatedExpression) {
         return expressionParser.parseExpression(unevaluatedExpression).getValue(evaluationContext);
     }
+    
+    public void setVariable(String variableName, Object value) {
+        evaluationContext.setVariable(variableName, value);
+    }
 
     public void evaluate() {
         for (Expression expression : expressions) {
             expression.getValue(evaluationContext);
         }
+    }
+
+    public Object getValue(Expression expression) {
+        return expression.getValue(evaluationContext);
     }
 
     private void setupParser() {
