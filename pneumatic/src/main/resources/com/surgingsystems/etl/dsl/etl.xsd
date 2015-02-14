@@ -38,6 +38,19 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="LogLevelType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OFF" />
+			<xsd:enumeration value="FATAL" />
+			<xsd:enumeration value="ERROR" />
+			<xsd:enumeration value="WARN" />
+			<xsd:enumeration value="INFO" />
+			<xsd:enumeration value="DEBUG" />
+			<xsd:enumeration value="TRACE" />
+			<xsd:enumeration value="ALL" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:complexType name="SchemaType">
 		<xsd:complexContent>
 			<xsd:extension base="beans:identifiedType">
@@ -125,8 +138,7 @@
 						<xsd:element name="output" type="PipeRefType" />
 						<xsd:element name="log">
 							<xsd:complexType>
-								<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
-								<xsd:attribute name="level" type="xsd:string" />
+								<xsd:attribute name="level" type="LogLevelType" />
 								<xsd:attribute name="name" type="xsd:string" />
 							</xsd:complexType>
 						</xsd:element>
@@ -295,12 +307,6 @@
 						</xsd:element>
 
 						<xsd:element name="select" type="ParameterizedSqlType" />
-
-						<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
-							<xsd:complexType>
-								<xsd:attribute name="value" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
 
 						<xsd:element name="rejection" type="RejectionType"
 							minOccurs="0" maxOccurs="1" />

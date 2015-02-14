@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+        
+    <bean id="etlContextHolder" class="com.surgingsystems.etl.context.EtlContextHolder">
+    	<property name="contextArguments">
+   			<map>
+   				<entry key="name" value="Giant Trance" />
+   				<entry key="year" value="2014" />
+   			</map>
+    	</property>
+    </bean>
+
+	<jdbc:embedded-database id="dataSource" type="HSQL">
+		<jdbc:script location="classpath:db-schema.sql" />
+		<jdbc:script location="classpath:db-test-data.sql" />
+	</jdbc:embedded-database>
+
+	<etl:schema id="sqlSelectSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="databaseReaderOutput" />
+	<etl:databaseReader id="databaseReader" name="Database Reader">
+		<etl:output ref="databaseReaderOutput" />
+		<etl:outputSchema ref="sqlSelectSchema" />
+		<etl:dataSource ref="dataSource" />
+		<etl:select>
+			<etl:sql>
+				select * from mtb where name = ? and year = ?
+			</etl:sql>
+			<etl:parameter value="#job.name" />
+			<etl:parameter value="#job.year" />
+		</etl:select>
+		<etl:rejection>
+			<etl:output ref="databaseReaderRejectionOutput" />
+		</etl:rejection>
+	</etl:databaseReader>
+
+</beans>

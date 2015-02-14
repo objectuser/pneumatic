@@ -11,16 +11,11 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.SpelCompilerMode;
-import org.springframework.expression.spel.SpelParserConfiguration;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
-import com.surgingsystems.etl.dsl.filter.RecordPropertyAccessor;
+import com.surgingsystems.etl.filter.expression.EtlExpressionHelper;
 import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
 import com.surgingsystems.etl.filter.mapping.Mapping;
 import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
@@ -65,14 +60,10 @@ public class DatabaseLookupFilter extends SingleInputFilter {
 
     private List<String> parameters;
 
-    private ExpressionParser expressionParser;
-
-    private StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-
-    private RecordPropertyAccessor recordPropertyAccessor = new RecordPropertyAccessor();
-
     private List<Expression> parameterExpressions = new ArrayList<Expression>();
 
+    private EtlExpressionHelper expressionHelper = new EtlExpressionHelper();
+    
     private JdbcTemplate jdbcTemplate;
 
     public DatabaseLookupFilter() {
@@ -101,13 +92,11 @@ public class DatabaseLookupFilter extends SingleInputFilter {
         if (inputSchema == null) {
             inputRecordValidator = new AcceptingRecordValidator();
         } else {
-            // mapping.validate(inputSchema, criteriaSchema);
             inputRecordValidator = new SchemaRecordValidator(inputSchema);
         }
 
         outputRecordValidator = new SchemaRecordValidator(outputSchema);
 
-        setupParser();
         setupExpressions();
     }
 
@@ -118,11 +107,11 @@ public class DatabaseLookupFilter extends SingleInputFilter {
             rejectRecordStrategy.rejected(inputRecord);
         } else {
 
-            evaluationContext.setVariable("inputRecord", inputRecord);
+            expressionHelper.setVariable("inputRecord", inputRecord);
 
             List<Object> arguments = new ArrayList<Object>();
             for (Expression expression : parameterExpressions) {
-                Object value = expression.getValue(evaluationContext);
+                Object value = expressionHelper.getValue(expression);
                 arguments.add(value);
             }
 
@@ -197,16 +186,9 @@ public class DatabaseLookupFilter extends SingleInputFilter {
         this.parameters = parameters;
     }
 
-    private void setupParser() {
-        SpelParserConfiguration spelParserConfiguration = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, this
-                .getClass().getClassLoader());
-        expressionParser = new SpelExpressionParser(spelParserConfiguration);
-        evaluationContext.addPropertyAccessor(recordPropertyAccessor);
-    }
-
     private void setupExpressions() {
         for (String parameter : parameters) {
-            Expression expression = expressionParser.parseExpression(parameter);
+            Expression expression = expressionHelper.parse(parameter);
             parameterExpressions.add(expression);
         }
     }

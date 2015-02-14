@@ -10,10 +10,13 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.Assert;
 
+import com.surgingsystems.etl.context.EtlContextHolder;
+import com.surgingsystems.etl.filter.expression.EtlExpressionHelper;
 import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
 import com.surgingsystems.etl.filter.mapping.Mapping;
 import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
@@ -38,10 +41,13 @@ import com.surgingsystems.etl.schema.SchemaRecordValidator;
 public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(DatabaseReaderFilter.class);
+    
+    @Autowired
+    private EtlContextHolder etlContextHolder;
 
     private String sql;
 
-    private List<Object> parameters = new ArrayList<Object>();
+    private List<String> parameters = new ArrayList<String>();
 
     private Pipe output;
 
@@ -54,6 +60,8 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
     private RecordValidator recordValidator;
 
     private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+
+    private EtlExpressionHelper expressionHelper = new EtlExpressionHelper();
 
     public DatabaseReaderFilter() {
     }
@@ -75,12 +83,22 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
         mapping.validate(outputSchema);
         
         recordValidator = new SchemaRecordValidator(outputSchema);
+        
+        setupExpressions();
     }
 
     @Override
     protected void filter() {
-        Object[] arguments = parameters.toArray();
-        jdbcTemplate.query(sql, arguments, new RowMapper<Record>() {
+        
+        List<Object> arguments = new ArrayList<Object>();
+        for (String parameter : parameters) {
+            Object value = expressionHelper.evaluate(parameter);
+            arguments.add(value);
+        }
+        
+        Object[] args = arguments.toArray(new Object[] {});
+        
+        jdbcTemplate.query(sql, args, new RowMapper<Record>() {
 
             private ResultSetRecord resultSetRecord;
 
@@ -146,11 +164,15 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
         this.mapping = mapping;
     }
 
-    public List<Object> getParameters() {
+    public List<String> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<Object> args) {
+    public void setParameters(List<String> args) {
         this.parameters = args;
+    }
+
+    private void setupExpressions() {
+        expressionHelper.applyContext(etlContextHolder);
     }
 }
