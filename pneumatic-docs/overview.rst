@@ -21,7 +21,7 @@ Pneumatic "programs" are composed into "jobs". Jobs read from files, from databa
 
 The reading, writing, transforming, etc. are done in "filters". Filters are connected through pipes that carry the data from one filter to the next. This `pipes and filters <http://www.eaipatterns.com/PipesAndFilters.html>`_ architecture is widely-known. It's also conceptually simple, yet quite powerful, and is the fundamental pattern of Pneumatic jobs.
 
-These concepts are fundamental, but the words "job" and "filter" don't often appear in Pneumatic configurations. But as we discuss Pneumatic in this guide, we will use those terms, so you stil need to understand them. 
+These concepts are fundamental, but the words "job" and "filter" don't often appear in Pneumatic configurations. But as we discuss Pneumatic in this guide, we will use those terms, so you still need to understand them. 
 
 Running a Job
 -------------

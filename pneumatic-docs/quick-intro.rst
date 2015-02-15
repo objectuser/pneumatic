@@ -33,10 +33,12 @@ As a quick example, reading from a file and writing to a database might look lik
 		<etl:insertInto table-name="mtb" />
 	</etl:databaseWriter>
 
-The first declaration (``id="dataSource"``) is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
+In this guide, configuration elements are indicated by their "IDs" (identifiers). The ID needs to be unique across all the files in your jobs.  An example of an ID is the first declaration (``id="dataSource"``). This refers to a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
-Next is a schema declaration (``id="mtbSchema"``)  used to declare the structure of records in the job. A pipe (``id="fileReaderOutput"``) provides a conduit from one processing element (called "filters") to another. A file reader (``id="fileReader"``) reads a file, creating records and sending them to the pipe referenced in its "output".
+Next is a schema declaration (``id="mtbSchema"``)  used to declare the structure of records in the job. A pipe (``id="fileReaderOutput"``) provides a conduit for records, connecting one processing element (called "filters") to another. 
 
-A database writer (``id="databaseWriter"``) writes records from the pipe referenced in its "input" to a table available in the data source (the ``mtb`` table in this case).
+A file reader (``id="fileReader"``) is a filter that reads a file, creating records and sending them to the pipe referenced in its "output". The file reader has an output (``etl:output ref="fileReaderOutput"``), which refers (using the ``ref`` keyword) to the ``fileReaderOutput`` pipe. This guide will often just use the reference portion of an element when describing it (``ref="fileReaderOutput"``).
+
+A database writer (``id="databaseWriter"``) writes records from the pipe referenced in its ``input`` to a table available in the data source (the ``mtb`` table in this case). Don't be confused by the input to the database writer referencing a pipe called ``fileReaderOutput``: pipes connect the output of one filter to the input of another filter. Pipes are often declared near the filter that is writing to them and so are named according to that relationship. A pipe could also be named something like ``fileReaderToDatabaseWriterPipe``. You can use any convention you like.
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
