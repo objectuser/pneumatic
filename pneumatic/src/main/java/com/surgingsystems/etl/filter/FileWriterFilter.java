@@ -56,7 +56,7 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
     @PostConstruct
     public void validate() {
         Assert.notNull(getName(), "The name is required");
-        Assert.notNull(inputSchema, "The output schema is required");
+        Assert.notNull(getInput(), "The input pipe is required");
         Assert.notNull(fileResource, "The file resource is required");
     }
 
