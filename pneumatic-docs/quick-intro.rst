@@ -2,7 +2,7 @@
 Quick Intro
 ***********
 
-Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of Pneumatic.
+Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of what it's all about.
 
 Pneumatic is declarative, using an XML markup  based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the XML provides a proof of concept that still makes creating ETL jobs really easy. There might be, however, a conceptual hurdle of understanding how Spring declares beans.
 
