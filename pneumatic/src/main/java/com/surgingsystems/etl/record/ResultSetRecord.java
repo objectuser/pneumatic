@@ -1,5 +1,6 @@
 package com.surgingsystems.etl.record;
 
+import java.lang.reflect.ParameterizedType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class ResultSetRecord implements Record {
         @SuppressWarnings("unchecked")
         @Override
         public Class<T> getCoreType() {
-            return (Class<T>) Comparable.class;
+            return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         }
 
         @Override

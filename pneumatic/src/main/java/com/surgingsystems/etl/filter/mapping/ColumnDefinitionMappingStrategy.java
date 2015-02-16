@@ -19,10 +19,10 @@ public class ColumnDefinitionMappingStrategy implements ColumnMappingStrategy {
         this.outputColumnDefinitionToInputColumnDefinitionMap = mappings;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Comparable<T>> Column<T> mapColumn(Record input, ColumnDefinition<T> toColumnDefinition) {
-        ColumnDefinition<T> inputColumnDefinition = (ColumnDefinition<T>) outputColumnDefinitionToInputColumnDefinitionMap
+    public Column<? extends Comparable<?>> mapColumn(Record input,
+            ColumnDefinition<? extends Comparable<?>> toColumnDefinition) {
+        ColumnDefinition<?> inputColumnDefinition = outputColumnDefinitionToInputColumnDefinitionMap
                 .get(toColumnDefinition);
         return input.getColumnFor(inputColumnDefinition);
     }

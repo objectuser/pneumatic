@@ -13,7 +13,8 @@ import com.surgingsystems.etl.schema.Schema;
 public class ColumnNameMappingStrategy implements ColumnMappingStrategy {
 
     @Override
-    public <T extends Comparable<T>> Column<T> mapColumn(Record input, ColumnDefinition<T> toColumnDefinition) {
+    public Column<? extends Comparable<?>> mapColumn(Record input,
+            ColumnDefinition<? extends Comparable<?>> toColumnDefinition) {
         if (input.hasColumnFor(toColumnDefinition)) {
             return input.getColumnForName(toColumnDefinition.getName());
         } else {

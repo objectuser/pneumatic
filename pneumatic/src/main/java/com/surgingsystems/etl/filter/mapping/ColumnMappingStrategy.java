@@ -7,7 +7,7 @@ import com.surgingsystems.etl.schema.Schema;
 
 public interface ColumnMappingStrategy {
 
-    <T extends Comparable<T>> Column<T> mapColumn(Record input, ColumnDefinition<T> toColumnDefinition);
+    Column<? extends Comparable<?>> mapColumn(Record input, ColumnDefinition<? extends Comparable<?>> toColumnDefinition);
 
     void validate(Schema outputSchema, Schema... inputSchemas);
 }

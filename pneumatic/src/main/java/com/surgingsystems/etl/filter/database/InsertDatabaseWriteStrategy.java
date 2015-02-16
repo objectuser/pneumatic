@@ -18,9 +18,9 @@ import com.surgingsystems.etl.schema.Schema;
 public class InsertDatabaseWriteStrategy implements DatabaseWriteStrategy {
 
     private String insertStatement;
-    
+
     private JdbcTemplate jdbcTemplate;
-    
+
     private String tableName;
 
     @Override
@@ -46,27 +46,27 @@ public class InsertDatabaseWriteStrategy implements DatabaseWriteStrategy {
         }
 
         valuesBuilder.append(")");
-        
+
         insertBuilder.append(valuesBuilder);
 
         insertStatement = insertBuilder.toString();
-        
+
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public void write(Record record) {
         jdbcTemplate.update(new PreparedStatementCreator() {
-            
+
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement statement =  connection.prepareStatement(insertStatement);
-                
+                PreparedStatement statement = connection.prepareStatement(insertStatement);
+
                 int i = 0;
                 for (Column<?> column : record) {
                     statement.setObject(++i, column.getValue());
                 }
-                
+
                 return statement;
             }
         });
