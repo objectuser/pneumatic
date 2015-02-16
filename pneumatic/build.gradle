@@ -7,6 +7,10 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	testOutput.extendsFrom(testCompile)
+}
+
 dependencies {
 	compile "org.springframework:spring-context:$springVersion"
 	compile "org.springframework:spring-context-support:$springVersion"
@@ -28,10 +32,21 @@ dependencies {
 	compile "org.apache.logging.log4j:log4j-api:2.1"
 	compile "org.apache.logging.log4j:log4j-core:2.1"
 	
+	compile "junit:junit:4.11" // for EtlTest
+	
 	compile "commons-cli:commons-cli:1.2"
 	
-	testCompile "junit:junit:4.11"
 	testCompile "org.springframework:spring-test:$springVersion"
 	testCompile "org.mockito:mockito-all:1.10.8"
 	testCompile "org.hsqldb:hsqldb:2.3.2"
+}
+
+
+task jarTest (type: Jar, dependsOn: testClasses) {
+    from sourceSets.test.output
+    classifier = 'test'
+}
+
+artifacts {
+    testOutput jarTest
 }

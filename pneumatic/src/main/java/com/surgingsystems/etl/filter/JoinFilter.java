@@ -73,9 +73,10 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
         logSummary();
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Record createOutputRecord(Record r1, Record r2) {
         DataRecord result = new DataRecord();
-        for (ColumnDefinition<?> columnDefinition : outputSchema) {
+        for (ColumnDefinition columnDefinition : outputSchema) {
             boolean b1 = r1 != null && r1.hasColumnFor(columnDefinition);
             boolean b2 = r2 != null && r2.hasColumnFor(columnDefinition);
             if (b1 && b2) {
@@ -83,10 +84,10 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
             }
 
             if (b1) {
-                Column<?> c1 = r1.getColumnFor(columnDefinition);
+                Column c1 = r1.getColumnFor(columnDefinition);
                 result.addColumn(c1);
             } else if (b2) {
-                Column<?> c2 = r2.getColumnFor(columnDefinition);
+                Column c2 = r2.getColumnFor(columnDefinition);
                 result.addColumn(c2);
             } else {
                 logger.warn("Neither input has a column matching schema column named '%s'", columnDefinition.getName());

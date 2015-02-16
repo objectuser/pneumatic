@@ -18,7 +18,7 @@ import com.surgingsystems.etl.schema.StringColumnType;
 import com.surgingsystems.etl.schema.TabularSchema;
 
 public class ColumnDefinitionMappingStrategyTest {
-    
+
     private ColumnDefinitionMappingStrategy columnDefinitionMappingStrategy;
 
     private Schema inputSchema;
@@ -52,7 +52,7 @@ public class ColumnDefinitionMappingStrategyTest {
         itemPrice = new ColumnDefinition<Double>("Item Price", new DecimalColumnType());
 
         outputSchema = new TabularSchema("Test Schema", bikeName, itemCount, itemPrice);
-        
+
         Map<ColumnDefinition<?>, ColumnDefinition<?>> mappings = new HashMap<ColumnDefinition<?>, ColumnDefinition<?>>();
         mappings.put(bikeName, name);
         mappings.put(itemCount, count);
@@ -61,7 +61,7 @@ public class ColumnDefinitionMappingStrategyTest {
         ColumnDefinition<Double> salePrice = new ColumnDefinition<Double>("Sale Price", new DecimalColumnType());
 
         mismatchOutputSchema = new TabularSchema("Test Schema", bikeName, itemCount, itemPrice, salePrice);
-        
+
         columnDefinitionMappingStrategy = new ColumnDefinitionMappingStrategy(mappings);
     }
 
@@ -74,27 +74,31 @@ public class ColumnDefinitionMappingStrategyTest {
     public void validateIncompatibleSchemas() {
         columnDefinitionMappingStrategy.validate(mismatchOutputSchema, inputSchema);
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Test
     public void mapStringToString() {
         Record record = new DataRecord(inputSchema, "Trance", 100, 3000.0);
-        Column<String> nameColumn = columnDefinitionMappingStrategy.mapColumn(record, bikeName);
+        Column<String> nameColumn = (Column<String>) columnDefinitionMappingStrategy.mapColumn(record, bikeName);
         Assert.assertNotNull("Column mapped", nameColumn);
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Test
     public void mapStringToInteger() {
         Record record = new DataRecord(inputSchema, "Trance", 100, 3000.0);
-        Column<Integer> itemCountColumn = columnDefinitionMappingStrategy.mapColumn(record, itemCount);
+        Column<Integer> itemCountColumn = (Column<Integer>) columnDefinitionMappingStrategy
+                .mapColumn(record, itemCount);
         Assert.assertNotNull("Column mapped", itemCountColumn);
         Assert.assertEquals("Value mapped", 100, (int) itemCountColumn.getValue());
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Test
     public void mapStringToDecimal() {
         Record record = new DataRecord(inputSchema, "Trance", 100, 3000.0);
-        Column<Double> itemPriceColumn = columnDefinitionMappingStrategy.mapColumn(record, itemPrice);
+        Column<Double> itemPriceColumn = (Column<Double>) columnDefinitionMappingStrategy.mapColumn(record, itemPrice);
         Assert.assertNotNull("Column mapped", itemPriceColumn);
-        Assert.assertEquals("Value mapped", 3000.0, (double) itemPriceColumn.getValue(), 0.0);
+        Assert.assertEquals("Value mapped", 3000.0, itemPriceColumn.getValue(), 0.0);
     }
 }

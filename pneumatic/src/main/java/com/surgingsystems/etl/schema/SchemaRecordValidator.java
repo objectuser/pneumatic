@@ -14,11 +14,12 @@ public class SchemaRecordValidator implements RecordValidator {
     /**
      * Is the record compatible with this schema?
      */
+    @SuppressWarnings("rawtypes")
     @Override
     public boolean accepts(Record record) {
         boolean result = true;
-        for (ColumnDefinition<? extends Comparable<?>> columnDefinition : schema.getColumnDefinitions()) {
-            Column<?> column = record.getColumnFor((ColumnDefinition<?>) columnDefinition);
+        for (ColumnDefinition<?> columnDefinition : schema) {
+            Column column = record.getColumnFor(columnDefinition);
             if (column == null) {
                 result = false;
                 break;
