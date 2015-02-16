@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.cli.ParseException;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.surgingsystems.etl.context.EtlContextProvider;
@@ -26,8 +25,7 @@ public class XmlRunner {
         }
     }
 
-    private static void createPropertyMapFrom(GenericXmlApplicationContext applicationContext, String[] args)
-            throws ParseException {
+    private static void createPropertyMapFrom(GenericXmlApplicationContext applicationContext, String[] args) {
         List<String> options = new ArrayList<String>();
         List<String> configs = new ArrayList<String>();
 

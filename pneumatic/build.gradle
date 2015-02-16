@@ -34,11 +34,10 @@ dependencies {
 	
 	compile "junit:junit:4.11" // for EtlTest
 	
-	compile "commons-cli:commons-cli:1.2"
-	
 	testCompile "org.springframework:spring-test:$springVersion"
 	testCompile "org.mockito:mockito-all:1.10.8"
 	testCompile "org.hsqldb:hsqldb:2.3.2"
+	testCompile "commons-io:commons-io:2.4"
 }
 
 
