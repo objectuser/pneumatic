@@ -29,14 +29,18 @@ public class JoinBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "rightInput", "rightInput");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
-        
+
         ParserContext nestedParserContext = new ParserContext(parserContext.getReaderContext(),
                 parserContext.getDelegate(), bean.getBeanDefinition());
 
         Element comparatorElement = DomUtils.getChildElementByTagName(element, "comparator");
         ComparatorBeanDefinitionParser comparatorBeanDefinitionParser = new ComparatorBeanDefinitionParser();
         BeanDefinition comparator = comparatorBeanDefinitionParser.parse(comparatorElement, nestedParserContext);
-
         bean.addPropertyValue("comparator", comparator);
+
+        Element leftOuterJoinElement = DomUtils.getChildElementByTagName(element, "leftOuterJoin");
+        if (leftOuterJoinElement != null) {
+            bean.addPropertyValue("leftOuterJoin", true);
+        }
     }
 }

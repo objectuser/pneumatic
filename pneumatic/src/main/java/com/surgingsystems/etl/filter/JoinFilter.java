@@ -168,29 +168,33 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
             do {
                 while (r1 == null && !leftInput.isComplete()) {
                     r1 = leftInput.pull();
-                }
 
-                logRecord(r1);
-                recordProcessed();
+                    if (r1 != null) {
+                        logRecord(r1);
+                        recordProcessed();
+                    }
+                }
 
                 while (r2 == null && !rightInput.isComplete()) {
                     r2 = rightInput.pull();
-                }
 
-                logRecord(r2);
-                recordProcessed();
+                    if (r2 != null) {
+                        logRecord(r2);
+                        recordProcessed();
+                    }
+                }
 
                 int comparison = comparator.compare(r1, r2);
                 if (comparison == 0) {
                     output.put(createOutputRecord(r1, r2));
                     r1 = null;
                     r2 = null;
-                } else if (comparator.compare(r1, r2) < 0) {
+                } else if (rightInput.isComplete() || comparison < 0) {
                     r1 = null;
                 } else {
                     r2 = null;
                 }
-            } while (!leftInput.isComplete() && !rightInput.isComplete());
+            } while (!leftInput.isComplete() || !rightInput.isComplete());
         }
     }
 
@@ -203,20 +207,20 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
             do {
                 while (r1 == null && !leftInput.isComplete()) {
                     r1 = leftInput.pull();
-                }
 
-                if (r1 != null) {
-                    logRecord(r1);
-                    recordProcessed();
+                    if (r1 != null) {
+                        logRecord(r1);
+                        recordProcessed();
+                    }
                 }
 
                 while (r2 == null && !rightInput.isComplete()) {
                     r2 = rightInput.pull();
-                }
 
-                if (r2 != null) {
-                    logRecord(r2);
-                    recordProcessed();
+                    if (r2 != null) {
+                        logRecord(r2);
+                        recordProcessed();
+                    }
                 }
 
                 int comparison = comparator.compare(r1, r2);
@@ -224,13 +228,14 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
                     output.put(createOutputRecord(r1, r2));
                     r1 = null;
                     r2 = null;
-                } else if (rightInput.isComplete() || comparator.compare(r1, r2) < 0) {
+                } else if (rightInput.isComplete() || comparison < 0) {
                     output.put(createOutputRecord(r1, null));
                     r1 = null;
                 } else {
                     r2 = null;
                 }
-            } while (!leftInput.isComplete());
+
+            } while (!leftInput.isComplete() || !rightInput.isComplete());
         }
     }
 }

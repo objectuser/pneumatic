@@ -3,35 +3,30 @@ package com.surgingsystems.etl.dsl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import com.surgingsystems.etl.dsl.schema.ColumnBeanDefinitionParser;
-import com.surgingsystems.etl.record.SingleColumnComparator;
+import com.surgingsystems.etl.dsl.springbean.SpringBeanDefinitionParser;
 
-public class ComparatorBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+public class ComparatorBeanDefinitionParser {
 
     private static Logger logger = LogManager.getFormatterLogger(ComparatorBeanDefinitionParser.class);
 
-    @Override
-    protected Class<?> getBeanClass(Element element) {
-        return SingleColumnComparator.class;
-    }
+    public BeanDefinition parse(Element element, ParserContext nestedParserContext) {
 
-    @Override
-    protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
-        
-        ParserContext nestedParserContext = new ParserContext(parserContext.getReaderContext(),
-                parserContext.getDelegate(), bean.getBeanDefinition());
-        
+        logger.trace("Creating comparator");
+
         Element columnElement = DomUtils.getChildElementByTagName(element, "column");
-        ColumnBeanDefinitionParser parser = new ColumnBeanDefinitionParser();
-        BeanDefinition columnDefintion = parser.parse(columnElement, nestedParserContext);
-        bean.addPropertyValue("columnDefinition", columnDefintion);
-
-        logger.trace("Creating comparator on column");
+        Element beanElement = DomUtils.getChildElementByTagName(element, "bean");
+        if (columnElement != null) {
+            SingleColumnComparatorBeanDefinitionParser parser = new SingleColumnComparatorBeanDefinitionParser();
+            return parser.parse(element, nestedParserContext);
+        } else if (beanElement != null) {
+            SpringBeanDefinitionParser springBeanDefinitionParser = new SpringBeanDefinitionParser();
+            return springBeanDefinitionParser.parse(beanElement, nestedParserContext);
+        } else {
+            return null;
+        }
     }
 }
