@@ -1,8 +1,6 @@
-<xsd:schema xmlns="http://www.surgingsystems.com/schema/etl"
-	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:tool="http://www.springframework.org/schema/tool"
-	targetNamespace="http://www.surgingsystems.com/schema/etl"
-	elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xsd:schema xmlns="http://www.surgingsystems.com/schema/etl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:tool="http://www.springframework.org/schema/tool"
+	targetNamespace="http://www.surgingsystems.com/schema/etl" elementFormDefault="qualified" attributeFormDefault="unqualified">
 
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
@@ -55,14 +53,13 @@
 		<xsd:complexContent>
 			<xsd:extension base="beans:identifiedType">
 				<xsd:sequence>
-					<xsd:element name="column" type="ColumnType" minOccurs="1"
-						maxOccurs="unbounded" />
+					<xsd:element name="column" type="ColumnType" minOccurs="1" maxOccurs="unbounded" />
 				</xsd:sequence>
 				<xsd:attribute name="name" type="xsd:string" use="required" />
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="ParameterizedSqlType">
 		<xsd:sequence>
 			<xsd:element name="sql">
@@ -72,8 +69,7 @@
 					</xsd:simpleContent>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="parameter" minOccurs="0"
-				maxOccurs="unbounded">
+			<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:attribute name="value" type="xsd:string" />
 				</xsd:complexType>
@@ -130,8 +126,7 @@
 				<xsd:sequence>
 					<xsd:element name="columnRule" minOccurs="0" maxOccurs="1">
 						<xsd:complexType>
-							<xsd:attribute name="type" type="ColumnRejectionRuleType"
-								use="required" />
+							<xsd:attribute name="type" type="ColumnRejectionRuleType" use="required" />
 						</xsd:complexType>
 					</xsd:element>
 					<xsd:choice>
@@ -177,6 +172,13 @@
 		</xsd:simpleContent>
 	</xsd:complexType>
 
+	<xsd:complexType name="ComparatorType">
+		<xsd:choice>
+			<xsd:element name="column" type="ColumnType" />
+			<xsd:group ref="limitedType" minOccurs="0" maxOccurs="1" />
+		</xsd:choice>
+	</xsd:complexType>
+
 	<xsd:element name="column" type="ColumnType" />
 
 	<xsd:element name="schema" type="SchemaType" />
@@ -212,14 +214,10 @@
 			<xsd:complexContent>
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
-						<xsd:element name="input" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
-						<xsd:element name="inputSchema" minOccurs="0"
-							maxOccurs="1" type="SchemaRefType" />
-						<xsd:element name="output" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
-						<xsd:element name="outputSchema" minOccurs="0"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="input" minOccurs="1" maxOccurs="1" type="PipeRefType" />
+						<xsd:element name="inputSchema" minOccurs="0" maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="1" type="PipeRefType" />
+						<xsd:element name="outputSchema" minOccurs="0" maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="function" minOccurs="0" maxOccurs="1">
 							<xsd:complexType>
 								<xsd:choice>
@@ -229,8 +227,7 @@
 								<xsd:attribute name="ref" type="xsd:string" />
 							</xsd:complexType>
 						</xsd:element>
-						<xsd:element name="rejection" type="RejectionType"
-							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -243,8 +240,7 @@
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
 						<xsd:element name="input" type="PipeRefType" />
-						<xsd:element name="output" minOccurs="1" maxOccurs="unbounded"
-							type="PipeRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="unbounded" type="PipeRefType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -257,17 +253,13 @@
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
 
-						<xsd:element name="input" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
+						<xsd:element name="input" minOccurs="1" maxOccurs="1" type="PipeRefType" />
 
-						<xsd:element name="inputSchema" minOccurs="1"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="inputSchema" minOccurs="1" maxOccurs="1" type="SchemaRefType" />
 
-						<xsd:element name="output" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="1" type="PipeRefType" />
 
-						<xsd:element name="outputSchema" minOccurs="1"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="outputSchema" minOccurs="1" maxOccurs="1" type="SchemaRefType" />
 
 						<xsd:element name="dataSource">
 							<xsd:complexType>
@@ -278,8 +270,7 @@
 
 						<xsd:element name="lookup" type="ParameterizedSqlType" />
 
-						<xsd:element name="rejection" type="RejectionType"
-							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 
 					</xsd:sequence>
 				</xsd:extension>
@@ -293,11 +284,9 @@
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
 
-						<xsd:element name="output" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="1" type="PipeRefType" />
 
-						<xsd:element name="outputSchema" minOccurs="1"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="outputSchema" minOccurs="1" maxOccurs="1" type="SchemaRefType" />
 
 						<xsd:element name="dataSource">
 							<xsd:complexType>
@@ -308,8 +297,7 @@
 
 						<xsd:element name="select" type="ParameterizedSqlType" />
 
-						<xsd:element name="rejection" type="RejectionType"
-							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 
 					</xsd:sequence>
 				</xsd:extension>
@@ -360,10 +348,8 @@
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
 						<xsd:element name="fileResource" type="FileType" />
-						<xsd:element name="output" minOccurs="1" maxOccurs="1"
-							type="PipeRefType" />
-						<xsd:element name="outputSchema" minOccurs="1"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="output" minOccurs="1" maxOccurs="1" type="PipeRefType" />
+						<xsd:element name="outputSchema" minOccurs="1" maxOccurs="1" type="SchemaRefType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -393,15 +379,8 @@
 						<xsd:element name="rightInput" type="PipeRefType" />
 						<xsd:element name="output" type="PipeRefType" />
 						<xsd:element name="outputSchema" type="SchemaRefType" />
-						<xsd:element name="comparator">
-							<xsd:complexType>
-								<xsd:choice>
-									<xsd:element name="column" type="ColumnType" />
-								</xsd:choice>
-							</xsd:complexType>
-						</xsd:element>
-						<xsd:element name="leftOuterJoin" minOccurs="0"
-							maxOccurs="1" />
+						<xsd:element name="comparator" type="ComparatorType" />
+						<xsd:element name="leftOuterJoin" minOccurs="0" maxOccurs="1" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
@@ -413,8 +392,7 @@
 			<xsd:complexContent>
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
-						<xsd:element name="input" minOccurs="1" maxOccurs="unbounded"
-							type="PipeRefType" />
+						<xsd:element name="input" minOccurs="1" maxOccurs="unbounded" type="PipeRefType" />
 						<xsd:element name="output" type="PipeRefType" />
 					</xsd:sequence>
 				</xsd:extension>
@@ -435,8 +413,7 @@
 						<xsd:element name="mappings" minOccurs="0" maxOccurs="1">
 							<xsd:complexType>
 								<xsd:sequence>
-									<xsd:element name="mapping" minOccurs="1"
-										maxOccurs="unbounded">
+									<xsd:element name="mapping" minOccurs="1" maxOccurs="unbounded">
 										<xsd:complexType>
 											<xsd:sequence>
 
@@ -463,8 +440,7 @@
 							</xsd:complexType>
 						</xsd:element>
 
-						<xsd:element name="rejection" type="RejectionType"
-							minOccurs="0" maxOccurs="1" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 
 					</xsd:sequence>
 				</xsd:extension>
@@ -519,8 +495,7 @@
 							</xsd:complexType>
 						</xsd:element>
 						<xsd:element name="input" type="PipeRefType" />
-						<xsd:element name="inputSchema" minOccurs="0"
-							maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="inputSchema" minOccurs="0" maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="output" type="PipeRefType" />
 						<xsd:element name="outputSchema" type="SchemaRefType" />
 						<xsd:element name="responseSchema" type="SchemaRefType" />
@@ -548,8 +523,7 @@
 							</xsd:complexType>
 						</xsd:element>
 
-						<xsd:element name="expression" minOccurs="0"
-							maxOccurs="unbounded" type="ExpressionType" />
+						<xsd:element name="expression" minOccurs="0" maxOccurs="unbounded" type="ExpressionType" />
 
 						<xsd:element name="config" minOccurs="1" maxOccurs="unbounded">
 							<xsd:complexType>
@@ -559,11 +533,9 @@
 
 									<xsd:element name="outputSchema" type="SchemaRefType" />
 
-									<xsd:element name="outputCondition" minOccurs="0"
-										maxOccurs="1" type="ExpressionType" />
-									
-									<xsd:element name="expression" minOccurs="0"
-										maxOccurs="unbounded" type="ExpressionType" />
+									<xsd:element name="outputCondition" minOccurs="0" maxOccurs="1" type="ExpressionType" />
+
+									<xsd:element name="expression" minOccurs="0" maxOccurs="unbounded" type="ExpressionType" />
 
 								</xsd:sequence>
 
@@ -676,8 +648,7 @@
 		<xsd:complexContent>
 			<xsd:extension base="beans:identifiedType">
 				<xsd:sequence>
-					<xsd:element name="columnValue" type="ColumnValueType"
-						minOccurs="1" maxOccurs="unbounded" />
+					<xsd:element name="columnValue" type="ColumnValueType" minOccurs="1" maxOccurs="unbounded" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -688,8 +659,7 @@
 			<xsd:extension base="beans:identifiedType">
 				<xsd:sequence>
 					<xsd:choice>
-						<xsd:element name="record" type="RecordType"
-							minOccurs="1" maxOccurs="unbounded" />
+						<xsd:element name="record" type="RecordType" minOccurs="1" maxOccurs="unbounded" />
 						<xsd:element name="fileResource" type="FileType" />
 					</xsd:choice>
 				</xsd:sequence>

@@ -8,7 +8,7 @@ Pneumatic is in the "proof of concept" stage of development. It can already do v
 License
 *******
 
-Pneumatic is licensed under the `GNU Affero General Public License <http://www.gnu.org/licenses/agpl-3.0.html>`_. To acquire ETL under a different license, contact `Surging Systems <http://www.surgingsystems.com>`_.
+Pneumatic is licensed under the `GNU Affero General Public License <http://www.gnu.org/licenses/agpl-3.0.html>`_. To acquire Pneumatic under a different license, contact `Surging Systems <http://www.surgingsystems.com>`_.
 
 ********
 Concepts
@@ -19,7 +19,7 @@ Jobs and Filters
 
 Pneumatic "programs" are composed into "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
 
-The reading, writing, transforming, etc. are done in "filters". Filters are connected through pipes that carry the data from one filter to the next. This `pipes and filters <http://www.eaipatterns.com/PipesAndFilters.html>`_ architecture is widely-known. It's also conceptually simple, yet quite powerful, and is the fundamental pattern of Pneumatic jobs.
+The reading, writing, transforming, etc. are done in "filters". Filters are connected through pipes that carry the data from one filter to the next. This `pipes and filters <http://www.eaipatterns.com/PipesAndFilters.html>`_ architecture is widely-known. It's conceptually simple, yet quite powerful, and is the fundamental pattern of Pneumatic jobs.
 
 These concepts are fundamental, but the words "job" and "filter" don't often appear in Pneumatic configurations. But as we discuss Pneumatic in this guide, we will use those terms, so you still need to understand them. 
 
@@ -29,7 +29,6 @@ Running a Job
 Jobs may be run in a variety of ways. The most basic of these is the command line runner. If your job is contained in ``job.xml``, you can run it with::
 
 	java -jar pneumatic.jar com.surgingsystems.etl.XmlRunner job.xml
-
 
 If you have, for example, RESTful services provided by your job, use the Spring Boot runner::
 
@@ -54,7 +53,7 @@ From the previous example, a schema is defined using the ``etl:schema`` tag. A s
 
 If a record does not need to be validated or generated, no schema is required by the filter. An example of this is the copy filter which copies the input records to the configured outputs, unmodified.
 
-Sometimes a schema is optional. If the schema is not provided, information is derived from other configuration elements. If the schema is supplied, it can be used to validate the configuration of the filter. This requires slightly more configuration, but schema information in validated before a job starts, so supplying a schema can save time spent processing with an invalid configuration.
+Sometimes a schema is optional. If the schema is not provided, information is derived from other configuration or runtime elements (like the structure of the incoming record). If the schema is supplied, it can be used to validate the configuration of the filter. This requires slightly more configuration, but schema information in validated before a job starts, so supplying a schema can save time spent processing with an invalid configuration.
 
 Schema Types
 ------------
@@ -73,7 +72,7 @@ Pipes are conduits for data. Pipes hold data after it is processed by a filter, 
 Foundations
 ===========
 
-Pneumatic leverages `Spring <http://spring.io/>`_ projects whenever possible, and that's a lot. There are areas where Pneumatic diverges from some frameworks like `Spring Batch <http://projects.spring.io/spring-batch/>`_. In the future, it is possible that Pneumatic will be more closely aligned with this project and possibly others.
+Pneumatic leverages `Spring <http://spring.io/>`_ projects whenever possible, and that's quite often. There are areas where Pneumatic diverges from some frameworks like `Spring Batch <http://projects.spring.io/spring-batch/>`_. In the future, it is possible that Pneumatic will be more closely aligned with this project and possibly others.
 
 There are enormous benefits from leveraging Spring. Some of these are:
 
