@@ -88,6 +88,11 @@ public class ResultSetRecord implements Record {
     }
 
     @Override
+    public boolean hasColumnForName(String columnName) {
+        return columnNames.contains(columnName.toUpperCase());
+    }
+
+    @Override
     public void setColumn(Column<?> column) {
         throw new MethodNotFoundException("The method is not implemented");
     }

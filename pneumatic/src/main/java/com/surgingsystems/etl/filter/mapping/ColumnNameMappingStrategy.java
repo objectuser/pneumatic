@@ -15,7 +15,7 @@ public class ColumnNameMappingStrategy implements ColumnMappingStrategy {
     @Override
     public Column<? extends Comparable<?>> mapColumn(Record input,
             ColumnDefinition<? extends Comparable<?>> toColumnDefinition) {
-        if (input.hasColumnFor(toColumnDefinition)) {
+        if (input.hasColumnForName(toColumnDefinition.getName())) {
             return input.getColumnForName(toColumnDefinition.getName());
         } else {
             return null;

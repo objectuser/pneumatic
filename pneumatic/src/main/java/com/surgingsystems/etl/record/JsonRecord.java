@@ -8,12 +8,13 @@ import com.surgingsystems.etl.schema.ColumnDefinition;
 import com.surgingsystems.etl.schema.Schema;
 
 public class JsonRecord implements Record {
-    
-    public JsonRecord() { }
-    
+
+    public JsonRecord() {
+    }
+
     // Should this be a JsonSchema?
     public JsonRecord(Schema schema) {
-        
+
     }
 
     @Override
@@ -61,7 +62,13 @@ public class JsonRecord implements Record {
     @Override
     public void setColumn(Column<?> column) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    @Override
+    public boolean hasColumnForName(String columnName) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

@@ -87,6 +87,11 @@ public class XmlRecord implements Record {
     }
 
     @Override
+    public boolean hasColumnForName(String columnName) {
+        return nameToColumnMap.containsKey(columnName);
+    }
+
+    @Override
     public String toString() {
         return String.format("%s(%s)", getClass().getSimpleName(), definitionToColumnMap);
     }

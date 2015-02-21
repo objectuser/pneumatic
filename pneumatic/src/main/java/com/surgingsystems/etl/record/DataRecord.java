@@ -110,6 +110,11 @@ public class DataRecord implements Record {
     }
 
     @Override
+    public boolean hasColumnForName(String columnName) {
+        return nameToColumnMap.containsKey(columnName);
+    }
+
+    @Override
     public void setColumn(Column<?> column) {
         definitionToColumnMap.put(column.getColumnDefinition(), column);
         nameToColumnMap.put(column.getName(), column);

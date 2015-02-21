@@ -22,5 +22,7 @@ public interface Record extends Iterable<Column<?>> {
 
     boolean hasColumnFor(ColumnDefinition<?> columnDefinition);
 
+    boolean hasColumnForName(String columnName);
+
     void setColumn(Column<?> column);
 }
