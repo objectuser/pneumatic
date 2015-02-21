@@ -23,7 +23,7 @@ public class SortFilterBeanDefinitionParser extends AbstractSingleBeanDefinition
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         bean.addPropertyValue("name", element.getAttribute("name"));
-        
+
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
 
@@ -33,7 +33,6 @@ public class SortFilterBeanDefinitionParser extends AbstractSingleBeanDefinition
         Element comparatorElement = DomUtils.getChildElementByTagName(element, "comparator");
         ComparatorBeanDefinitionParser comparatorBeanDefinitionParser = new ComparatorBeanDefinitionParser();
         BeanDefinition comparator = comparatorBeanDefinitionParser.parse(comparatorElement, nestedParserContext);
-
         bean.addPropertyValue("comparator", comparator);
     }
 }

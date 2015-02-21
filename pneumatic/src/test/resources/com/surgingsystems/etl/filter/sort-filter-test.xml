@@ -28,4 +28,21 @@
 		</etl:comparator>
 	</etl:sort>
 
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:sort id="sortWithBean" name="Test Sort">
+		<etl:input ref="input" />
+		<etl:output ref="output" />
+		<etl:comparator>
+			<bean class="com.surgingsystems.etl.filter.SortFilterTest.TwoColumnComparator">
+				<property name="column1">
+					<etl:column name="Name" type="string" />
+				</property>
+				<property name="column2">
+					<etl:column name="Price" type="decimal" />
+				</property>
+			</bean>
+		</etl:comparator>
+	</etl:sort>
+
 </beans>
