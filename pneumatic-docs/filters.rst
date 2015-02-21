@@ -379,19 +379,56 @@ RESTful Lookup
 Sort
 ----
 
+The sort filter sorts its input records according to a comparator. The sorted output is only written after all records have been read from its input. Consider the following example::
+
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:sort id="sort" name="Test Sort">
+		<etl:input ref="input" />
+		<etl:output ref="output" />
+		<etl:comparator>
+			<etl:column name="Name" type="string" />
+		</etl:comparator>
+	</etl:sort>
+	
+The records read from the input (``ref="input"``) are held in memory by the sort filter until it is ready to sort. Then the records are sorted using the comparator. In this case, the comparator orders the records by the ``Name`` column of the input records.
+
+The sort filter also supports arbitrary comparators using Spring Beans::
+
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:sort id="sortWithBean" name="Test Sort">
+		<etl:input ref="input" />
+		<etl:output ref="output" />
+		<etl:comparator>
+			<bean class="com.surgingsystems.etl.filter.SortFilterTest.TwoColumnComparator">
+				<property name="column1">
+					<etl:column name="Name" type="string" />
+				</property>
+				<property name="column2">
+					<etl:column name="Price" type="decimal" />
+				</property>
+			</bean>
+		</etl:comparator>
+	</etl:sort>
+
+In this example, the comparator is supplied by a Java class (``bean class="..."``) that has two properties for columns.
+
+Because the sort filter stores all of its records in memory before it sorts, large data sets may use more memory than desireable. The sorting of very large data sets may be more suited to other solutions. For example, if the records are stored in a database, reading the records in sorted order might be a more appropirate solution.
+
 Transformer
 -----------
 
-The transformer filter may be the most powerful filter, but also the most complex. Also, due to the use of an expression language for most operations, the transformer is generally slower than other stages. The transformer is like an enhanced copy filter: it can have only one input, but any number of outputs. The outputs are controlled through conditions and expressions.
+The transformer filter may be the most powerful filter, but also the most complex. The transformer is like an enhanced copy filter: it supports a single input, but any number of outputs. The outputs may be controlled through conditions and expressions.
 
-The transformer uses the `Spring SpEL <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html>`_ expression language for expressions. SpEL can be compiled, so it's not a huge performance hit, but it is there.
+The transformer uses the `Spring SpEL <http://docs.spring.io/spring/docs/current/spring-framework-reference/html/expressions.html>`_ expression language for expressions. The SpEL expressions are compiled, so they should not incur a significant performance penalty.
 
 Consider the following transformer example::
 
 	<etl:pipe id="transformerOutput" />
 	<etl:pipe id="transformerCountOutput" />
 	<etl:transformer id="transformer" name="Transformer">
-		<etl:input ref="fileReaderOutput" />
+		<etl:input ref="input" />
 		<etl:variables>
 			<etl:variable name="totalCount">0</etl:variable>
 		</etl:variables>
@@ -417,11 +454,21 @@ The first two elements are two pipes (``id="transformerOutput"`` and ``id="trans
 
 Next, is the transformer is declared (``id="transformer"``).
 
-The first element of the transformer is its single input that, from its name, appears to have come from reading a file. The declaration is not shown above.::
+The first element of the transformer is its single input::
 
-<etl:input ref="fileReaderOutput" />
+	<etl:input ref="input" />
 
-Next is a set of "output configurations" (``etl:outputConfigurations``) which define the outputs of the transformer. Each configuration (``etl:config``) may have a schema, 
+Next is a set of "output configurations" which define the outputs of the transformer. Each configuration (``etl:config``) has two attributes. First is the ``outputName``, which defines a variable for the output pipe used by the configuration. This variable may be used in expressions. Second is the ``recordName``, which defines a variable for the record that will be output for that configuration. In this example, the ``outputName`` is not being used, but the ``recordName`` is used in each configuration::
+
+	<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
+	
+This expression sets the value of the ``Count`` column on the ``outputRecord`` to twice the value of the ``Count`` column on the ``inputRecord``. The ``inputRecord`` is an implicit variable available to all expressions, capturing the current input record of the filter. 
+
+Another variable is the ``input`` variable: it represents the input pipe for the filter and can likewise be used in expressions. One use for it might be to control when a record is written to an output::
+
+	<etl:outputCondition>#input.complete</etl:outputCondition>
+	
+This condition will only be true when all records have been read from input. Therefore, only when the input is complete will a record be written to that output.
 
 XML File Reader
 ------------------

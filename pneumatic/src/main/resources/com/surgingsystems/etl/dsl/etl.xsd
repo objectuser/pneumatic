@@ -455,13 +455,7 @@
 					<xsd:sequence>
 						<xsd:element name="input" type="PipeRefType" />
 						<xsd:element name="output" type="PipeRefType" />
-						<xsd:element name="comparator">
-							<xsd:complexType>
-								<xsd:choice>
-									<xsd:element name="column" type="ColumnType" />
-								</xsd:choice>
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="comparator" type="ComparatorType" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>
