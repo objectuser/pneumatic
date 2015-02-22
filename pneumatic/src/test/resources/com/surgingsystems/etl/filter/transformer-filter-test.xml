@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="inputSchema" name="Input Schema">
+		<etl:column name="Name" type="string" />
+		<etl:column name="Count" type="integer" />
+		<etl:column name="Price" type="decimal" />
+	</etl:schema>
+
+	<etl:schema id="countSchema" name="Count Schema">
+		<etl:column name="Count" type="integer" />
+	</etl:schema>
+
+	<etl:pipe id="input" />
+
+	<etl:pipe id="output1" />
+	<etl:pipe id="output2" />
+	<etl:pipe id="output3" />
+	<etl:transformer id="countingTransformer" name="Counting Transformer">
+		<etl:input ref="input" />
+		<etl:variable name="totalCount">0</etl:variable>
+		<etl:expression>#totalCount = #totalCount + 1</etl:expression>
+		<etl:config outputName="transformerOutput" recordName="outputRecord">
+			<etl:output ref="output1" />
+			<etl:outputSchema ref="inputSchema" />
+			<etl:expression>#outputRecord.Name = #inputRecord.Name</etl:expression>
+			<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
+			<etl:expression>#outputRecord.Price = #inputRecord.Price</etl:expression>
+		</etl:config>
+		<etl:config outputName="transformerCountOutput" recordName="countRecord">
+			<etl:output ref="output2" />
+			<etl:outputSchema ref="countSchema" />
+			<etl:outputCondition>#input.complete</etl:outputCondition>
+			<etl:expression>#countRecord.Count = #totalCount</etl:expression>
+		</etl:config>
+	</etl:transformer>
+	
+	<etl:transformer id="validatingTransformer" name="Validating Transformer">
+		<etl:input ref="input" />
+		<etl:variable name="lastName">''</etl:variable>
+		<etl:variable name="orderingProblem">false</etl:variable>
+		<etl:variable name="orderingProblemCount">0</etl:variable>
+		<etl:expression>#orderingProblem = #lastName > #inputRecord.Name</etl:expression>
+		<etl:expression>#orderingProblemCount = #orderingProblemCount + (#orderingProblem ? 1 : 0)</etl:expression>
+		<etl:expression>#lastName = #inputRecord.Name</etl:expression>
+		<etl:config outputName="transformerOutput" recordName="outputRecord">
+			<etl:output ref="output1" />
+			<etl:outputSchema ref="inputSchema" />
+			<etl:outputCondition>!#orderingProblem</etl:outputCondition>
+			<etl:expression>#outputRecord.Name = #inputRecord.Name</etl:expression>
+			<etl:expression>#outputRecord.Count = #inputRecord.Count</etl:expression>
+			<etl:expression>#outputRecord.Price = #inputRecord.Price</etl:expression>
+		</etl:config>
+		<etl:config outputName="transformerOrderOutput" recordName="invalidRecord">
+			<etl:output ref="output2" />
+			<etl:outputSchema ref="inputSchema" />
+			<etl:outputCondition>#orderingProblem</etl:outputCondition>
+			<etl:expression>#invalidRecord.Name = #inputRecord.Name</etl:expression>
+			<etl:expression>#invalidRecord.Count = #inputRecord.Count</etl:expression>
+			<etl:expression>#invalidRecord.Price = #inputRecord.Price</etl:expression>
+		</etl:config>
+		<etl:config outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
+			<etl:output ref="output3" />
+			<etl:outputSchema ref="countSchema" />
+			<etl:outputCondition>#input.complete</etl:outputCondition>
+			<etl:expression>#invalidCountRecord.Count = #orderingProblemCount</etl:expression>
+		</etl:config>
+	</etl:transformer>
+	
+</beans>
