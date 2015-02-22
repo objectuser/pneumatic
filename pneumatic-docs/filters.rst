@@ -15,9 +15,62 @@ This section provides a reference for the available filter types.
 Aggregator
 ----------
 
-The aggregator filter has a single input pipe. It has two output pipes: the normal output with the unchanged input record and the aggregator output to which the aggregator's function is applied. The normal output is not required for an aggregator: rather it is a convenience to the developer. The aggregator output is, however, required, as that represents the purpose of the aggregator.
+The aggregator filter has a single input pipe. It also has a single output pipe: the aggregator output to which the aggregator's function is applied.
 
-Records are written to the normal output as each record is processed. Records are written to the aggregator output only after all input records have been processed.
+A single record is written to the after all input records have been processed from the aggregator's input.
+
+Consider the following example::
+
+	<etl:pipe id="input" />
+	<etl:pipe id="output" />
+	<etl:pipe id="aggregatorOutput" />
+	<etl:aggregator id="priceAggregator" name="Price Aggregator">
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="aggregatorOutput" />
+		<etl:outputSchema ref="aggregatorSchema" />
+		<etl:function>
+			<etl:sum>
+				<etl:in>
+					<etl:column name="Price" type="decimal" />
+				</etl:in>
+				<etl:out>
+					<etl:column name="Total Price" type="decimal" />
+				</etl:out>
+			</etl:sum>
+		</etl:function>
+	</etl:aggregator>
+
+The ``etl:function`` element is the heart of the aggregator. In this case, we have a "sum" function (``etl:sum``). The sum function sums the input selected by the ``etl:in`` column and writes it to the output in the column defined in ``etl:out``.
+
+The available functions are:
+
+* average
+* count
+* sum
+
+That's not very many functions, but the aggregator may be extended with any function you like using a Spring Bean::
+
+	<etl:aggregator id="aggregator2" name="Test Aggregator 2">
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:output ref="aggregatorOutput" />
+		<etl:outputSchema ref="aggregatorSchema" />
+		<etl:function>
+			<bean class="com.surgingsystems.etl.filter.function.SumFunction">
+				<property name="inputColumnDefinition">
+					<etl:column name="Price" type="decimal" />
+				</property>
+				<property name="outputColumnDefinition">
+					<etl:column name="Price" type="decimal" />
+				</property>
+			</bean>
+		</etl:function>
+	</etl:aggregator>
+	
+In this case, we are referencing the underlying Java class (``SumFunction``). Any function that implements the internal Function interface may be used. That interface is::
+
+	com.surgingsystems.etl.filter.function.Function
 
 Copy
 ----
@@ -425,50 +478,78 @@ The transformer uses the `Spring SpEL <http://docs.spring.io/spring/docs/current
 
 Consider the following transformer example::
 
-	<etl:pipe id="transformerOutput" />
-	<etl:pipe id="transformerCountOutput" />
-	<etl:transformer id="transformer" name="Transformer">
+	<etl:pipe id="input" />
+	<etl:pipe id="output1" />
+	<etl:pipe id="output2" />
+	<etl:pipe id="output3" />
+
+	<etl:transformer id="validatingTransformer" name="Validating Transformer">
 		<etl:input ref="input" />
-		<etl:variables>
-			<etl:variable name="totalCount">0</etl:variable>
-		</etl:variables>
-		<etl:expressions>
-			<etl:expression>#totalCount = #totalCount + 1</etl:expression>
-		</etl:expressions>
+		<etl:variable name="lastName">''</etl:variable>
+		<etl:variable name="orderingProblem">false</etl:variable>
+		<etl:variable name="orderingProblemCount">0</etl:variable>
+		<etl:expression>#orderingProblem = #lastName > #inputRecord.Name</etl:expression>
+		<etl:expression>#orderingProblemCount = #orderingProblemCount + (#orderingProblem ? 1 : 0)</etl:expression>
+		<etl:expression>#lastName = #inputRecord.Name</etl:expression>
 		<etl:config outputName="transformerOutput" recordName="outputRecord">
-			<etl:output ref="transformerOutput" />
-			<etl:schema ref="inputSchema" />
-			<etl:expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</etl:expression>
-			<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
-			<etl:expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</etl:expression>
+			<etl:output ref="output1" />
+			<etl:outputSchema ref="inputSchema" />
+			<etl:outputCondition>!#orderingProblem</etl:outputCondition>
+			<etl:expression>#outputRecord.Name = #inputRecord.Name</etl:expression>
+			<etl:expression>#outputRecord.Count = #inputRecord.Count</etl:expression>
+			<etl:expression>#outputRecord.Price = #inputRecord.Price</etl:expression>
 		</etl:config>
-		<etl:config outputName="transformerCountOutput" recordName="countRecord">
-			<etl:output ref="transformerCountOutput" />
-			<etl:schema ref="countSchema" />
+		<etl:config outputName="transformerOrderOutput" recordName="invalidRecord">
+			<etl:output ref="output2" />
+			<etl:outputSchema ref="inputSchema" />
+			<etl:outputCondition>#orderingProblem</etl:outputCondition>
+			<etl:expression>#invalidRecord.Name = #inputRecord.Name</etl:expression>
+			<etl:expression>#invalidRecord.Count = #inputRecord.Count</etl:expression>
+			<etl:expression>#invalidRecord.Price = #inputRecord.Price</etl:expression>
+		</etl:config>
+		<etl:config outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
+			<etl:output ref="output3" />
+			<etl:outputSchema ref="countSchema" />
 			<etl:outputCondition>#input.complete</etl:outputCondition>
-			<etl:expression>#countRecord.Count = #totalCount</etl:expression>
+			<etl:expression>#invalidCountRecord.Count = #orderingProblemCount</etl:expression>
 		</etl:config>
 	</etl:transformer>
 
-The first two elements are two pipes (``id="transformerOutput"`` and ``id="transformerCountOutput"``) that will be outputs from the transformer.
+The first elements are pipes: one input (``id="input"``) and some outputs (``id="output1"``, ``id="output2"``, ``id="output3"``) that will be outputs from the transformer.
 
-Next, is the transformer is declared (``id="transformer"``).
+Next, the transformer is declared (``id="transformer"``).
 
 The first element of the transformer is its single input::
 
 	<etl:input ref="input" />
 
-Next is a set of "output configurations" which define the outputs of the transformer. Each configuration (``etl:config``) has two attributes. First is the ``outputName``, which defines a variable for the output pipe used by the configuration. This variable may be used in expressions. Second is the ``recordName``, which defines a variable for the record that will be output for that configuration. In this example, the ``outputName`` is not being used, but the ``recordName`` is used in each configuration::
+Next is a set of variables. The variables may be intialized to any constant value. The initialization of the variables occurs before any records have been processed. The values of previously declared variables or input records are not available for initializiation. The variables may be used in the output configuration for both output conditions and expressions.
 
-	<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
+The variables are followed by a set of expressions. The expressions are executed for each input record processed by the filter. The following expression sets the ``orderingProblem`` boolean value to true or false, depending on if the value of ``lastName`` is alphanumerically greater than the value of the ``Name`` column on the current input record::
+
+	<etl:expression>#orderingProblem = #lastName > #inputRecord.Name</etl:expression>
+
+This means that if, for example, ``lastName`` is "Mojo" and the value of ``inputRecord.Name`` is "Bronson", ``lastName`` will be set to "true" because "M" comes after "B" in the alphabet.
+
+There are two forms for accessing a column on a record. One is using the "dot" notation as above: ``inputRecord.Name``. The name of the record is before the dot and the column name is after the dot. An alternative is to use brackets: "[]". This is expecially useful if the column name contains spaces. In the following example, the column name is "Column Name with Spaces"::
+
+	<etl:expression>#inputRecord["Column Name with Spaces"] = "A useful value"</etl:expression>
+
+Next in the example is a set of "output configurations". These define the outputs of the transformer. Each configuration (``etl:config``) has two attributes. First is the ``outputName``, which defines a variable for the output pipe used by the configuration. This variable may be used in expressions. Second is the ``recordName``, which defines a variable for the record that will be output for that configuration. In this example, the ``outputName`` is not being used, but the ``recordName`` is used in each configuration::
+
+	<etl:expression>#outputRecord.Count = #inputRecord.Count</etl:expression>
 	
-This expression sets the value of the ``Count`` column on the ``outputRecord`` to twice the value of the ``Count`` column on the ``inputRecord``. The ``inputRecord`` is an implicit variable available to all expressions, capturing the current input record of the filter. 
+This expression sets the value of the ``Count`` column on the ``outputRecord`` to twice the value of the ``Count`` column on the ``inputRecord``. The ``inputRecord`` is an implicit variable available to all expressions, capturing the current input record of the filter.
 
-Another variable is the ``input`` variable: it represents the input pipe for the filter and can likewise be used in expressions. One use for it might be to control when a record is written to an output::
+The output condition (``etl:outputCondition``) element controls the output of a configuration. If the value of the expression is true, the record is written to the output. Otherwise, no record is written. In this example, the ``transformerOutput`` and ``transformerOrderOutput`` are written in opposite conditions: if there is no ordering problem, a record is written to the former, otherwise a record is written to the latter.
+
+Another variable is the ``input`` variable: it represents the input pipe for the filter and can likewise be used in expressions. In this example, the third output configuration (``outputName="transformerOrderCountOutput"``) has a condition on the input being complete::
 
 	<etl:outputCondition>#input.complete</etl:outputCondition>
 	
-This condition will only be true when all records have been read from input. Therefore, only when the input is complete will a record be written to that output.
+The count of out of order records is written to this output when all records have been read from the input. In this way a transformer may act as an aggregator filter.
+
+While the transformer is very powerful, it can also be very complex. Designs using simpler filters are easier to understand. Consider the transformer to be a special purpose filter when no other filter will do.
 
 XML File Reader
 ------------------

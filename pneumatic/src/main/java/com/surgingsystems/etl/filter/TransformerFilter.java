@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.SpelCompilerMode;
@@ -28,6 +30,8 @@ import com.surgingsystems.etl.schema.Schema;
  * Transformers use SpEL expressions to create a programmable filter.
  */
 public class TransformerFilter extends SingleInputFilter implements InputFilter {
+
+    private static Logger logger = LogManager.getFormatterLogger(TransformerFilter.class);
 
     private List<TransformerFilterOutputConfiguration> outputConfigurations = new ArrayList<TransformerFilterOutputConfiguration>();
 
@@ -49,6 +53,7 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
     public void validate() {
         Assert.notNull(getName(), "The name is required");
         Assert.notNull(getInput(), "The input pipe is required");
+        Assert.isTrue(getOutputConfigurations().size() > 0, "The input pipe is required");
     }
 
     @PostConstruct
@@ -77,13 +82,17 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
         }
 
         for (Expression expression : parsedExpressions) {
-            expression.getValue(evaluationContext);
+            Object value = expression.getValue(evaluationContext);
+            logger.trace("Expression (%s) value: <%s>", expression.getExpressionString(), value == null ? "null"
+                    : value.toString());
         }
 
         for (Map.Entry<TransformerFilterOutputConfiguration, Record> entry : outputRecords.entrySet()) {
             TransformerFilterOutputConfiguration config = entry.getKey();
             Expression outputConditionExpression = outputConditions.get(entry.getKey());
             Boolean outputCondition = (Boolean) outputConditionExpression.getValue(evaluationContext);
+            logger.trace("Condition (%s) value: <%s>", outputConditionExpression.getExpressionString(),
+                    outputCondition.toString());
             if (outputCondition) {
                 Pipe pipe = config.getPipe();
                 Record record = entry.getValue();
@@ -146,6 +155,8 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
                 value = expressionParser.parseExpression(initializationExpression).getValue(evaluationContext);
             }
             evaluationContext.setVariable(variable.getKey(), value);
+            logger.trace("Variable (%s) initialized to: <%s>", variable.getKey(),
+                    value == null ? "null" : value.toString());
         }
     }
 

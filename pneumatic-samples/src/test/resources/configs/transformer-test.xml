@@ -27,7 +27,6 @@
 		<etl:outputSchema ref="inputSchema" />
 	</etl:fileReader>
 
-	<!--  -->
 	<etl:pipe id="transformerOutput" />
 	<etl:pipe id="transformerCountOutput" />
 	<etl:transformer id="transformer" name="Transformer">
