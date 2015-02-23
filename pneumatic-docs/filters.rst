@@ -62,7 +62,7 @@ That's not very many functions, but the aggregator may be extended with any func
 					<etl:column name="Price" type="decimal" />
 				</property>
 				<property name="outputColumnDefinition">
-					<etl:column name="Price" type="decimal" />
+					<etl:column name="Total Price" type="decimal" />
 				</property>
 			</bean>
 		</etl:function>
