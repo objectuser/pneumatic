@@ -1,6 +1,7 @@
 package com.surgingsystems.etl.record;
 
 import java.util.List;
+import java.util.Map;
 
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.ColumnDefinition;
@@ -25,4 +26,9 @@ public interface Record extends Iterable<Column<?>> {
     boolean hasColumnForName(String columnName);
 
     void setColumn(Column<?> column);
+
+    /**
+     * Useful for mapping a record to JSON.
+     */
+    Map<String, String> toMap();
 }

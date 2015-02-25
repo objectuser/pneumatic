@@ -1,5 +1,7 @@
 package com.surgingsystems.etl.schema;
 
+import com.surgingsystems.etl.utility.Equality;
+
 public class ColumnDefinition<T extends Comparable<T>> {
 
     private String name;
@@ -81,11 +83,10 @@ public class ColumnDefinition<T extends Comparable<T>> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || hashCode() != obj.hashCode() || !getClass().equals(obj.getClass())) {
+        ColumnDefinition<T> other = Equality.applicable(this, obj);
+        if (other == null) {
             return false;
         } else {
-            @SuppressWarnings("unchecked")
-            ColumnDefinition<T> other = (ColumnDefinition<T>) obj;
             return getName().equals(other.getName()) && getColumnType().equals(other.getColumnType());
         }
     }

@@ -1,54 +1,43 @@
 package com.surgingsystems.etl.filter;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.PostConstruct;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.Assert;
+
 import com.surgingsystems.etl.pipe.Pipe;
-import com.surgingsystems.etl.record.DataRecord;
+import com.surgingsystems.etl.record.JsonRecord;
 import com.surgingsystems.etl.record.Record;
-import com.surgingsystems.etl.schema.Column;
-import com.surgingsystems.etl.schema.ColumnDefinition;
 import com.surgingsystems.etl.schema.Schema;
 
 public class RestfulListenerFilter implements Filter {
 
-    private String name = "RestfulFilter";
+    private static Logger logger = LogManager.getFormatterLogger(RestfulListenerFilter.class);
+
+    private String name;
 
     private String path;
 
     private Pipe output;
 
-    private Schema schema;
+    private Schema outputSchema;
 
-    public String filter(String path, String json) {
+    @PostConstruct
+    public void validate() {
+        Assert.notNull(getPath(), "The path is required");
+        Assert.notNull(getOutput(), "The output is required");
+        Assert.notNull(getOutputSchema(), "The output schema is required");
+    }
 
+    public void filter(String path, String json) {
         try {
-            Map<String, String> map = new HashMap<String, String>();
-            ObjectMapper mapper = new ObjectMapper();
-
-            map = mapper.readValue(json, new TypeReference<HashMap<String, String>>() {
-            });
-
-            Record record = createRecord(map);
+            logger.trace("Filter (%s) recevied message", getName());
+            Record record = JsonRecord.create(outputSchema, json);
             output.put(record);
-
         } catch (Exception exception) {
             throw new RuntimeException("Unable to handle request");
         }
-
-        return "";
-    }
-
-    private Record createRecord(Map<String, String> input) {
-        DataRecord xmlRecord = new DataRecord();
-        for (ColumnDefinition<?> columnDefinition : schema) {
-            String stringValue = input.get(columnDefinition.getName());
-            Column<?> column = columnDefinition.applyToValue(stringValue);
-            xmlRecord.addColumn(column);
-        }
-        return xmlRecord;
     }
 
     @Override
@@ -77,11 +66,11 @@ public class RestfulListenerFilter implements Filter {
         this.output = output;
     }
 
-    public Schema getSchema() {
-        return schema;
+    public Schema getOutputSchema() {
+        return outputSchema;
     }
 
-    public void setSchema(Schema schema) {
-        this.schema = schema;
+    public void setOutputSchema(Schema schema) {
+        this.outputSchema = schema;
     }
 }

@@ -423,8 +423,12 @@ The ``etl:mappings`` element allows for explicit mappings between input and outp
 RESTful Consumer
 ----------------
 
-RESTful Input
--------------
+RESTful Listener
+----------------
+
+(Should this be called the "RESTful Reader" to be more consistent with other filters? Something else? I'd like your feedback.)
+
+The RESTful listener is a filter that accepts RESTful requests. The requests must use the POST HTTP method.
 
 RESTful Lookup
 --------------

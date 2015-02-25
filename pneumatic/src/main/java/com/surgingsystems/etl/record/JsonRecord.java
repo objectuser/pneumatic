@@ -1,74 +1,56 @@
 package com.surgingsystems.etl.record;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.ColumnDefinition;
 import com.surgingsystems.etl.schema.Schema;
 
-public class JsonRecord implements Record {
+public class JsonRecord extends RecordWithColumnDefaults {
 
     public JsonRecord() {
     }
 
-    // Should this be a JsonSchema?
-    public JsonRecord(Schema schema) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public JsonRecord(Schema schema, Object... values) {
+        if (schema.getColumnDefinitions().size() != values.length) {
+            throw new IllegalArgumentException(String.format(
+                    "Record has %d columns, %d values provided - there must be one value for each column definition",
+                    schema.getColumnDefinitions().size(), values.length));
+        }
 
+        int i = 0;
+        for (ColumnDefinition<?> columnDefinition : schema) {
+            Comparable<?> value = null;
+            if (values.length > i) {
+                value = (Comparable<?>) values[i++];
+            }
+            addColumn(new Column(columnDefinition, value));
+        }
     }
 
-    @Override
-    public <T extends Comparable<T>> T getValueFor(ColumnDefinition<T> columnDefinition) {
-        // TODO Auto-generated method stub
-        return null;
+    public static JsonRecord create(Schema schema, String json) throws Exception {
+
+        Map<String, String> map = new HashMap<String, String>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        map = mapper.readValue(json, new TypeReference<HashMap<String, String>>() {
+        });
+
+        return mapRecord(schema, map);
     }
 
-    @Override
-    public <T extends Comparable<T>> Column<T> getColumnFor(ColumnDefinition<T> columnDefinition) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <T extends Comparable<T>> Column<T> getColumnForName(String columnName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<Column<?>> getColumns() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasColumnFor(ColumnDefinition<?> columnDefinition) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public <T extends Comparable<T>> T getValueForName(String columnName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Iterator<Column<?>> iterator() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setColumn(Column<?> column) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean hasColumnForName(String columnName) {
-        // TODO Auto-generated method stub
-        return false;
+    private static JsonRecord mapRecord(Schema schema, Map<String, String> input) {
+        JsonRecord record = new JsonRecord();
+        for (ColumnDefinition<?> columnDefinition : schema) {
+            String stringValue = input.get(columnDefinition.getName());
+            Column<?> column = columnDefinition.applyToValue(stringValue);
+            record.setColumn(column);
+        }
+        return record;
     }
 
 }

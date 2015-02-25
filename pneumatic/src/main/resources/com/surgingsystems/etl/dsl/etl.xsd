@@ -462,24 +462,26 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="restfulListener">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="path">
+							<xsd:complexType>
+								<xsd:attribute name="value" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="output" type="PipeRefType" />
+						<xsd:element name="outputSchema" type="SchemaRefType" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="restfulLookup">
 		<xsd:complexType>
-			<xsd:annotation>
-				<xsd:documentation>
-					<![CDATA[
-					 Calculates summary information based on the input. Use one of the supplied
- function implementations or write your own. Outputs flow after the
-  input has been completed. Aggregators have the following features:
-  <ul>
-  <li>A single input.</li>
-  <li>An output that is a flow through of the input, or logically null.</li>
-  <li>An aggregator output that contains the result of the aggregator function
-  for all input.</li>
-  <li>A function for the aggregation calculation.</li>
-  </ul>
-					]]>
-				</xsd:documentation>
-			</xsd:annotation>
 			<xsd:complexContent>
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
