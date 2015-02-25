@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.el.MethodNotFoundException;
 
@@ -109,5 +110,10 @@ public class ResultSetRecord implements Record {
         protected boolean isValueCompatible(String value) {
             return false;
         }
+    }
+
+    @Override
+    public Map<String, String> toMap() {
+        throw new MethodNotFoundException("The method is not implemented");
     }
 }
