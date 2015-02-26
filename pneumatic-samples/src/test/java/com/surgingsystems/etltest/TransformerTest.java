@@ -8,7 +8,7 @@ public class TransformerTest {
 
     @Test
     public void write() throws Exception {
-        XmlRunner.main(new String[] { "configs/performance/transformer-test.xml" });
+        XmlRunner.main(new String[] { "configs/performance/transformer-job.xml" });
     }
 
 }

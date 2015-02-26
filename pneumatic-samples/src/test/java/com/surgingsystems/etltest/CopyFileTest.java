@@ -8,6 +8,6 @@ public class CopyFileTest {
     
     @Test
     public void write() throws Exception {
-	XmlRunner.main(new String[] { "configs/performance/copy-test.xml" });
+	XmlRunner.main(new String[] { "configs/performance/copy-job.xml" });
     }
 }
