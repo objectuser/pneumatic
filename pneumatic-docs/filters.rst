@@ -454,7 +454,7 @@ RESTful Lookup
 The RESTful lookup is a filter that allows a Pneumatic to perform a request against a resource and use the result of the request for subsequent processing. Consider the following example::
 
 	<etl:restfulLookup id="restfulLookup" name="Price Lookup">
-		<etl:requestUrl value="http://localhost:8080/mtb/{name}/price" />
+		<etl:http method="GET" url="http://localhost:8080/mtb/{name}/price" />
 		<etl:input ref="input" />
 		<etl:inputSchema ref="inputSchema" />
 		<etl:output ref="output" />
@@ -464,7 +464,7 @@ The RESTful lookup is a filter that allows a Pneumatic to perform a request agai
 	
 In this example, the filter might be adding a price to the records it writes to its output.
 
-The RESTful lookup uses an HTTP GET to perform the request.
+In this case, RESTful lookup uses an HTTP GET to perform the request (``method="GET"``).
 
 The request URL may use values from the current record. Consider the following as the ``inputSchema``::
 
@@ -496,6 +496,22 @@ Note that the data type of ``price`` in the response schema is ``string``, while
 RESTful Writer
 --------------
 
+The RESTful writer is a filter for submitting requests to a RESTful service. Consider the following example::
+
+	<etl:pipe id="input" />
+	<etl:pipe id="rejectionOutput" />
+	<etl:restfulWriter id="restfulWriter" name="Restful Writer">
+		<etl:http method="PUT" url="http://localhost:8080/mtb/{name}/price" />
+		<etl:input ref="input" />
+		<etl:inputSchema ref="inputSchema" />
+		<etl:rejection>
+			<etl:output ref="rejectionOutput" />
+		</etl:rejection>
+	</etl:restfulWriter>
+
+The HTTP method used to submit the request is configurable (``method="PUT"``). The payload of the request is a JSON message based on the input schema (``ref="inputSchema"``).
+
+The URL may also contain values from the current input record, as in the RESTful lookup filter.
 
 Sort
 ----

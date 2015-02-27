@@ -7,16 +7,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.filter.elements.RejectionBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
-import com.surgingsystems.etl.filter.RestfulLookupFilter;
+import com.surgingsystems.etl.filter.RestfulWriterFilter;
 
-public class RestfulLookupBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+public class RestfulWriterBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
     private CompositeBeanDefinitionParser compositeBeanDefinitionParser = new CompositeBeanDefinitionParser();
 
     @Override
     protected Class<?> getBeanClass(Element element) {
-        return RestfulLookupFilter.class;
+        return RestfulWriterFilter.class;
     }
 
     @Override
@@ -25,12 +26,14 @@ public class RestfulLookupBeanDefinitionParser extends AbstractSingleBeanDefinit
 
         Element httpElement = DomUtils.getChildElementByTagName(element, "http");
         bean.addPropertyValue("httpMethod", HttpMethod.valueOf(httpElement.getAttribute("method")));
-        bean.addPropertyValue("requestUrl", httpElement.getAttribute("url"));
+        bean.addPropertyValue("url", httpElement.getAttribute("url"));
 
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "input", "input");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "inputSchema", "inputSchema");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
-        compositeBeanDefinitionParser.parse(element, parserContext, bean, "responseSchema", "responseSchema");
+
+        ParserContext nestedParserContext = new ParserContext(parserContext.getReaderContext(),
+                parserContext.getDelegate(), bean.getBeanDefinition());
+
+        RejectionBeanDefinitionParser.parseRejection(element, nestedParserContext, bean, "rejectRecordStrategy");
     }
 }

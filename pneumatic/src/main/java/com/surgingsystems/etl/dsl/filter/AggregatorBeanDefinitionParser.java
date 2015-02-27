@@ -9,8 +9,8 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+import com.surgingsystems.etl.dsl.filter.elements.RejectionBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.function.FunctionParser;
-import com.surgingsystems.etl.dsl.schema.RejectionBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.springbean.CompositeBeanDefinitionParser;
 import com.surgingsystems.etl.filter.AggregatorFilter;
 
