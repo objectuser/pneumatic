@@ -64,9 +64,7 @@
 			<etl:output ref="output2" />
 			<etl:outputSchema ref="inputSchema" />
 			<etl:outputCondition>#orderingProblem</etl:outputCondition>
-			<etl:expression>#invalidRecord.Name = #inputRecord.Name</etl:expression>
-			<etl:expression>#invalidRecord.Count = #inputRecord.Count</etl:expression>
-			<etl:expression>#invalidRecord.Price = #inputRecord.Price</etl:expression>
+			<etl:expression>#invalidRecord = #inputRecord</etl:expression>
 		</etl:config>
 		<etl:config outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
 			<etl:output ref="output3" />
