@@ -16,26 +16,11 @@
 		<etl:column name="cost" type="decimal" />
 	</etl:schema>
 
-	<etl:schema id="outputSchema" name="Input Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="count" type="integer" />
-		<etl:column name="cost" type="decimal" />
-		<etl:column name="price" type="string" />
-	</etl:schema>
-
-	<etl:schema id="responseSchema" name="Criteria Schema">
-		<etl:column name="price" type="string" />
-	</etl:schema>
-
 	<etl:pipe id="input" />
-	<etl:pipe id="output" />
-	<etl:restfulLookup id="restfulLookup" name="Test Restful Lookup">
-		<etl:http method="GET" url="http://localhost:8080/mtb/{name}/price" />
+	<etl:restfulWriter id="restfulWriter" name="Test Restful Writer">
+		<etl:http method="PUT" url="http://localhost:8080/mtb/{name}/price" />
 		<etl:input ref="input" />
 		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="output" />
-		<etl:outputSchema ref="outputSchema" />
-		<etl:responseSchema ref="responseSchema" />
-	</etl:restfulLookup>
+	</etl:restfulWriter>
 
 </beans>

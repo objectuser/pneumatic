@@ -12,6 +12,10 @@ import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestOperations;
@@ -58,6 +62,8 @@ public class RestfulLookupFilter extends SingleInputFilter {
     private RestOperations restOperations;
 
     private String requestUrl;
+
+    private HttpMethod httpMethod;
 
     private Schema inputSchema;
 
@@ -132,7 +138,11 @@ public class RestfulLookupFilter extends SingleInputFilter {
                 requestValues[i] = stringColumnType.convert(column.getValue());
             }
 
-            ResponseEntity<String> response = restOperations.getForEntity(requestUrl, String.class, requestValues);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+            ResponseEntity<String> response = restOperations.exchange(requestUrl, httpMethod, requestEntity,
+                    String.class, requestValues);
 
             if (logger.isTraceEnabled()) {
                 logger.trace("JSON response: " + response.getBody());
@@ -153,17 +163,20 @@ public class RestfulLookupFilter extends SingleInputFilter {
         output.closedForInput();
     }
 
-    @PostConstruct
-    public void setup() {
-
-    }
-
     public String getRequestUrl() {
         return requestUrl;
     }
 
     public void setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
+    }
+
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
     }
 
     public Schema getInputSchema() {

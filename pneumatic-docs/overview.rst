@@ -26,17 +26,29 @@ These concepts are fundamental, but the words "job" and "filter" don't often app
 Running a Job
 -------------
 
-Jobs may be run in a variety of ways. The most basic of these is the command line runner. If your job is contained in ``job.xml``, you can run it with::
+Jobs may be run in a variety of ways. The easiest way to run a job is using the "Pneumatic Shell" (``pn.sh`` on most systems or ``pn.cmd`` on Windows). The file ``pn.sh`` is in the ``pneumatic-samples`` project on [GitHub](https://github.com/objectuser/pneumatic).
 
-	java -jar pneumatic.jar com.surgingsystems.etl.XmlRunner job.xml
+If your job is contained in ``job.xml``, run it like this::
+
+	sh pn.sh run job.xml
 
 If you have, for example, RESTful services provided by your job, use the Spring Boot runner::
 
-	java -jar pneumatic.jar com.surgingsystems.etl.BootRunner job.xml
+	sh pn.sh boot job.xml
 
 The boot runner will stay resident until Spring Boot shuts down.
 
 From these examples, it's obvious that Pneumatic requires Java. Pneumataic is currently compiled to Java 8.
+
+Using the script is easy, but it does quite a few things. The script uses [Gradle](http://gradle.org/) to:
+
+#. download the latest version of Gradle
+#. compile Pneumatic.IO
+#. run the job
+
+The first two are only done if necessary: if Gradle has already been downloaded, or Pnematic is already built, it won't do these things again.
+
+Gradle and Pnematic.IO are both dependent on a Java runtime on your system. Pneumatic is currently compiled to Java 8.
 
 Schemas
 =======
@@ -62,7 +74,7 @@ There are three types of schemas:
 
 * Tabular schemas - (``etl:schema``) represent traditional (i.e., database like) schemas with fixed columns and data types.
 * XML schemas (experimental) - (``etl:xmlSchema``) represent schemas for XML documents based on the XML Schema Definition. XML schemas work in some cases but are experimental at this point.
-* JSON schemas (planned but not implemented) - (``etl:jsonSchema``) represent schemas for JSON documents based on http://json-schema.org/.
+* JSON schemas (experimental) - (``etl:jsonSchema``) represent schemas for JSON documents based on http://json-schema.org/.
 
 Pipes
 =====

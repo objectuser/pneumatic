@@ -36,6 +36,19 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="HttpMethodDataType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="GET" />
+			<xsd:enumeration value="POST" />
+			<xsd:enumeration value="HEAD" />
+			<xsd:enumeration value="OPTIONS" />
+			<xsd:enumeration value="PUT" />
+			<xsd:enumeration value="PATCH" />
+			<xsd:enumeration value="DELETE" />
+			<xsd:enumeration value="TRACE" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
 	<xsd:simpleType name="LogLevelType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="OFF" />
@@ -103,6 +116,14 @@
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="type" type="ColumnDataType" use="required" />
 		<xsd:attribute name="nullable" type="xsd:boolean" use="optional" />
+	</xsd:complexType>
+
+	<xsd:complexType name="HttpRequestType">
+		<xsd:annotation>
+			<xsd:documentation>An http request</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="method" type="HttpMethodDataType" use="required" />
+		<xsd:attribute name="url" type="xsd:string" use="required" />
 	</xsd:complexType>
 
 	<xsd:simpleType name="ColumnRejectionRuleType">
@@ -485,16 +506,27 @@
 			<xsd:complexContent>
 				<xsd:extension base="baseFilter">
 					<xsd:sequence>
-						<xsd:element name="requestUrl">
-							<xsd:complexType>
-								<xsd:attribute name="value" type="xsd:string" />
-							</xsd:complexType>
-						</xsd:element>
+						<xsd:element name="http" type="HttpRequestType" />
 						<xsd:element name="input" type="PipeRefType" />
 						<xsd:element name="inputSchema" minOccurs="0" maxOccurs="1" type="SchemaRefType" />
 						<xsd:element name="output" type="PipeRefType" />
 						<xsd:element name="outputSchema" type="SchemaRefType" />
 						<xsd:element name="responseSchema" type="SchemaRefType" />
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="restfulWriter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="http" type="HttpRequestType" />
+						<xsd:element name="input" type="PipeRefType" />
+						<xsd:element name="inputSchema" minOccurs="0" maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>

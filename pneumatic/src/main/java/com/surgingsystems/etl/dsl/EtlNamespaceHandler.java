@@ -14,6 +14,7 @@ import com.surgingsystems.etl.dsl.filter.JoinBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.MapperFilterBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.RestfulListenerBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.RestfulLookupBeanDefinitionParser;
+import com.surgingsystems.etl.dsl.filter.RestfulWriterBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.SortFilterBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.filter.TransformerBeanDefinitionParser;
 import com.surgingsystems.etl.dsl.schema.ColumnBeanDefinitionParser;
@@ -39,6 +40,7 @@ public class EtlNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionParser("sort", new SortFilterBeanDefinitionParser());
         registerBeanDefinitionParser("restfulListener", new RestfulListenerBeanDefinitionParser());
         registerBeanDefinitionParser("restfulLookup", new RestfulLookupBeanDefinitionParser());
+        registerBeanDefinitionParser("restfulWriter", new RestfulWriterBeanDefinitionParser());
         registerBeanDefinitionParser("transformer", new TransformerBeanDefinitionParser());
 
         registerBeanDefinitionParser("schema", new SchemaBeanDefinitionParser());
