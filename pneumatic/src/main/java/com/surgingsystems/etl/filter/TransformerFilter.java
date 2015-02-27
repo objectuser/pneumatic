@@ -49,6 +49,8 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
 
     private Map<TransformerFilterOutputConfiguration, Expression> outputConditions = new HashMap<TransformerFilterOutputConfiguration, Expression>();
 
+    private Map<TransformerFilterOutputConfiguration, List<Expression>> outputExpressions = new HashMap<TransformerFilterOutputConfiguration, List<Expression>>();
+
     @PostConstruct
     public void validate() {
         Assert.notNull(getName(), "The name is required");
@@ -71,8 +73,6 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
 
         Map<TransformerFilterOutputConfiguration, Record> outputRecords = new HashMap<TransformerFilterOutputConfiguration, Record>();
 
-        // We setup all the variables before running any expression to make the
-        // expressions behave as expected.
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
             Schema schema = config.getOutputSchema();
             DataRecord dataRecord = new DataRecord(schema);
@@ -83,19 +83,32 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
 
         for (Expression expression : parsedExpressions) {
             Object value = expression.getValue(evaluationContext);
-            logger.trace("Expression (%s) value: <%s>", expression.getExpressionString(), value == null ? "null"
-                    : value.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Expression (%s) value: <%s>", expression.getExpressionString(), value == null ? "null"
+                        : value.toString());
+            }
         }
 
         for (Map.Entry<TransformerFilterOutputConfiguration, Record> entry : outputRecords.entrySet()) {
             TransformerFilterOutputConfiguration config = entry.getKey();
+
+            for (Expression expression : outputExpressions.get(config)) {
+                Object value = expression.getValue(evaluationContext);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Expression (%s) value: <%s>", expression.getExpressionString(),
+                            value == null ? "null" : value.toString());
+                }
+            }
+
             Expression outputConditionExpression = outputConditions.get(entry.getKey());
             Boolean outputCondition = (Boolean) outputConditionExpression.getValue(evaluationContext);
-            logger.trace("Condition (%s) value: <%s>", outputConditionExpression.getExpressionString(),
-                    outputCondition.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Condition (%s) value: <%s>", outputConditionExpression.getExpressionString(),
+                        outputCondition.toString());
+            }
             if (outputCondition) {
                 Pipe pipe = config.getPipe();
-                Record record = entry.getValue();
+                Record record = (Record) evaluationContext.lookupVariable(config.getRecordName());
                 pipe.put(record);
             }
         }
@@ -155,8 +168,10 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
                 value = expressionParser.parseExpression(initializationExpression).getValue(evaluationContext);
             }
             evaluationContext.setVariable(variable.getKey(), value);
-            logger.trace("Variable (%s) initialized to: <%s>", variable.getKey(),
-                    value == null ? "null" : value.toString());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Variable (%s) initialized to: <%s>", variable.getKey(),
+                        value == null ? "null" : value.toString());
+            }
         }
     }
 
@@ -166,8 +181,10 @@ public class TransformerFilter extends SingleInputFilter implements InputFilter 
         }
 
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
+            List<Expression> expressions = new ArrayList<Expression>();
+            outputExpressions.put(config, expressions);
             for (String expression : config.getExpressions()) {
-                parsedExpressions.add(expressionParser.parseExpression(expression));
+                expressions.add(expressionParser.parseExpression(expression));
             }
 
             outputConditions.put(config, expressionParser.parseExpression(config.getOutputCondition()));
