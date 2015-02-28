@@ -26,7 +26,7 @@ These concepts are fundamental, but the words "job" and "filter" don't often app
 Running a Job
 -------------
 
-Jobs may be run in a variety of ways. The easiest way to run a job is using the "Pneumatic Shell" (``pn.sh`` on most systems or ``pn.cmd`` on Windows). The file ``pn.sh`` is in the ``pneumatic-samples`` project on [GitHub](https://github.com/objectuser/pneumatic).
+Jobs may be run in a variety of ways. The easiest way to run a job is using the "Pneumatic Shell" (``pn.sh`` on most systems or ``pn.cmd`` on Windows). The file ``pn.sh`` is in the ``pneumatic-samples`` project on `GitHub <https://github.com/objectuser/pneumatic>`_.
 
 If your job is contained in ``job.xml``, run it like this::
 
@@ -40,7 +40,7 @@ The boot runner will stay resident until Spring Boot shuts down.
 
 From these examples, it's obvious that Pneumatic requires Java. Pneumataic is currently compiled to Java 8.
 
-Using the script is easy, but it does quite a few things. The script uses [Gradle](http://gradle.org/) to:
+Using the script is easy, but it does quite a few things. The script uses `Gradle <http://gradle.org/>`_ to:
 
 #. download the latest version of Gradle
 #. compile Pneumatic.IO
