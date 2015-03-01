@@ -16,7 +16,7 @@ public class BootRunner implements CommandLineRunner {
     private ApplicationContext applicationContext;
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(BootRunner.class, EtlContext.CONTEXT_PATH, "file:" + args[0]);
+        SpringApplication app = new SpringApplication(BootRunner.class, EtlContext.CONTEXT_PATH, args[0]);
         app.run(args);
     }
 

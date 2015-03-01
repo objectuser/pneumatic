@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<etl:schema id="mtbSchema" name="MTB Schema">
+		<etl:column name="name" type="string" />
+		<etl:column name="year" type="integer" />
+		<etl:column name="cost" type="decimal" />
+	</etl:schema>
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:fileReader id="mtbReader" name="File Reader">
+		<etl:fileResource location="classpath:data/mtb.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="mtbSchema" />
+	</etl:fileReader>
+
+	<etl:restfulWriter id="restfulWriter" name="Test Restful Writer">
+		<etl:http method="PUT" url="http://localhost:8080/mtb/{name}" />
+		<etl:input ref="fileReaderOutput" />
+		<etl:inputSchema ref="mtbSchema" />
+	</etl:restfulWriter>
+
+</beans>
