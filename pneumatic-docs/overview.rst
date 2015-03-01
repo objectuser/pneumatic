@@ -17,9 +17,15 @@ Concepts
 Jobs and Filters
 ================
 
-Pneumatic "programs" are composed into "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
+Pneumatic "programs" are represented as "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
 
 The reading, writing, transforming, etc. are done in "filters". Filters are connected through pipes that carry the data from one filter to the next. This `pipes and filters <http://www.eaipatterns.com/PipesAndFilters.html>`_ architecture is widely-known. It's conceptually simple, yet quite powerful, and is the fundamental pattern of Pneumatic jobs.
+
+It looks a bit like this:
+
+.. image:: images/architecture.png
+
+Scale this out with more pipes connecting more filters and you get the picture of the architecture of Pneumatic.IO. Simple concepts form powerful jobs.
 
 These concepts are fundamental, but the words "job" and "filter" don't often appear in Pneumatic configurations. But as we discuss Pneumatic in this guide, we will use those terms, so you still need to understand them. 
 
