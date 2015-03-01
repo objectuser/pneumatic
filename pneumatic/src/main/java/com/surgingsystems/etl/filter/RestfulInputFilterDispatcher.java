@@ -27,10 +27,11 @@ public class RestfulInputFilterDispatcher {
 
     private Map<String, RestfulListenerFilter> pathToFilterMap = new HashMap<String, RestfulListenerFilter>();
 
-    @RequestMapping(value = "/{path}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{path}**", method = RequestMethod.POST)
     public ResponseEntity<String> filter(@PathVariable("path") String path, @RequestBody String json) {
 
         try {
+
             logger.trace("Received message on path (%s)", path);
             RestfulListenerFilter filter = pathToFilterMap.get(path);
             if (filter != null) {

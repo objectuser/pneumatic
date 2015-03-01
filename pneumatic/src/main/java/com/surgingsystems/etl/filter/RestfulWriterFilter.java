@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
 import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.record.RecordValidator;
@@ -45,11 +46,11 @@ public class RestfulWriterFilter extends SingleInputFilter {
 
     private Schema inputSchema;
 
-    private String[] requestParameters;
+    private String[] requestParameters = new String[] {};
 
     private RecordValidator inputRecordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy;
+    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
