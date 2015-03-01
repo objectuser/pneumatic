@@ -23,7 +23,7 @@ The reading, writing, transforming, etc. are done in "filters". Filters are conn
 
 It looks a bit like this:
 
-.. image:: architecture.png
+.. image:: images/architecture.png
 
 Scale this out with more pipes connecting more filters and you get the picture of the architecture of Pneumatic.IO. Simple concepts form powerful jobs.
 
