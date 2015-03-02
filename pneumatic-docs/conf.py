@@ -101,32 +101,32 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'pneumatic'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-	"stickysidebar": "true",
+	#"stickysidebar": "true",
 
-	"sidebarbgcolor": "#5756a6",
-	"sidebarlinkcolor": "#ffe500",
-	"relbarbgcolor": "#310056",
-	"relbartextcolor": "#ffe500",
-	"relbarlinkcolor": "#ffe500",
-	"footerbgcolor": "#310056",
-	"codebgcolor": "#ede3f1",
-	"headtextcolor": "#310056"
-	
 	#ffe500 # yellow
 	#5756a6 # core purple
 	#c2accb # light purple
 	#ede3f1 # lighter purple
 	#310056 # dark purple
+	
+	#"sidebarbgcolor": "#5756a6",
+	#"sidebarlinkcolor": "#ffe500",
+	#"relbarbgcolor": "#ffffff",
+	#"relbartextcolor": "#ffe500",
+	#"relbarlinkcolor": "#ffe500",
+	#"footerbgcolor": "#310056", # impacts the bg color of the page
+	#"codebgcolor": "#ede3f1",
+	#"headtextcolor": "#310056"
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -137,7 +137,7 @@ html_title = "Pneumatic.IO Reference Guide"
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = "images/SurgingSystemsIcon-Transparent.png"
+#html_logo = "images/SurgingSystemsIcon-Transparent.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
