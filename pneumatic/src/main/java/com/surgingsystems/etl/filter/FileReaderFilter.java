@@ -7,13 +7,19 @@ import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.file.FlatFileParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
+import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
 import com.surgingsystems.etl.pipe.Pipe;
 import com.surgingsystems.etl.record.ArrayRecordParser;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.record.RecordParser;
+import com.surgingsystems.etl.record.StringRecord;
 import com.surgingsystems.etl.schema.Schema;
+import com.surgingsystems.etl.schema.StringColumnType;
 
 /**
  * Supports reading from a flat file on the file system. File reader filters
@@ -31,6 +37,9 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(FileReaderFilter.class);
 
+    @Autowired
+    private StringColumnType stringColumnType;
+
     private Pipe output;
 
     private Schema outputSchema;
@@ -38,6 +47,8 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
     private RecordParser<String[]> recordParser = new ArrayRecordParser();
 
     private FlatFileRecordReader itemReader;
+
+    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
 
     public FileReaderFilter() {
     }
@@ -76,31 +87,42 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
 
         try {
             String[] input = null;
-            while ((input = itemReader.read()) != null) {
+            while (true) {
 
-                if (logger.isTraceEnabled()) {
-                    String line = Arrays.toString(input);
-                    logger.trace("Reading from [%s]: [%s...]", itemReader.getResource(),
-                            line.substring(0, Math.min(line.length(), 100)));
-                }
+                try {
+                    input = itemReader.read();
+                    if (input == null) {
+                        break;
+                    }
 
-                Record record = recordParser.parse(input, outputSchema);
-                if (record == null) {
-                    logger.warn("Parser returned null record when parsing according to schema (%s)",
-                            outputSchema.getName());
-                } else {
-                    recordProcessed();
-                    logRecord(record);
-                    output.put(record);
+                    if (logger.isTraceEnabled()) {
+                        String line = Arrays.toString(input);
+                        logger.trace("Reading from [%s]: [%s...]", itemReader.getResource(),
+                                line.substring(0, Math.min(line.length(), 100)));
+                    }
+
+                    Record record = recordParser.parse(input, outputSchema);
+                    if (record == null) {
+                        rejectRecordStrategy.rejected(new StringRecord(stringColumnType, input));
+                        logger.warn("Parser returned null record when parsing according to schema (%s)",
+                                outputSchema.getName());
+                    } else {
+                        recordProcessed();
+                        logRecord(record);
+                        output.put(record);
+                    }
+
+                } catch (FlatFileParseException e) {
+                    rejectRecordStrategy.rejected(new StringRecord(stringColumnType, e.getInput()));
                 }
             }
-
-            output.closedForInput();
 
             logSummary();
 
         } finally {
+            output.closedForInput();
             itemReader.close();
+            rejectRecordStrategy.close();
         }
     }
 
@@ -122,5 +144,13 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
 
     public void setItemReader(FlatFileRecordReader itemReader) {
         this.itemReader = itemReader;
+    }
+
+    public RejectRecordStrategy getRejectRecordStrategy() {
+        return rejectRecordStrategy;
+    }
+
+    public void setRejectRecordStrategy(RejectRecordStrategy rejectRecordStrategy) {
+        this.rejectRecordStrategy = rejectRecordStrategy;
     }
 }

@@ -371,6 +371,7 @@
 						<xsd:element name="fileResource" type="FileType" />
 						<xsd:element name="output" minOccurs="1" maxOccurs="1" type="PipeRefType" />
 						<xsd:element name="outputSchema" minOccurs="1" maxOccurs="1" type="SchemaRefType" />
+						<xsd:element name="rejection" type="RejectionType" minOccurs="0" maxOccurs="1" />
 					</xsd:sequence>
 				</xsd:extension>
 			</xsd:complexContent>

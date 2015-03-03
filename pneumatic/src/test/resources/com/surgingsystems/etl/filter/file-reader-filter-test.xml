@@ -22,5 +22,15 @@
 		<etl:output ref="fileReaderOutput" />
 		<etl:outputSchema ref="mtbSchema" />
 	</etl:fileReader>
+
+	<etl:pipe id="fileReaderRejectionOutput" />
+	<etl:fileReader id="fileReaderForBadData" name="File Reader for Bad Data">
+		<etl:fileResource location="classpath:data/bad-data.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="mtbSchema" />
+		<etl:rejection>
+			<etl:output ref="fileReaderRejectionOutput" />
+		</etl:rejection>
+	</etl:fileReader>
 	
 </beans>
