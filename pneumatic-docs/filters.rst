@@ -223,11 +223,26 @@ The file reader reads records from a file and writes them to its output. Records
 		<etl:outputSchema ref="mtbSchema" />
 	</etl:fileReader>
 
-The file reader reads from the file given by its location (``location="classpath:data/mtb.txt"``). Alternatively, a job argument may be used to specify the file location::
+The file reader reads from the file given by its location (``location="classpath:data/mtb.txt"``). Alternatively, a job argument may be used to specify the file location::1
 
 	<etl:fileResource locationExpression="#job.file" />
 
 The records read from the file are put on the output pipe (``ref="fileReaderOutput"``). The records are constructed according to the supplied schema (``ref="mtbSchema"``).
+
+The file reader supports the ``rejection`` element for controlling rejected records::
+
+	<etl:pipe id="fileReaderOutput" />
+	<etl:pipe id="fileReaderRejectionOutput" />
+	<etl:fileReader id="fileReader" name="File Reader">
+		<etl:fileResource location="classpath:data/bad-data.txt" />
+		<etl:output ref="fileReaderOutput" />
+		<etl:outputSchema ref="mtbSchema" />
+		<etl:rejection>
+			<etl:output ref="fileReaderRejectionOutput" />
+		</etl:rejection>
+	</etl:fileReader>
+
+By default, rejected records are logged.
 
 File Writer
 -----------
@@ -636,7 +651,9 @@ The count of out of order records is written to this output when all records hav
 While the transformer is very powerful, it can also be very complex. Designs using simpler filters are easier to understand. Consider the transformer to be a special purpose filter when no other filter will do.
 
 XML File Reader
-------------------
+---------------
 
+The XML file reader reads records from an XML document. It should be considered experimental. (Is it really useful to read records this way? If you think so, let me know!) There is no DSL for this filter. To get a feel for it, look at the ``xml-test.xml`` sample.
 
+(If you have an idea on how to better support XML in Pneumatic.IO, let me know!)
 
