@@ -198,8 +198,9 @@ div.sphinxsidebar ul ul {
 }
 
 div.footer {
-    background-image: url(footerbg.png);
-    color: #ccc;
+    background-image: url(headbg-black.png);
+    background-color: #310056;
+    color: #ffe500;
     text-shadow: 0 0 .2px rgba(255, 255, 255, 0.8);
     padding: 3px 8px 3px 0;
     clear: both;
@@ -209,7 +210,7 @@ div.footer {
 
 /* no need to make a visible link to Sphinx on the Sphinx page */
 div.footer a {
-    color: #ccc;
+    color: #ffe500;
 }
 
 /* -- body styles ----------------------------------------------------------- */
