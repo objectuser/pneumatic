@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,65 +10,65 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:schema id="mapperSchema" name="Mapper Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Price Each" type="decimal" />
-		<etl:column name="Item Count" type="integer" />
-	</etl:schema>
+	<schema id="mapperSchema" name="Mapper Schema">
+		<column name="Name" type="string" />
+		<column name="Price Each" type="decimal" />
+		<column name="Item Count" type="integer" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/input1.txt">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/input1.txt">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="mapperOutput" />
-	<etl:mapper id="mapper" name="Mapper">
-		<etl:input ref="fileReaderOutput" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="mapperOutput" />
-		<etl:outputSchema ref="mapperSchema" />
-		<etl:mappings>
-			<etl:mapping>
-				<etl:from>
-					<etl:column name="Name" type="string" />
-				</etl:from>
-				<etl:to>
-					<etl:column name="Name" type="string" />
-				</etl:to>
-			</etl:mapping>
-			<etl:mapping>
-				<etl:from>
-					<etl:column name="Count" type="integer" />
-				</etl:from>
-				<etl:to>
-					<etl:column name="Item Count" type="integer" />
-				</etl:to>
-			</etl:mapping>
-			<etl:mapping>
-				<etl:from>
-					<etl:column name="Price" type="decimal" />
-				</etl:from>
-				<etl:to>
-					<etl:column name="Price Each" type="decimal" />
-				</etl:to>
-			</etl:mapping>
-		</etl:mappings>
-	</etl:mapper>
+	<pipe id="mapperOutput" />
+	<mapper id="mapper" name="Mapper">
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="inputSchema" />
+		<output ref="mapperOutput" />
+		<outputSchema ref="mapperSchema" />
+		<mappings>
+			<mapping>
+				<from>
+					<column name="Name" type="string" />
+				</from>
+				<to>
+					<column name="Name" type="string" />
+				</to>
+			</mapping>
+			<mapping>
+				<from>
+					<column name="Count" type="integer" />
+				</from>
+				<to>
+					<column name="Item Count" type="integer" />
+				</to>
+			</mapping>
+			<mapping>
+				<from>
+					<column name="Price" type="decimal" />
+				</from>
+				<to>
+					<column name="Price Each" type="decimal" />
+				</to>
+			</mapping>
+		</mappings>
+	</mapper>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="mapperOutput" />
-		<etl:inputSchema ref="mapperSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="mapperOutput" />
+		<inputSchema ref="mapperSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

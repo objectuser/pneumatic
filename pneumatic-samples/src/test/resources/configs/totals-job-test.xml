@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,64 +10,64 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
         
-	<etl:dataSet id="records" schema-ref="inputSchema">
-		<etl:record>
-			<etl:columnValue column="Symbol" value="TFSC" />
-			<etl:columnValue column="Name" value="1347 Capital Corp." />
-			<etl:columnValue column="LastSale" value="9.56" />
-			<etl:columnValue column="MarketCap" value="56862880" />
-			<etl:columnValue column="ADR TSO" value="n/a" />
-			<etl:columnValue column="IPOyear" value="2014" />
-			<etl:columnValue column="Sector" value="Finance" />
-			<etl:columnValue column="industry" value="Business Services" />
-			<etl:columnValue column="Summary Quote"
+	<dataSet id="records" schema-ref="inputSchema">
+		<record>
+			<columnValue column="Symbol" value="TFSC" />
+			<columnValue column="Name" value="1347 Capital Corp." />
+			<columnValue column="LastSale" value="9.56" />
+			<columnValue column="MarketCap" value="56862880" />
+			<columnValue column="ADR TSO" value="n/a" />
+			<columnValue column="IPOyear" value="2014" />
+			<columnValue column="Sector" value="Finance" />
+			<columnValue column="industry" value="Business Services" />
+			<columnValue column="Summary Quote"
 				value="http://www.nasdaq.com/symbol/tfsc" />
-			<etl:columnValue column="Empty" value="" />
-		</etl:record>
-		<etl:record>
-			<etl:columnValue column="Symbol" value="TFSC" />
-			<etl:columnValue column="Name" value="1347 Capital Corp." />
-			<etl:columnValue column="LastSale" value="9.56" />
-			<etl:columnValue column="MarketCap" value="56862880" />
-			<etl:columnValue column="ADR TSO" value="n/a" />
-			<etl:columnValue column="IPOyear" value="2014" />
-			<etl:columnValue column="Sector" value="Finance" />
-			<etl:columnValue column="industry" value="Business Services" />
-			<etl:columnValue column="Summary Quote"
+			<columnValue column="Empty" value="" />
+		</record>
+		<record>
+			<columnValue column="Symbol" value="TFSC" />
+			<columnValue column="Name" value="1347 Capital Corp." />
+			<columnValue column="LastSale" value="9.56" />
+			<columnValue column="MarketCap" value="56862880" />
+			<columnValue column="ADR TSO" value="n/a" />
+			<columnValue column="IPOyear" value="2014" />
+			<columnValue column="Sector" value="Finance" />
+			<columnValue column="industry" value="Business Services" />
+			<columnValue column="Summary Quote"
 				value="http://www.nasdaq.com/symbol/tfsc" />
-			<etl:columnValue column="Empty" value="" />
-		</etl:record>
-		<etl:record>
-			<etl:columnValue column="Symbol" value="TFSC" />
-			<etl:columnValue column="Name" value="1347 Capital Corp." />
-			<etl:columnValue column="LastSale" value="9.56" />
-			<etl:columnValue column="MarketCap" value="56862880" />
-			<etl:columnValue column="ADR TSO" value="n/a" />
-			<etl:columnValue column="IPOyear" value="2014" />
-			<etl:columnValue column="Sector" value="Finance" />
-			<etl:columnValue column="industry" value="Business Services" />
-			<etl:columnValue column="Summary Quote"
+			<columnValue column="Empty" value="" />
+		</record>
+		<record>
+			<columnValue column="Symbol" value="TFSC" />
+			<columnValue column="Name" value="1347 Capital Corp." />
+			<columnValue column="LastSale" value="9.56" />
+			<columnValue column="MarketCap" value="56862880" />
+			<columnValue column="ADR TSO" value="n/a" />
+			<columnValue column="IPOyear" value="2014" />
+			<columnValue column="Sector" value="Finance" />
+			<columnValue column="industry" value="Business Services" />
+			<columnValue column="Summary Quote"
 				value="http://www.nasdaq.com/symbol/tfsc" />
-			<etl:columnValue column="Empty" value="" />
-		</etl:record>
-	</etl:dataSet>
+			<columnValue column="Empty" value="" />
+		</record>
+	</dataSet>
 
-	<etl:dataSet id="fromFile" schema-ref="inputSchema">
-		<etl:fileResource location="classpath:data/companylist.csv">
-			<etl:selectLines value="2-4" />
-		</etl:fileResource>
-	</etl:dataSet>
+	<dataSet id="fromFile" schema-ref="inputSchema">
+		<fileResource location="classpath:data/companylist.csv">
+			<selectLines value="2-4" />
+		</fileResource>
+	</dataSet>
 
-	<etl:test id="copyTest" name="Copy Test">
-		<etl:filter ref="copyFilter" />
-		<etl:when>
-			<etl:input ref="mapperOutput" />
-			<etl:dataSet ref="fromFile" />
-		</etl:when>
-		<etl:expect>
-			<etl:output ref="copyOutputToSort" />
-			<etl:dataSet ref="fromFile" />
-		</etl:expect>
-	</etl:test>
+	<test id="copyTest" name="Copy Test">
+		<filter ref="copyFilter" />
+		<when>
+			<input ref="mapperOutput" />
+			<dataSet ref="fromFile" />
+		</when>
+		<expect>
+			<output ref="copyOutputToSort" />
+			<dataSet ref="fromFile" />
+		</expect>
+	</test>
 
-</beans>
+</beans:beans>

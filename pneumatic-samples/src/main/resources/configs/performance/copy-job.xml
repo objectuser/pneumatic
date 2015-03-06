@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -12,45 +12,45 @@
         
     <!-- Copy a big file to see how long it takes. -->
 
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Provider ID" type="string" />
-		<etl:column name="Hospital Name" type="string" />
-		<etl:column name="Address" type="string" />
-		<etl:column name="City" type="string" />
-		<etl:column name="State" type="string" />
-		<etl:column name="ZIP Code" type="string" />
-		<etl:column name="County Name" type="string" />
-		<etl:column name="Phone Number" type="string" />
-		<etl:column name="Condition" type="string" />
-		<etl:column name="Measure ID" type="string" />
-		<etl:column name="Measure Name" type="string" />
-		<etl:column name="Score" type="string" />
-		<etl:column name="Sample" type="string" />
-		<etl:column name="Footnote" type="string" />
-		<etl:column name="Measure Start Date" type="string" />
-		<etl:column name="Measure End Date" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Provider ID" type="string" />
+		<column name="Hospital Name" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIP Code" type="string" />
+		<column name="County Name" type="string" />
+		<column name="Phone Number" type="string" />
+		<column name="Condition" type="string" />
+		<column name="Measure ID" type="string" />
+		<column name="Measure Name" type="string" />
+		<column name="Score" type="string" />
+		<column name="Sample" type="string" />
+		<column name="Footnote" type="string" />
+		<column name="Measure Start Date" type="string" />
+		<column name="Measure End Date" type="string" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="Hospital File Reader">
-		<etl:fileResource
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="Hospital File Reader">
+		<fileResource
 			location="classpath:data/Timely and Effective Care - Hospital.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="copyOutput" />
-	<etl:copy id="copy" name="Copy">
-		<etl:input ref="fileReaderOutput" />
-		<etl:output ref="copyOutput" />
-	</etl:copy>
+	<pipe id="copyOutput" />
+	<copy id="copy" name="Copy">
+		<input ref="fileReaderOutput" />
+		<output ref="copyOutput" />
+	</copy>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="copyOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="copyOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 	
-</beans>
+</beans:beans>

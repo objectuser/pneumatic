@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -12,25 +12,25 @@
 
 	<context:component-scan base-package="com.surgingsystems.etl" />
 
-	<etl:schema id="outputSchema" name="Output Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="outputSchema" name="Output Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:pipe id="transformerOutput" />
-	<etl:transformer id="transformer" name="Test Transformer">
-		<etl:input ref="fileReaderOutput" />
-		<etl:variable name="v1">"value1"</etl:variable>
-		<etl:variable name="v2">0</etl:variable>
-		<etl:expression>#v1 = #v1 + #v1</etl:expression>
-		<etl:expression>#v2 = #v2 + 1</etl:expression>
-		<etl:config outputName="outputName" recordName="recordName">
-			<etl:output ref="transformerOutput" />
-			<etl:outputSchema ref="outputSchema" />
-			<etl:outputCondition>#v2 > 0</etl:outputCondition>
-		</etl:config>
-	</etl:transformer>
+	<pipe id="fileReaderOutput" />
+	<pipe id="transformerOutput" />
+	<transformer id="transformer" name="Test Transformer">
+		<input ref="fileReaderOutput" />
+		<variable name="v1">"value1"</variable>
+		<variable name="v2">0</variable>
+		<expression>#v1 = #v1 + #v1</expression>
+		<expression>#v2 = #v2 + 1</expression>
+		<config outputName="outputName" recordName="recordName">
+			<output ref="transformerOutput" />
+			<outputSchema ref="outputSchema" />
+			<outputCondition>#v2 > 0</outputCondition>
+		</config>
+	</transformer>
 
-</beans>
+</beans:beans>

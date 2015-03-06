@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -12,63 +12,63 @@
 	<!-- Process a file though a transformer with minimal work. This is used to compare the performance of a transformer against 
 		a copy. -->
 
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Provider ID" type="string" />
-		<etl:column name="Hospital Name" type="string" />
-		<etl:column name="Address" type="string" />
-		<etl:column name="City" type="string" />
-		<etl:column name="State" type="string" />
-		<etl:column name="ZIP Code" type="string" />
-		<etl:column name="County Name" type="string" />
-		<etl:column name="Phone Number" type="string" />
-		<etl:column name="Condition" type="string" />
-		<etl:column name="Measure ID" type="string" />
-		<etl:column name="Measure Name" type="string" />
-		<etl:column name="Score" type="string" />
-		<etl:column name="Sample" type="string" />
-		<etl:column name="Footnote" type="string" />
-		<etl:column name="Measure Start Date" type="string" />
-		<etl:column name="Measure End Date" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Provider ID" type="string" />
+		<column name="Hospital Name" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIP Code" type="string" />
+		<column name="County Name" type="string" />
+		<column name="Phone Number" type="string" />
+		<column name="Condition" type="string" />
+		<column name="Measure ID" type="string" />
+		<column name="Measure Name" type="string" />
+		<column name="Score" type="string" />
+		<column name="Sample" type="string" />
+		<column name="Footnote" type="string" />
+		<column name="Measure Start Date" type="string" />
+		<column name="Measure End Date" type="string" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="Hospital File Reader">
-		<etl:fileResource location="classpath:data/Timely and Effective Care - Hospital.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="Hospital File Reader">
+		<fileResource location="classpath:data/Timely and Effective Care - Hospital.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="transformerOutput" />
-	<etl:transformer id="transformer" name="Transformer">
-		<etl:input ref="fileReaderOutput" />
-		<etl:config outputName="transformerOutput" recordName="outputRecord">
-			<etl:output ref="transformerOutput" />
-			<etl:outputSchema ref="inputSchema" />
-			<etl:expression>#outputRecord["Provider ID"] = #inputRecord["Provider ID"]</etl:expression>
-			<etl:expression>#outputRecord["Hospital Name"] = #inputRecord["Hospital Name"]</etl:expression>
-			<etl:expression>#outputRecord["Address"] = #inputRecord["Address"]</etl:expression>
-			<etl:expression>#outputRecord["City"] = #inputRecord["City"]</etl:expression>
-			<etl:expression>#outputRecord["State"] = #inputRecord["State"]</etl:expression>
-			<etl:expression>#outputRecord["ZIP Code"] = #inputRecord["ZIP Code"]</etl:expression>
-			<etl:expression>#outputRecord["County Name"] = #inputRecord["County Name"]</etl:expression>
-			<etl:expression>#outputRecord["Phone Number"] = #inputRecord["Phone Number"]</etl:expression>
-			<etl:expression>#outputRecord["Condition"] = #inputRecord["Condition"]</etl:expression>
-			<etl:expression>#outputRecord["Measure ID"] = #inputRecord["Measure ID"]</etl:expression>
-			<etl:expression>#outputRecord["Measure Name"] = #inputRecord["Measure Name"]</etl:expression>
-			<etl:expression>#outputRecord["Score"] = #inputRecord["Score"]</etl:expression>
-			<etl:expression>#outputRecord["Sample"] = #inputRecord["Sample"]</etl:expression>
-			<etl:expression>#outputRecord["Footnote"] = #inputRecord["Footnote"]</etl:expression>
-			<etl:expression>#outputRecord["Measure Start Date"] = #inputRecord["Measure Start Date"]</etl:expression>
-			<etl:expression>#outputRecord["Measure End Date"] = #inputRecord["Measure End Date"]</etl:expression>
-		</etl:config>
-	</etl:transformer>
+	<pipe id="transformerOutput" />
+	<transformer id="transformer" name="Transformer">
+		<input ref="fileReaderOutput" />
+		<config outputName="transformerOutput" recordName="outputRecord">
+			<output ref="transformerOutput" />
+			<outputSchema ref="inputSchema" />
+			<expression>#outputRecord["Provider ID"] = #inputRecord["Provider ID"]</expression>
+			<expression>#outputRecord["Hospital Name"] = #inputRecord["Hospital Name"]</expression>
+			<expression>#outputRecord["Address"] = #inputRecord["Address"]</expression>
+			<expression>#outputRecord["City"] = #inputRecord["City"]</expression>
+			<expression>#outputRecord["State"] = #inputRecord["State"]</expression>
+			<expression>#outputRecord["ZIP Code"] = #inputRecord["ZIP Code"]</expression>
+			<expression>#outputRecord["County Name"] = #inputRecord["County Name"]</expression>
+			<expression>#outputRecord["Phone Number"] = #inputRecord["Phone Number"]</expression>
+			<expression>#outputRecord["Condition"] = #inputRecord["Condition"]</expression>
+			<expression>#outputRecord["Measure ID"] = #inputRecord["Measure ID"]</expression>
+			<expression>#outputRecord["Measure Name"] = #inputRecord["Measure Name"]</expression>
+			<expression>#outputRecord["Score"] = #inputRecord["Score"]</expression>
+			<expression>#outputRecord["Sample"] = #inputRecord["Sample"]</expression>
+			<expression>#outputRecord["Footnote"] = #inputRecord["Footnote"]</expression>
+			<expression>#outputRecord["Measure Start Date"] = #inputRecord["Measure Start Date"]</expression>
+			<expression>#outputRecord["Measure End Date"] = #inputRecord["Measure End Date"]</expression>
+		</config>
+	</transformer>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="transformerOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="transformerOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

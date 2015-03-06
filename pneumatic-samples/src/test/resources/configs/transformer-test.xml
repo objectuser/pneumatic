@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,54 +10,54 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:schema id="countSchema" name="Count Schema">
-		<etl:column name="Count" type="integer" />
-	</etl:schema>
+	<schema id="countSchema" name="Count Schema">
+		<column name="Count" type="integer" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/input1.txt" />
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/input1.txt" />
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="transformerOutput" />
-	<etl:pipe id="transformerCountOutput" />
-	<etl:transformer id="transformer" name="Transformer">
-		<etl:input ref="fileReaderOutput" />
-		<etl:variable name="totalCount">0</etl:variable>
-		<etl:expression>#totalCount = #totalCount + 1</etl:expression>
-		<etl:config outputName="transformerOutput" recordName="outputRecord">
-			<etl:output ref="transformerOutput" />
-			<etl:outputSchema ref="inputSchema" />
-			<etl:expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</etl:expression>
-			<etl:expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</etl:expression>
-			<etl:expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</etl:expression>
-		</etl:config>
-		<etl:config outputName="transformerCountOutput" recordName="countRecord">
-			<etl:output ref="transformerCountOutput" />
-			<etl:outputSchema ref="countSchema" />
-			<etl:outputCondition>#input.complete</etl:outputCondition>
-			<etl:expression>#countRecord.Count = #totalCount</etl:expression>
-		</etl:config>
-	</etl:transformer>
+	<pipe id="transformerOutput" />
+	<pipe id="transformerCountOutput" />
+	<transformer id="transformer" name="Transformer">
+		<input ref="fileReaderOutput" />
+		<variable name="totalCount">0</variable>
+		<expression>#totalCount = #totalCount + 1</expression>
+		<config outputName="transformerOutput" recordName="outputRecord">
+			<output ref="transformerOutput" />
+			<outputSchema ref="inputSchema" />
+			<expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</expression>
+			<expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</expression>
+			<expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</expression>
+		</config>
+		<config outputName="transformerCountOutput" recordName="countRecord">
+			<output ref="transformerCountOutput" />
+			<outputSchema ref="countSchema" />
+			<outputCondition>#input.complete</outputCondition>
+			<expression>#countRecord.Count = #totalCount</expression>
+		</config>
+	</transformer>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="transformerOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="transformerOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-	<etl:fileWriter id="fileWriter2" name="File Writer 2">
-		<etl:fileResource location="file:output/output2.txt" />
-		<etl:input ref="transformerCountOutput" />
-		<etl:inputSchema ref="countSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter2" name="File Writer 2">
+		<fileResource location="file:output/output2.txt" />
+		<input ref="transformerCountOutput" />
+		<inputSchema ref="countSchema" />
+	</fileWriter>
 	
-</beans>
+</beans:beans>

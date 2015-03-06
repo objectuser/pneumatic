@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,39 +10,37 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<context:component-scan base-package="com.surgingsystems.etl" />
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<pipe id="input" />
+	<pipe id="output" />
+	<sort id="sort" name="Test Sort">
+		<input ref="input" />
+		<output ref="output" />
+		<comparator>
+			<column name="Name" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:pipe id="input" />
-	<etl:pipe id="output" />
-	<etl:sort id="sort" name="Test Sort">
-		<etl:input ref="input" />
-		<etl:output ref="output" />
-		<etl:comparator>
-			<etl:column name="Name" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<pipe id="input" />
+	<pipe id="output" />
+	<sort id="sortWithBean" name="Test Sort">
+		<input ref="input" />
+		<output ref="output" />
+		<comparator>
+			<beans:bean class="com.surgingsystems.etl.filter.SortFilterTest.TwoColumnComparator">
+				<beans:property name="column1">
+					<column name="Name" type="string" />
+				</beans:property>
+				<beans:property name="column2">
+					<column name="Price" type="decimal" />
+				</beans:property>
+			</beans:bean>
+		</comparator>
+	</sort>
 
-	<etl:pipe id="input" />
-	<etl:pipe id="output" />
-	<etl:sort id="sortWithBean" name="Test Sort">
-		<etl:input ref="input" />
-		<etl:output ref="output" />
-		<etl:comparator>
-			<bean class="com.surgingsystems.etl.filter.SortFilterTest.TwoColumnComparator">
-				<property name="column1">
-					<etl:column name="Name" type="string" />
-				</property>
-				<property name="column2">
-					<etl:column name="Price" type="decimal" />
-				</property>
-			</bean>
-		</etl:comparator>
-	</etl:sort>
-
-</beans>
+</beans:beans>

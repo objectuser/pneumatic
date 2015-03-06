@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,160 +10,160 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
         
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="LastSale" type="string" />
-		<etl:column name="MarketCap" type="string" />
-		<etl:column name="ADR TSO" type="string" />
-		<etl:column name="IPOyear" type="string" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="industry" type="string" />
-		<etl:column name="Summary Quote" type="string" />
-		<etl:column name="Empty" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="LastSale" type="string" />
+		<column name="MarketCap" type="string" />
+		<column name="ADR TSO" type="string" />
+		<column name="IPOyear" type="string" />
+		<column name="Sector" type="string" />
+		<column name="industry" type="string" />
+		<column name="Summary Quote" type="string" />
+		<column name="Empty" type="string" />
+	</schema>
 
-	<etl:schema id="stockSchema" name="Stock Listing Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="LastSale" type="decimal" />
-		<etl:column name="MarketCap" type="decimal" />
-		<etl:column name="ADR TSO" type="string" />
-		<etl:column name="IPOyear" type="integer" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="industry" type="string" />
-		<etl:column name="Summary Quote" type="string" />
-	</etl:schema>
+	<schema id="stockSchema" name="Stock Listing Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="LastSale" type="decimal" />
+		<column name="MarketCap" type="decimal" />
+		<column name="ADR TSO" type="string" />
+		<column name="IPOyear" type="integer" />
+		<column name="Sector" type="string" />
+		<column name="industry" type="string" />
+		<column name="Summary Quote" type="string" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/companylist.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/companylist.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="mapperOutput" />
-	<etl:mapper id="mapper" name="Remove Trailing Empty Column Mapper">
-		<etl:input ref="fileReaderOutput" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="mapperOutput" />
-		<etl:outputSchema ref="stockSchema" />
+	<pipe id="mapperOutput" />
+	<mapper id="mapper" name="Remove Trailing Empty Column Mapper">
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="inputSchema" />
+		<output ref="mapperOutput" />
+		<outputSchema ref="stockSchema" />
 		
-		<etl:rejection>
-			<etl:columnRule type="rejectRecord" />
-			<etl:output ref="aggregatorRejectionOutput" />
-		</etl:rejection>
-	</etl:mapper>
+		<rejection>
+			<columnRule type="rejectRecord" />
+			<output ref="aggregatorRejectionOutput" />
+		</rejection>
+	</mapper>
 
-	<etl:pipe id="copyOutputToSort" />
-	<etl:pipe id="copyOutputToCount" />
-	<etl:pipe id="copyOutputToAveragePrice" />
-	<etl:pipe id="copyOutputToTotalCap" />
-	<etl:copy id="copyFilter" name="Copy">
-		<etl:input ref="mapperOutput" />
-		<etl:output ref="copyOutputToSort" />
-		<etl:output ref="copyOutputToCount" />
-		<etl:output ref="copyOutputToAveragePrice" />
-		<etl:output ref="copyOutputToTotalCap" />
-	</etl:copy>
+	<pipe id="copyOutputToSort" />
+	<pipe id="copyOutputToCount" />
+	<pipe id="copyOutputToAveragePrice" />
+	<pipe id="copyOutputToTotalCap" />
+	<copy id="copyFilter" name="Copy">
+		<input ref="mapperOutput" />
+		<output ref="copyOutputToSort" />
+		<output ref="copyOutputToCount" />
+		<output ref="copyOutputToAveragePrice" />
+		<output ref="copyOutputToTotalCap" />
+	</copy>
 
-	<etl:pipe id="sortOutput" />
-	<etl:sort id="sortFilter" name="Symbol Sorter">
-		<etl:input ref="copyOutputToSort" />
-		<etl:output ref="sortOutput" />
-		<etl:comparator>
-			<etl:column name="Symbol" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<pipe id="sortOutput" />
+	<sort id="sortFilter" name="Symbol Sorter">
+		<input ref="copyOutputToSort" />
+		<output ref="sortOutput" />
+		<comparator>
+			<column name="Symbol" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.csv" />
-		<etl:input ref="sortOutput" />
-		<etl:inputSchema ref="stockSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.csv" />
+		<input ref="sortOutput" />
+		<inputSchema ref="stockSchema" />
+	</fileWriter>
 
 	<!-- Count -->
-	<etl:schema id="countSchema" name="Count Schema">
-		<etl:column name="Count" type="integer" />
-	</etl:schema>
+	<schema id="countSchema" name="Count Schema">
+		<column name="Count" type="integer" />
+	</schema>
 
-	<etl:pipe id="countFunctionOutput" />
-	<etl:aggregator id="countFilter" name="Counter">
-		<etl:input ref="copyOutputToCount" />
-		<etl:inputSchema ref="stockSchema" />
-		<etl:output ref="countFunctionOutput" />
-		<etl:outputSchema ref="countSchema" />
-		<etl:function>
-			<etl:count>
-				<etl:out>
-					<etl:column name="Count" type="integer" />
-				</etl:out>
-			</etl:count>
-		</etl:function>
-	</etl:aggregator>
+	<pipe id="countFunctionOutput" />
+	<aggregator id="countFilter" name="Counter">
+		<input ref="copyOutputToCount" />
+		<inputSchema ref="stockSchema" />
+		<output ref="countFunctionOutput" />
+		<outputSchema ref="countSchema" />
+		<function>
+			<count>
+				<out>
+					<column name="Count" type="integer" />
+				</out>
+			</count>
+		</function>
+	</aggregator>
 
-	<etl:fileWriter id="countFileWriter" name="Count File Writer">
-		<etl:fileResource location="file:output/count-output.txt" />
-		<etl:input ref="countFunctionOutput" />
-		<etl:inputSchema ref="countSchema" />
-	</etl:fileWriter>
+	<fileWriter id="countFileWriter" name="Count File Writer">
+		<fileResource location="file:output/count-output.txt" />
+		<input ref="countFunctionOutput" />
+		<inputSchema ref="countSchema" />
+	</fileWriter>
 
 	<!-- Average Price -->
-	<etl:schema id="averagePriceSchema" name="Average Price Schema">
-		<etl:column name="Average" type="decimal" />
-	</etl:schema>
-	<etl:pipe id="averagePriceFunctionOutput" />
-	<etl:aggregator id="averagePriceFilter" name="Average Price">
-		<etl:input ref="copyOutputToAveragePrice" />
-		<etl:inputSchema ref="stockSchema" />
-		<etl:output ref="averagePriceFunctionOutput" />
-		<etl:outputSchema ref="averagePriceSchema" />
-		<etl:function>
-			<etl:average>
-				<etl:in>
-					<etl:column name="LastSale" type="decimal" />
-				</etl:in>
-				<etl:out>
-					<etl:column name="Average" type="decimal" />
-				</etl:out>
-			</etl:average>
-		</etl:function>
-	</etl:aggregator>
+	<schema id="averagePriceSchema" name="Average Price Schema">
+		<column name="Average" type="decimal" />
+	</schema>
+	<pipe id="averagePriceFunctionOutput" />
+	<aggregator id="averagePriceFilter" name="Average Price">
+		<input ref="copyOutputToAveragePrice" />
+		<inputSchema ref="stockSchema" />
+		<output ref="averagePriceFunctionOutput" />
+		<outputSchema ref="averagePriceSchema" />
+		<function>
+			<average>
+				<in>
+					<column name="LastSale" type="decimal" />
+				</in>
+				<out>
+					<column name="Average" type="decimal" />
+				</out>
+			</average>
+		</function>
+	</aggregator>
 
-	<etl:fileWriter id="averagePriceFileWriter" name="Average Price File Writer">
-		<etl:fileResource location="file:output/average-price-output.txt" />
-		<etl:input ref="averagePriceFunctionOutput" />
-		<etl:inputSchema ref="averagePriceSchema" />
-	</etl:fileWriter>
+	<fileWriter id="averagePriceFileWriter" name="Average Price File Writer">
+		<fileResource location="file:output/average-price-output.txt" />
+		<input ref="averagePriceFunctionOutput" />
+		<inputSchema ref="averagePriceSchema" />
+	</fileWriter>
 
 	<!-- Total Cap -->
-	<etl:schema id="totalCapSchema" name="Total Cap Schema">
-		<etl:column name="Sum" type="decimal" />
-	</etl:schema>
+	<schema id="totalCapSchema" name="Total Cap Schema">
+		<column name="Sum" type="decimal" />
+	</schema>
 
-	<etl:pipe id="totalCapFunctionOutput" />
-	<etl:aggregator id="totalCapFilter" name="Total Cap">
-		<etl:input ref="copyOutputToTotalCap" />
-		<etl:inputSchema ref="stockSchema" />
-		<etl:output ref="totalCapFunctionOutput" />
-		<etl:outputSchema ref="totalCapSchema" />
-		<etl:function>
-			<etl:sum>
-				<etl:in>
-					<etl:column name="MarketCap" type="decimal" />
-				</etl:in>
-				<etl:out>
-					 <etl:column name="Sum" type="decimal" />
-				</etl:out>
-			</etl:sum>
-		</etl:function>
-	</etl:aggregator>
-	<etl:fileWriter id="totalCapFileWriter" name="Total Cap File Writer">
-		<etl:fileResource location="file:output/total-cap-output.txt" />
-		<etl:input ref="totalCapFunctionOutput" />
-		<etl:inputSchema ref="totalCapSchema" />
-	</etl:fileWriter>
+	<pipe id="totalCapFunctionOutput" />
+	<aggregator id="totalCapFilter" name="Total Cap">
+		<input ref="copyOutputToTotalCap" />
+		<inputSchema ref="stockSchema" />
+		<output ref="totalCapFunctionOutput" />
+		<outputSchema ref="totalCapSchema" />
+		<function>
+			<sum>
+				<in>
+					<column name="MarketCap" type="decimal" />
+				</in>
+				<out>
+					 <column name="Sum" type="decimal" />
+				</out>
+			</sum>
+		</function>
+	</aggregator>
+	<fileWriter id="totalCapFileWriter" name="Total Cap File Writer">
+		<fileResource location="file:output/total-cap-output.txt" />
+		<input ref="totalCapFunctionOutput" />
+		<inputSchema ref="totalCapSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

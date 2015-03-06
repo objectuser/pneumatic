@@ -5,18 +5,18 @@ RESTful Listener
 
 The RESTful listener is a filter that accepts RESTful requests. The requests must use the POST HTTP method and send JSON as the request body. Consider the following example::
 
-	<etl:schema id="mtbSchema" name="MTB Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
-		<etl:column name="cost" type="decimal" />
-	</etl:schema>
+	<schema id="mtbSchema" name="MTB Schema">
+		<column name="name" type="string" />
+		<column name="year" type="integer" />
+		<column name="cost" type="decimal" />
+	</schema>
 
-	<etl:pipe id="restfulListenerOutput" />
-	<etl:restfulListener id="restfulListener" name="Restful Input">
-		<etl:path value="mtb" />
-		<etl:output ref="restfulListenerOutput" />
-		<etl:outputSchema ref="mtbSchema" />
-	</etl:restfulListener>
+	<pipe id="restfulListenerOutput" />
+	<restfulListener id="restfulListener" name="Restful Input">
+		<path value="mtb" />
+		<output ref="restfulListenerOutput" />
+		<outputSchema ref="mtbSchema" />
+	</restfulListener>
 
 The schema (``id="mtbSchema"``) is shown here because the RESTful listener uses the schema to convert JSON to a record. For the schema above, the following is an example message::
 
@@ -24,4 +24,4 @@ The schema (``id="mtbSchema"``) is shown here because the RESTful listener uses 
 
 Note that the names and the data types conform to the declared schema.
 
-The restful listener (``etl:restfulListener id="restfulListener"``) declares a path (``etl:path value="mtb"``) that tells Pneumatic the resource that triggers this listener. If this service is running on ``localhost:8080``, perhaps using the Pneumatic.IO Boot Runner (reference), which leverages Spring Boot (reference), a request is posted to ``http://localhost:8080/mtb`` will trigger this listener.
+The restful listener (``restfulListener id="restfulListener"``) declares a path (``path value="mtb"``) that tells Pneumatic the resource that triggers this listener. If this service is running on ``localhost:8080``, perhaps using the Pneumatic.IO Boot Runner (reference), which leverages Spring Boot (reference), a request is posted to ``http://localhost:8080/mtb`` will trigger this listener.

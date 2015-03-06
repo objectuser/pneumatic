@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
@@ -13,29 +13,29 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="mtbSchema" name="MTB Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
-		<etl:column name="cost" type="decimal" />
-	</etl:schema>
+	<schema id="mtbSchema" name="MTB Schema">
+		<column name="name" type="string" />
+		<column name="year" type="integer" />
+		<column name="cost" type="decimal" />
+	</schema>
 
-	<etl:pipe id="restfulListenerOutput" />
-	<etl:restfulListener id="restfulListener" name="Restful Input">
-		<etl:path value="mtb" />
-		<etl:output ref="restfulListenerOutput" />
-		<etl:outputSchema ref="mtbSchema" />
-	</etl:restfulListener>
+	<pipe id="restfulListenerOutput" />
+	<restfulListener id="restfulListener" name="Restful Input">
+		<path value="mtb" />
+		<output ref="restfulListenerOutput" />
+		<outputSchema ref="mtbSchema" />
+	</restfulListener>
         
 	<jdbc:embedded-database id="dataSource" type="HSQL">
 		<jdbc:script location="classpath:db-schema.sql" />
 		<jdbc:script location="classpath:db-test-data.sql" />
 	</jdbc:embedded-database>
 
-	<etl:databaseWriter id="databaseWriter" name="Database Writer">
-		<etl:input ref="restfulListenerOutput" />
-		<etl:inputSchema ref="mtbSchema" />
-		<etl:dataSource ref="dataSource" />
-		<etl:insertInto table-name="mtb" />
-	</etl:databaseWriter>
+	<databaseWriter id="databaseWriter" name="Database Writer">
+		<input ref="restfulListenerOutput" />
+		<inputSchema ref="mtbSchema" />
+		<dataSource ref="dataSource" />
+		<insertInto table-name="mtb" />
+	</databaseWriter>
 
-</beans>
+</beans:beans>

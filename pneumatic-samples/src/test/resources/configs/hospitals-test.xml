@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,165 +10,165 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Provider ID" type="string" />
-		<etl:column name="Hospital Name" type="string" />
-		<etl:column name="Address" type="string" />
-		<etl:column name="City" type="string" />
-		<etl:column name="State" type="string" />
-		<etl:column name="ZIP Code" type="string" />
-		<etl:column name="County Name" type="string" />
-		<etl:column name="Phone Number" type="string" />
-		<etl:column name="Condition" type="string" />
-		<etl:column name="Measure ID" type="string" />
-		<etl:column name="Measure Name" type="string" />
-		<etl:column name="Score" type="string" />
-		<etl:column name="Sample" type="string" />
-		<etl:column name="Footnote" type="string" />
-		<etl:column name="Measure Start Date" type="string" />
-		<etl:column name="Measure End Date" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Provider ID" type="string" />
+		<column name="Hospital Name" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIP Code" type="string" />
+		<column name="County Name" type="string" />
+		<column name="Phone Number" type="string" />
+		<column name="Condition" type="string" />
+		<column name="Measure ID" type="string" />
+		<column name="Measure Name" type="string" />
+		<column name="Score" type="string" />
+		<column name="Sample" type="string" />
+		<column name="Footnote" type="string" />
+		<column name="Measure Start Date" type="string" />
+		<column name="Measure End Date" type="string" />
+	</schema>
 
-	<etl:schema id="hospitalSchema" name="Hospital Schema">
-		<etl:column name="Provider ID" type="string" />
-		<etl:column name="Hospital Name" type="string" />
-		<etl:column name="Address" type="string" />
-		<etl:column name="City" type="string" />
-		<etl:column name="State" type="string" />
-		<etl:column name="ZIP Code" type="string" />
-		<etl:column name="County Name" type="string" />
-		<etl:column name="Phone Number" type="string" />
-		<etl:column name="Condition" type="string" />
-		<etl:column name="Measure ID" type="string" />
-		<etl:column name="Measure Name" type="string" />
-		<etl:column name="Score" type="integer" />
-		<etl:column name="Sample" type="integer" />
-		<etl:column name="Footnote" type="string" />
-		<etl:column name="Measure Start Date" type="string" />
-		<etl:column name="Measure End Date" type="string" />
-	</etl:schema>
+	<schema id="hospitalSchema" name="Hospital Schema">
+		<column name="Provider ID" type="string" />
+		<column name="Hospital Name" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIP Code" type="string" />
+		<column name="County Name" type="string" />
+		<column name="Phone Number" type="string" />
+		<column name="Condition" type="string" />
+		<column name="Measure ID" type="string" />
+		<column name="Measure Name" type="string" />
+		<column name="Score" type="integer" />
+		<column name="Sample" type="integer" />
+		<column name="Footnote" type="string" />
+		<column name="Measure Start Date" type="string" />
+		<column name="Measure End Date" type="string" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="Hospital File Reader">
-		<etl:fileResource
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="Hospital File Reader">
+		<fileResource
 			location="classpath:data/Timely and Effective Care - Hospital.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="mapperOutput" />
-	<etl:mapper id="mapperFilter" name="Remove Trailing Empty Column Mapper">
-		<etl:input ref="fileReaderOutput" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="mapperOutput" />
-		<etl:outputSchema ref="hospitalSchema" />
-	</etl:mapper>
+	<pipe id="mapperOutput" />
+	<mapper id="mapperFilter" name="Remove Trailing Empty Column Mapper">
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="inputSchema" />
+		<output ref="mapperOutput" />
+		<outputSchema ref="hospitalSchema" />
+	</mapper>
 
-	<etl:pipe id="copyOutputToSort" />
-	<etl:pipe id="copyOutputToCount" />
-	<etl:pipe id="copyOutputToAverageScore" />
-	<etl:pipe id="copyOutputToTotalScore" />
-	<etl:copy id="copyFilter" name="Copy">
-		<etl:input ref="mapperOutput" />
-		<etl:output ref="copyOutputToSort" />
-		<etl:output ref="copyOutputToCount" />
-		<etl:output ref="copyOutputToAverageScore" />
-		<etl:output ref="copyOutputToTotalScore" />
-	</etl:copy>
+	<pipe id="copyOutputToSort" />
+	<pipe id="copyOutputToCount" />
+	<pipe id="copyOutputToAverageScore" />
+	<pipe id="copyOutputToTotalScore" />
+	<copy id="copyFilter" name="Copy">
+		<input ref="mapperOutput" />
+		<output ref="copyOutputToSort" />
+		<output ref="copyOutputToCount" />
+		<output ref="copyOutputToAverageScore" />
+		<output ref="copyOutputToTotalScore" />
+	</copy>
 
-	<etl:pipe id="sortOutput" />
-	<etl:sort id="sortFilter" name="Symbol Sorter">
-		<etl:input ref="copyOutputToSort" />
-		<etl:output ref="sortOutput" />
-		<etl:comparator>
-			<etl:column name="Hospital Name" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<pipe id="sortOutput" />
+	<sort id="sortFilter" name="Symbol Sorter">
+		<input ref="copyOutputToSort" />
+		<output ref="sortOutput" />
+		<comparator>
+			<column name="Hospital Name" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.csv" />
-		<etl:input ref="sortOutput" />
-		<etl:inputSchema ref="hospitalSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.csv" />
+		<input ref="sortOutput" />
+		<inputSchema ref="hospitalSchema" />
+	</fileWriter>
 
 	<!-- Count -->
-	<etl:schema id="countSchemaBuilder" name="Count Schema">
-		<etl:column name="Count" type="integer" />
-	</etl:schema>
-	<etl:pipe id="countFunctionOutput" />
-	<etl:aggregator id="countFilter" name="Counter">
-		<etl:input ref="copyOutputToCount" />
-		<etl:inputSchema ref="hospitalSchema" />
-		<etl:output ref="countFunctionOutput" />
-		<etl:outputSchema ref="countSchemaBuilder" />
-		<etl:function>
-			<etl:count>
-				<etl:out>
-					<etl:column name="Count" type="integer" />
-				</etl:out>
-			</etl:count>
-		</etl:function>
-	</etl:aggregator>
-	<etl:fileWriter id="countFileWriter" name="Count File Writer">
-		<etl:fileResource location="file:output/count-output.txt" />
-		<etl:input ref="countFunctionOutput" />
-		<etl:inputSchema ref="countSchemaBuilder" />
-	</etl:fileWriter>
+	<schema id="countSchemaBuilder" name="Count Schema">
+		<column name="Count" type="integer" />
+	</schema>
+	<pipe id="countFunctionOutput" />
+	<aggregator id="countFilter" name="Counter">
+		<input ref="copyOutputToCount" />
+		<inputSchema ref="hospitalSchema" />
+		<output ref="countFunctionOutput" />
+		<outputSchema ref="countSchemaBuilder" />
+		<function>
+			<count>
+				<out>
+					<column name="Count" type="integer" />
+				</out>
+			</count>
+		</function>
+	</aggregator>
+	<fileWriter id="countFileWriter" name="Count File Writer">
+		<fileResource location="file:output/count-output.txt" />
+		<input ref="countFunctionOutput" />
+		<inputSchema ref="countSchemaBuilder" />
+	</fileWriter>
 
 	<!-- Average Score -->
-	<etl:schema id="averageScoreSchema" name="Average Score Schema">
-		<etl:column name="Average" type="decimal" />
-	</etl:schema>
-	<etl:pipe id="averageScoreFunctionOutput" />
-	<etl:aggregator id="averageScoreFilter" name="Average Score">
-		<etl:input ref="copyOutputToAverageScore" />
-		<etl:inputSchema ref="hospitalSchema" />
-		<etl:output ref="averageScoreFunctionOutput" />
-		<etl:outputSchema ref="averageScoreSchema" />
-		<etl:function>
-			<etl:sum>
-				<etl:in>
-					<etl:column name="Score" type="integer" />
-				</etl:in>
-				<etl:out>
-					<etl:column name="Average" type="decimal" />
-				</etl:out>
-			</etl:sum>
-		</etl:function>
-	</etl:aggregator>
-	<etl:fileWriter id="averageScoreFileWriter" name="Average Score File Writer">
-		<etl:fileResource location="file:output/average-score-output.txt" />
-		<etl:input ref="averageScoreFunctionOutput" />
-		<etl:inputSchema ref="averageScoreSchema" />
-	</etl:fileWriter>
+	<schema id="averageScoreSchema" name="Average Score Schema">
+		<column name="Average" type="decimal" />
+	</schema>
+	<pipe id="averageScoreFunctionOutput" />
+	<aggregator id="averageScoreFilter" name="Average Score">
+		<input ref="copyOutputToAverageScore" />
+		<inputSchema ref="hospitalSchema" />
+		<output ref="averageScoreFunctionOutput" />
+		<outputSchema ref="averageScoreSchema" />
+		<function>
+			<sum>
+				<in>
+					<column name="Score" type="integer" />
+				</in>
+				<out>
+					<column name="Average" type="decimal" />
+				</out>
+			</sum>
+		</function>
+	</aggregator>
+	<fileWriter id="averageScoreFileWriter" name="Average Score File Writer">
+		<fileResource location="file:output/average-score-output.txt" />
+		<input ref="averageScoreFunctionOutput" />
+		<inputSchema ref="averageScoreSchema" />
+	</fileWriter>
 
 	<!-- Total Score -->
-	<etl:schema id="totalScoreSchemaBuilder" name="Total Score Schema">
-		<etl:column name="Sum" type="integer" />
-	</etl:schema>
-	<etl:pipe id="totalScoreFunctionOutput" />
-	<etl:aggregator id="totalScoreFilter" name="Total Score">
-		<etl:input ref="copyOutputToTotalScore" />
-		<etl:inputSchema ref="hospitalSchema" />
-		<etl:output ref="totalScoreFunctionOutput" />
-		<etl:outputSchema ref="totalScoreSchemaBuilder" />
-		<etl:function>
-			<etl:sum>
-				<etl:in>
-					<etl:column name="Score" type="integer" />
-				</etl:in>
-				<etl:out>
-					<etl:column name="Sum" type="integer" />
-				</etl:out>
-			</etl:sum>
-		</etl:function>
-	</etl:aggregator>
-	<etl:fileWriter id="totalScoreFileWriter" name="Total Score File Writer">
-		<etl:fileResource location="file:output/totalscore-output.txt" />
-		<etl:input ref="totalScoreFunctionOutput" />
-		<etl:inputSchema ref="totalScoreSchemaBuilder" />
-	</etl:fileWriter>
+	<schema id="totalScoreSchemaBuilder" name="Total Score Schema">
+		<column name="Sum" type="integer" />
+	</schema>
+	<pipe id="totalScoreFunctionOutput" />
+	<aggregator id="totalScoreFilter" name="Total Score">
+		<input ref="copyOutputToTotalScore" />
+		<inputSchema ref="hospitalSchema" />
+		<output ref="totalScoreFunctionOutput" />
+		<outputSchema ref="totalScoreSchemaBuilder" />
+		<function>
+			<sum>
+				<in>
+					<column name="Score" type="integer" />
+				</in>
+				<out>
+					<column name="Sum" type="integer" />
+				</out>
+			</sum>
+		</function>
+	</aggregator>
+	<fileWriter id="totalScoreFileWriter" name="Total Score File Writer">
+		<fileResource location="file:output/totalscore-output.txt" />
+		<input ref="totalScoreFunctionOutput" />
+		<inputSchema ref="totalScoreSchemaBuilder" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

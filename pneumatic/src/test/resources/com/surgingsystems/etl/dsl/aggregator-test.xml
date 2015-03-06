@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,34 +10,34 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
         
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 	
-	<etl:schema id="aggregatorSchema" name="Aggregator Schema">
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="aggregatorSchema" name="Aggregator Schema">
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:pipe id="input" />
-	<etl:pipe id="output" />
-	<etl:pipe id="aggregatorOutput" />
-	<etl:aggregator id="aggregator" name="Test Aggregator">
-		<etl:input ref="input" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="aggregatorOutput" />
-		<etl:outputSchema ref="aggregatorSchema" />
-		<etl:function>
-			<etl:sum>
-				<etl:in>
-					<etl:column name="Price" type="decimal" />
-				</etl:in>
-				<etl:out>
-					<etl:column name="Price" type="decimal" />
-				</etl:out>
-			</etl:sum>
-		</etl:function>
-	</etl:aggregator>
+	<pipe id="input" />
+	<pipe id="output" />
+	<pipe id="aggregatorOutput" />
+	<aggregator id="aggregator" name="Test Aggregator">
+		<input ref="input" />
+		<inputSchema ref="inputSchema" />
+		<output ref="aggregatorOutput" />
+		<outputSchema ref="aggregatorSchema" />
+		<function>
+			<sum>
+				<in>
+					<column name="Price" type="decimal" />
+				</in>
+				<out>
+					<column name="Price" type="decimal" />
+				</out>
+			</sum>
+		</function>
+	</aggregator>
 
-</beans>
+</beans:beans>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,52 +10,52 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 	
-	<etl:pipe id="input1" />
-	<etl:pipe id="input2" />
-	<etl:pipe id="output" />
+	<pipe id="input1" />
+	<pipe id="input2" />
+	<pipe id="output" />
 	
-	<etl:join id="innerJoin" name="Inner Join">
-		<etl:leftInput ref="input1" />
-		<etl:rightInput ref="input2" />
-		<etl:output ref="output" />
-		<etl:outputSchema ref="inputSchema" />
-		<etl:comparator>
-			<etl:column name="Name" type="string" />
-		</etl:comparator>
-	</etl:join>
+	<join id="innerJoin" name="Inner Join">
+		<leftInput ref="input1" />
+		<rightInput ref="input2" />
+		<output ref="output" />
+		<outputSchema ref="inputSchema" />
+		<comparator>
+			<column name="Name" type="string" />
+		</comparator>
+	</join>
 	
-	<etl:join id="outerJoin" name="Outer Join">
-		<etl:leftInput ref="input1" />
-		<etl:rightInput ref="input2" />
-		<etl:output ref="output" />
-		<etl:outputSchema ref="inputSchema" />
-		<etl:comparator>
-			<etl:column name="Name" type="string" />
-		</etl:comparator>
-		<etl:leftOuterJoin />
-	</etl:join>
+	<join id="outerJoin" name="Outer Join">
+		<leftInput ref="input1" />
+		<rightInput ref="input2" />
+		<output ref="output" />
+		<outputSchema ref="inputSchema" />
+		<comparator>
+			<column name="Name" type="string" />
+		</comparator>
+		<leftOuterJoin />
+	</join>
 	
-	<etl:join id="innerJoinWithCustomComparator" name="Inner Join with Custom Comparator">
-		<etl:leftInput ref="input1" />
-		<etl:rightInput ref="input2" />
-		<etl:output ref="output" />
-		<etl:outputSchema ref="inputSchema" />
-		<etl:comparator>
-			<bean class="com.surgingsystems.etl.filter.JoinFilterTest.TwoColumnComparator">
-				<property name="columns">
-					<list>
-						<etl:column name="Name" type="string" />
-						<etl:column name="Count" type="integer" />
-					</list>
-				</property>
-			</bean>
-		</etl:comparator>
-	</etl:join>
+	<join id="innerJoinWithCustomComparator" name="Inner Join with Custom Comparator">
+		<leftInput ref="input1" />
+		<rightInput ref="input2" />
+		<output ref="output" />
+		<outputSchema ref="inputSchema" />
+		<comparator>
+			<beans:bean class="com.surgingsystems.etl.filter.JoinFilterTest.TwoColumnComparator">
+				<beans:property name="columns">
+					<beans:list>
+						<column name="Name" type="string" />
+						<column name="Count" type="integer" />
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</comparator>
+	</join>
 
-</beans>
+</beans:beans>

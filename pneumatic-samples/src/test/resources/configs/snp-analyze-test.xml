@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,99 +10,99 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="LastSale" type="string" />
-		<etl:column name="MarketCap" type="string" />
-		<etl:column name="ADR TSO" type="string" />
-		<etl:column name="IPOyear" type="string" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="industry" type="string" />
-		<etl:column name="Summary Quote" type="string" />
-		<etl:column name="Empty" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="LastSale" type="string" />
+		<column name="MarketCap" type="string" />
+		<column name="ADR TSO" type="string" />
+		<column name="IPOyear" type="string" />
+		<column name="Sector" type="string" />
+		<column name="industry" type="string" />
+		<column name="Summary Quote" type="string" />
+		<column name="Empty" type="string" />
+	</schema>
 
-	<etl:pipe id="allStocksFileReaderOutput" />
-	<etl:fileReader id="allStocksFileReader" name="All Stocks File Reader">
-		<etl:fileResource location="classpath:data/companylist.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="allStocksFileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="allStocksFileReaderOutput" />
+	<fileReader id="allStocksFileReader" name="All Stocks File Reader">
+		<fileResource location="classpath:data/companylist.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="allStocksFileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="sortAllStocksOutput" />
-	<etl:sort id="sortAllStocks" name="Sort All Stocks">
-		<etl:input ref="allStocksFileReaderOutput" />
-		<etl:output ref="sortAllStocksOutput" />
-		<etl:comparator>
-			<etl:column name="Symbol" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<pipe id="sortAllStocksOutput" />
+	<sort id="sortAllStocks" name="Sort All Stocks">
+		<input ref="allStocksFileReaderOutput" />
+		<output ref="sortAllStocksOutput" />
+		<comparator>
+			<column name="Symbol" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:schema id="snpSchema" name="Input File Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="Price" type="decimal" />
-		<etl:column name="Dividend Yield" type="decimal" />
-		<etl:column name="Price/Earnings" type="decimal" />
-		<etl:column name="Earnings/Share" type="decimal" />
-		<etl:column name="Book Value" type="decimal" />
-		<etl:column name="52 week low" type="decimal" />
-		<etl:column name="52 week high" type="decimal" />
-		<etl:column name="Market Cap" type="decimal" />
-		<etl:column name="EBITDA" type="decimal" />
-		<etl:column name="Price/Sales" type="decimal" />
-		<etl:column name="Price/Book" type="decimal" />
-		<etl:column name="SEC Filings" type="string" />
-	</etl:schema>
+	<schema id="snpSchema" name="Input File Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="Sector" type="string" />
+		<column name="Price" type="decimal" />
+		<column name="Dividend Yield" type="decimal" />
+		<column name="Price/Earnings" type="decimal" />
+		<column name="Earnings/Share" type="decimal" />
+		<column name="Book Value" type="decimal" />
+		<column name="52 week low" type="decimal" />
+		<column name="52 week high" type="decimal" />
+		<column name="Market Cap" type="decimal" />
+		<column name="EBITDA" type="decimal" />
+		<column name="Price/Sales" type="decimal" />
+		<column name="Price/Book" type="decimal" />
+		<column name="SEC Filings" type="string" />
+	</schema>
 
-	<etl:pipe id="snpFileReaderOutput" />
-	<etl:fileReader id="snpFileReader" name="All Stocks File Reader">
-		<etl:fileResource location="classpath:data/snp-constituents-financials.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="snpFileReaderOutput" />
-		<etl:outputSchema ref="snpSchema" />
-	</etl:fileReader>
+	<pipe id="snpFileReaderOutput" />
+	<fileReader id="snpFileReader" name="All Stocks File Reader">
+		<fileResource location="classpath:data/snp-constituents-financials.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="snpFileReaderOutput" />
+		<outputSchema ref="snpSchema" />
+	</fileReader>
 
-	<bean id="sortSnpOutput" class="com.surgingsystems.etl.pipe.BlockingQueuePipe" />
-	<etl:sort id="sortSnp" name="Sort S&amp;P 500">
-		<etl:input ref="snpFileReaderOutput" />
-		<etl:output ref="sortSnpOutput" />
-		<etl:comparator>
-			<etl:column name="Symbol" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<beans:bean id="sortSnpOutput" class="com.surgingsystems.etl.pipe.BlockingQueuePipe" />
+	<sort id="sortSnp" name="Sort S&amp;P 500">
+		<input ref="snpFileReaderOutput" />
+		<output ref="sortSnpOutput" />
+		<comparator>
+			<column name="Symbol" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:schema id="joinSchema" name="Input File Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="IPOyear" type="string" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="Price" type="decimal" />
-		<etl:column name="Dividend Yield" type="decimal" />
-		<etl:column name="Price/Earnings" type="decimal" />
-		<etl:column name="Earnings/Share" type="decimal" />
-	</etl:schema>
+	<schema id="joinSchema" name="Input File Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="IPOyear" type="string" />
+		<column name="Sector" type="string" />
+		<column name="Price" type="decimal" />
+		<column name="Dividend Yield" type="decimal" />
+		<column name="Price/Earnings" type="decimal" />
+		<column name="Earnings/Share" type="decimal" />
+	</schema>
 
-	<etl:pipe id="joinOutput" />
-	<etl:join id="joinFilter" name="Join">
-		<etl:leftInput ref="sortAllStocksOutput" />
-		<etl:rightInput ref="sortSnpOutput" />
-		<etl:output ref="joinOutput" />
-		<etl:outputSchema ref="joinSchema" />
-		<etl:comparator>
-			<etl:column name="Symbol" type="string" />
-		</etl:comparator>
-	</etl:join>
+	<pipe id="joinOutput" />
+	<join id="joinFilter" name="Join">
+		<leftInput ref="sortAllStocksOutput" />
+		<rightInput ref="sortSnpOutput" />
+		<output ref="joinOutput" />
+		<outputSchema ref="joinSchema" />
+		<comparator>
+			<column name="Symbol" type="string" />
+		</comparator>
+	</join>
 
-	<etl:fileWriter id="joinFileWriter" name="Join File Writer">
-		<etl:fileResource location="file:output/output1.csv" />
-		<etl:input ref="joinOutput" />
-		<etl:inputSchema ref="joinSchema" />
-	</etl:fileWriter>
+	<fileWriter id="joinFileWriter" name="Join File Writer">
+		<fileResource location="file:output/output1.csv" />
+		<input ref="joinOutput" />
+		<inputSchema ref="joinSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

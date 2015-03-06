@@ -54,20 +54,20 @@ Using the script is easy, but it does quite a few things. The script uses `Gradl
 
 The first two are only done if necessary: if Gradle has already been downloaded, or Pnematic is already built, it won't do these things again.
 
-Gradle and Pnematic.IO are both dependent on a Java runtime on your system. Pneumatic is currently compiled to Java 8.
+Gradle and Pnematic.IO are both dependent on a Java runtime on your system, which is `available from Oracle <http://www.oracle.com/technetwork/java/javase/downloads/index.html>`_. Pneumatic is currently compiled to Java 8.
 
 Schemas
 =======
 
 Schemas describe the structure of data. Filters use schemas for validating and generating structured data in the form of "records". A record may be thought of as an "instance" of a schema. A schema is to a record like a car is to a 2015 Porsche 911.
 
-From the previous example, a schema is defined using the ``etl:schema`` tag. A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types.::
+From the previous example, a schema is defined using the ``schema`` tag. A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types.::
 
-	<etl:schema id="mtbSchema" name="MTB Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
-		<etl:column name="cost" type="decimal" />
-	</etl:schema>
+	<schema id="mtbSchema" name="MTB Schema">
+		<column name="name" type="string" />
+		<column name="year" type="integer" />
+		<column name="cost" type="decimal" />
+	</schema>
 
 If a record does not need to be validated or generated, no schema is required by the filter. An example of this is the copy filter which copies the input records to the configured outputs, unmodified.
 
@@ -78,9 +78,9 @@ Schema Types
 
 There are three types of schemas:
 
-* Tabular schemas - (``etl:schema``) represent traditional (i.e., database like) schemas with fixed columns and data types.
-* XML schemas (experimental) - (``etl:xmlSchema``) represent schemas for XML documents based on the XML Schema Definition. XML schemas work in some cases but are experimental at this point.
-* JSON schemas (experimental) - (``etl:jsonSchema``) represent schemas for JSON documents based on http://json-schema.org/.
+* Tabular schemas - (``schema``) represent traditional (i.e., database like) schemas with fixed columns and data types.
+* XML schemas (experimental) - (``xmlSchema``) represent schemas for XML documents based on the XML Schema Definition. XML schemas work in some cases but are experimental at this point.
+* JSON schemas (experimental) - (``jsonSchema``) represent schemas for JSON documents based on http://json-schema.org/.
 
 Pipes
 =====

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,37 +10,37 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="An Integer" type="integer" />
-		<etl:column name="A Decimal" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="An Integer" type="integer" />
+		<column name="A Decimal" type="decimal" />
+	</schema>
 
-	<etl:pipe id="fileOutput1" />
-	<etl:fileReader id="fileReader1" name="File Reader 1">
-		<etl:fileResource location="classpath:data/input1.txt" />
-		<etl:output ref="fileOutput1" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileOutput1" />
+	<fileReader id="fileReader1" name="File Reader 1">
+		<fileResource location="classpath:data/input1.txt" />
+		<output ref="fileOutput1" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="fileOutput2" />
-	<etl:fileReader id="fileReader2" name="File Reader 2">
-		<etl:fileResource location="classpath:data/input2.txt" />
-		<etl:output ref="fileOutput2" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileOutput2" />
+	<fileReader id="fileReader2" name="File Reader 2">
+		<fileResource location="classpath:data/input2.txt" />
+		<output ref="fileOutput2" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 	
-	<etl:pipe id="funnelOutput" />
-	<etl:funnel id="funnel" name="Funnel">
-		<etl:input ref="fileOutput1" />
-		<etl:input ref="fileOutput2" />
-		<etl:output ref="funnelOutput" />
-	</etl:funnel>
+	<pipe id="funnelOutput" />
+	<funnel id="funnel" name="Funnel">
+		<input ref="fileOutput1" />
+		<input ref="fileOutput2" />
+		<output ref="funnelOutput" />
+	</funnel>
 
-	<etl:fileWriter id="fileWriter" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="funnelOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="funnelOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 	
-</beans>
+</beans:beans>
