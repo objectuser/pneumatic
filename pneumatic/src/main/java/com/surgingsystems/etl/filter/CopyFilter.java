@@ -21,7 +21,7 @@ import com.surgingsystems.etl.record.Record;
  * <li>The outputs contain copies of the input, unchanged.</li>
  * </ul>
  */
-public class CopyFilter extends SingleInputFilter implements InputFilter, OutputFilter {
+public class CopyFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(CopyFilter.class);
 
@@ -61,16 +61,6 @@ public class CopyFilter extends SingleInputFilter implements InputFilter, Output
         }
 
         logSummary();
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        outputs.add(pipe);
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        setInput(pipe);
     }
 
     public List<Pipe> getOutputs() {

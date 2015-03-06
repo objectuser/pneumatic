@@ -33,7 +33,7 @@ import com.surgingsystems.etl.schema.StringColumnType;
  * is never used.</li>
  * </ul>
  */
-public class FileReaderFilter extends GuardedFilter implements OutputFilter {
+public class FileReaderFilter extends GuardedFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(FileReaderFilter.class);
 
@@ -65,11 +65,6 @@ public class FileReaderFilter extends GuardedFilter implements OutputFilter {
         Assert.notNull(output, "The output pipe is required");
         Assert.notNull(outputSchema, "The output schema is required");
         Assert.notNull(itemReader, "The file resource is required");
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        setOutput(pipe);
     }
 
     public void setOutputSchema(Schema schema) {

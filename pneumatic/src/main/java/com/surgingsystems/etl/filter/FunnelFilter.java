@@ -20,7 +20,7 @@ import com.surgingsystems.etl.record.Record;
  * <li>A single output.</li>
  * </ul>
  */
-public class FunnelFilter extends GuardedFilter implements InputFilter, OutputFilter {
+public class FunnelFilter extends GuardedFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(CopyFilter.class);
 
@@ -78,16 +78,6 @@ public class FunnelFilter extends GuardedFilter implements InputFilter, OutputFi
         }
 
         return result;
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        output = pipe;
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        inputs.add(pipe);
     }
 
     public List<Pipe> getInputs() {

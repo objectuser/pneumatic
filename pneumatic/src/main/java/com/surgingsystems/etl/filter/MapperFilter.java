@@ -31,7 +31,7 @@ import com.surgingsystems.etl.schema.SchemaRecordValidator;
  * convertable.</li>
  * </ul>
  */
-public class MapperFilter extends SingleInputFilter implements InputFilter, OutputFilter {
+public class MapperFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(MapperFilter.class);
 
@@ -110,16 +110,6 @@ public class MapperFilter extends SingleInputFilter implements InputFilter, Outp
     protected void postProcess() {
         output.closedForInput();
         logSummary();
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        output = pipe;
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        setInput(pipe);
     }
 
     public Pipe getOutput() {

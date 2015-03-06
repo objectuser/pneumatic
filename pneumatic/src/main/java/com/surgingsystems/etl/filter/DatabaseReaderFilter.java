@@ -38,10 +38,10 @@ import com.surgingsystems.etl.schema.SchemaRecordValidator;
  * <li>A single schema for the output.</li>
  * </ul>
  */
-public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter {
+public class DatabaseReaderFilter extends GuardedFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(DatabaseReaderFilter.class);
-    
+
     @Autowired
     private EtlContextHolder etlContextHolder;
 
@@ -52,11 +52,11 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
     private Pipe output;
 
     private Schema outputSchema;
-    
+
     private JdbcTemplate jdbcTemplate;
 
     private Mapping mapping = new Mapping();
-    
+
     private RecordValidator recordValidator;
 
     private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
@@ -78,26 +78,26 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
         Assert.notNull(outputSchema, "The output schema is required");
         Assert.notNull(sql, "The select statement is required");
         Assert.notNull(jdbcTemplate, "The data source is required");
-        
+
         mapping.setOutputSchema(outputSchema);
         mapping.validate(outputSchema);
-        
+
         recordValidator = new SchemaRecordValidator(outputSchema);
-        
+
         setupExpressions();
     }
 
     @Override
     protected void filter() {
-        
+
         List<Object> arguments = new ArrayList<Object>();
         for (String parameter : parameters) {
             Object value = expressionHelper.evaluate(parameter);
             arguments.add(value);
         }
-        
+
         Object[] args = arguments.toArray(new Object[] {});
-        
+
         jdbcTemplate.query(sql, args, new RowMapper<Record>() {
 
             private ResultSetRecord resultSetRecord;
@@ -129,11 +129,6 @@ public class DatabaseReaderFilter extends GuardedFilter implements OutputFilter 
 
     public void setOutput(Pipe output) {
         this.output = output;
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        setOutput(pipe);
     }
 
     public String getSql() {

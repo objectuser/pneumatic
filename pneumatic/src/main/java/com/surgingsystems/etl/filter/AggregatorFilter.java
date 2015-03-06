@@ -38,7 +38,7 @@ import com.surgingsystems.etl.schema.SchemaRecordValidator;
  * </ul>
  * </ul>
  */
-public class AggregatorFilter extends SingleInputFilter implements InputFilter, OutputFilter {
+public class AggregatorFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(AggregatorFilter.class);
 
@@ -122,15 +122,10 @@ public class AggregatorFilter extends SingleInputFilter implements InputFilter, 
 
         output.put(aggregationRecord);
         output.closedForInput();
-        
+
         rejectRecordStrategy.close();
 
         logSummary();
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        setOutput(pipe);
     }
 
     public Schema getInputSchema() {

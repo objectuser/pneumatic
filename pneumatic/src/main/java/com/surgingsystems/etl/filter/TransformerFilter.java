@@ -29,7 +29,7 @@ import com.surgingsystems.etl.schema.Schema;
 /**
  * Transformers use SpEL expressions to create a programmable filter.
  */
-public class TransformerFilter extends SingleInputFilter implements InputFilter {
+public class TransformerFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(TransformerFilter.class);
 
