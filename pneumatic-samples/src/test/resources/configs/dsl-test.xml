@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -11,23 +11,23 @@
 
 	<context:component-scan base-package="com.surgingsystems.etl" />
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/input1.txt" />
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/input1.txt" />
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:fileWriter id="fileReader" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="fileReaderOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileReader" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
@@ -18,23 +18,23 @@
 		<jdbc:script location="classpath:db-test-data.sql" />
 	</jdbc:embedded-database>
         
-	<etl:schema id="outputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="outputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 	
-	<etl:pipe id="output" />
-	<etl:databaseReader id="databaseReader" name="Database Reader">
-		<etl:output ref="output" />
-		<etl:outputSchema ref="outputSchema" />
-		<etl:dataSource ref="dataSource" />
-		<etl:select>
-			<etl:sql>
+	<pipe id="output" />
+	<databaseReader id="databaseReader" name="Database Reader">
+		<output ref="output" />
+		<outputSchema ref="outputSchema" />
+		<dataSource ref="dataSource" />
+		<select>
+			<sql>
 				select * from table where name = ?
-			</etl:sql>
-			<etl:parameter value="Trance" />
-		</etl:select>
-	</etl:databaseReader>
+			</sql>
+			<parameter value="Trance" />
+		</select>
+	</databaseReader>
 
-</beans>
+</beans:beans>

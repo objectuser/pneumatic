@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,41 +10,41 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input File Schema">
-		<etl:column name="Symbol" type="string" />
-		<etl:column name="Name" type="string" />
-		<etl:column name="LastSale" type="string" />
-		<etl:column name="MarketCap" type="string" />
-		<etl:column name="ADR TSO" type="string" />
-		<etl:column name="IPOyear" type="string" />
-		<etl:column name="Sector" type="string" />
-		<etl:column name="industry" type="string" />
-		<etl:column name="Summary Quote" type="string" />
-		<etl:column name="Empty" type="string" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input File Schema">
+		<column name="Symbol" type="string" />
+		<column name="Name" type="string" />
+		<column name="LastSale" type="string" />
+		<column name="MarketCap" type="string" />
+		<column name="ADR TSO" type="string" />
+		<column name="IPOyear" type="string" />
+		<column name="Sector" type="string" />
+		<column name="industry" type="string" />
+		<column name="Summary Quote" type="string" />
+		<column name="Empty" type="string" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/companylist.csv">
-			<etl:skipLines value="1" />
-		</etl:fileResource>
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/companylist.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="sortOutput" />
-	<etl:sort id="sortFilter" name="Symbol Sorter">
-		<etl:input ref="fileReaderOutput" />
-		<etl:output ref="sortOutput" />
-		<etl:comparator>
-			<etl:column name="Symbol" type="string" />
-		</etl:comparator>
-	</etl:sort>
+	<pipe id="sortOutput" />
+	<sort id="sortFilter" name="Symbol Sorter">
+		<input ref="fileReaderOutput" />
+		<output ref="sortOutput" />
+		<comparator>
+			<column name="Symbol" type="string" />
+		</comparator>
+	</sort>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.csv" />
-		<etl:input ref="sortOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.csv" />
+		<input ref="sortOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

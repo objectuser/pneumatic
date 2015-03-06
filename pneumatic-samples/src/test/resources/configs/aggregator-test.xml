@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -10,68 +10,68 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="An Integer" type="integer" />
-		<etl:column name="A Decimal" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="An Integer" type="integer" />
+		<column name="A Decimal" type="decimal" />
+	</schema>
 
-	<etl:schema id="countSchema" name="Count Schema">
-		<etl:column name="Count" type="integer" />
-	</etl:schema>
+	<schema id="countSchema" name="Count Schema">
+		<column name="Count" type="integer" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader 1">
-		<etl:fileResource location="classpath:data/input1.txt" />
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="inputSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader 1">
+		<fileResource location="classpath:data/input1.txt" />
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="inputSchema" />
+	</fileReader>
 
-	<etl:pipe id="copyOutput1" />
-	<etl:pipe id="copyOutput2" />
-	<etl:copy id="copy" name="Test Copy">
-		<etl:input ref="fileReaderOutput" />
-		<etl:output ref="copyOutput1" />
-		<etl:output ref="copyOutput2" />
-	</etl:copy>
+	<pipe id="copyOutput1" />
+	<pipe id="copyOutput2" />
+	<copy id="copy" name="Test Copy">
+		<input ref="fileReaderOutput" />
+		<output ref="copyOutput1" />
+		<output ref="copyOutput2" />
+	</copy>
 
-	<etl:pipe id="aggregatorFunctionOutput" />
-	<etl:pipe id="aggregatorRejectionOutput" />
-	<etl:aggregator id="aggregatorFilter" name="Aggregator">
-		<etl:input ref="copyOutput2" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="aggregatorFunctionOutput" />
-		<etl:outputSchema ref="countSchema" />
-		<etl:function>
-			<etl:count>
-				<etl:out>
-					<etl:column name="Count" type="integer" />
-				</etl:out>
-			</etl:count>
-		</etl:function>
+	<pipe id="aggregatorFunctionOutput" />
+	<pipe id="aggregatorRejectionOutput" />
+	<aggregator id="aggregatorFilter" name="Aggregator">
+		<input ref="copyOutput2" />
+		<inputSchema ref="inputSchema" />
+		<output ref="aggregatorFunctionOutput" />
+		<outputSchema ref="countSchema" />
+		<function>
+			<count>
+				<out>
+					<column name="Count" type="integer" />
+				</out>
+			</count>
+		</function>
 		
-		<etl:rejection>
-			<etl:output ref="aggregatorRejectionOutput" />
+		<rejection>
+			<output ref="aggregatorRejectionOutput" />
 			<!-- etl:log level="warn" name="Aggregator Rejects" / -->
-		</etl:rejection>
-	</etl:aggregator>
+		</rejection>
+	</aggregator>
 
-	<etl:fileWriter id="fileWriter1" name="File Writer 1">
-		<etl:fileResource location="file:output/output1.txt" />
-		<etl:input ref="copyOutput1" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="copyOutput1" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-	<etl:fileWriter id="fileWriter2" name="File Writer 2">
-		<etl:fileResource location="file:output/output2.txt" />
-		<etl:input ref="aggregatorFunctionOutput" />
-		<etl:inputSchema ref="countSchema" />
-	</etl:fileWriter>
+	<fileWriter id="fileWriter2" name="File Writer 2">
+		<fileResource location="file:output/output2.txt" />
+		<input ref="aggregatorFunctionOutput" />
+		<inputSchema ref="countSchema" />
+	</fileWriter>
 
-	<etl:fileWriter id="rejectionFileWriter" name="Rejection File Writer">
-		<etl:fileResource location="file:output/rejection-output.txt" />
-		<etl:input ref="aggregatorRejectionOutput" />
-		<etl:inputSchema ref="inputSchema" />
-	</etl:fileWriter>
+	<fileWriter id="rejectionFileWriter" name="Rejection File Writer">
+		<fileResource location="file:output/rejection-output.txt" />
+		<input ref="aggregatorRejectionOutput" />
+		<inputSchema ref="inputSchema" />
+	</fileWriter>
 
-</beans>
+</beans:beans>

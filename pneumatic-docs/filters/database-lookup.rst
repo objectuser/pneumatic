@@ -13,20 +13,20 @@ It is important to avoid name collisions to ensure the results are as expected. 
 
 Consider the following example::
 
-	<etl:pipe id="databaseLookupOutput" />
-	<etl:databaseLookup id="databaseLookup" name="Database Lookup">
-		<etl:input ref="mapperOutput" />
-		<etl:inputSchema ref="mapperMtbSchema" />
-		<etl:output ref="databaseLookupOutput" />
-		<etl:outputSchema ref="lookupSchema" />
-		<etl:dataSource ref="dataSource" />
-		<etl:lookup>
-			<etl:sql>
+	<pipe id="databaseLookupOutput" />
+	<databaseLookup id="databaseLookup" name="Database Lookup">
+		<input ref="mapperOutput" />
+		<inputSchema ref="mapperMtbSchema" />
+		<output ref="databaseLookupOutput" />
+		<outputSchema ref="lookupSchema" />
+		<dataSource ref="dataSource" />
+		<lookup>
+			<sql>
 				select year, cost from mtb where name = ?
-			</etl:sql>
-			<etl:parameter value="#inputRecord.name" />
-		</etl:lookup>
-	</etl:databaseLookup>
+			</sql>
+			<parameter value="#inputRecord.name" />
+		</lookup>
+	</databaseLookup>
 
 The data source reference (``id="dataSource"``) is an object of type ``javax.sql.DataSource``.  It might be defined like this::
 

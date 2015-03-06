@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
@@ -18,25 +18,25 @@
 		<jdbc:script location="classpath:db-test-data.sql" />
 	</jdbc:embedded-database>
 
-	<etl:schema id="mtbSchema" name="MTB Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
-		<etl:column name="price" type="decimal" />
-	</etl:schema>
+	<schema id="mtbSchema" name="MTB Schema">
+		<column name="name" type="string" />
+		<column name="year" type="integer" />
+		<column name="price" type="decimal" />
+	</schema>
 	
-	<etl:pipe id="input" />
-	<etl:databaseWriter id="databaseWriter" name="Database Writer">
-		<etl:input ref="input" />
-		<etl:inputSchema ref="mtbSchema" />
-		<etl:dataSource ref="dataSource" />
-		<etl:updateWith>
-			<etl:sql>
+	<pipe id="input" />
+	<databaseWriter id="databaseWriter" name="Database Writer">
+		<input ref="input" />
+		<inputSchema ref="mtbSchema" />
+		<dataSource ref="dataSource" />
+		<updateWith>
+			<sql>
 				update mtb set year = ?, price = ? where name = ?
-			</etl:sql>
-			<etl:parameter value="#inputRecord.year" />
-			<etl:parameter value="#inputRecord.price" />
-			<etl:parameter value="#inputRecord.name" />
-		</etl:updateWith>
-	</etl:databaseWriter>
+			</sql>
+			<parameter value="#inputRecord.year" />
+			<parameter value="#inputRecord.price" />
+			<parameter value="#inputRecord.name" />
+		</updateWith>
+	</databaseWriter>
 
-</beans>
+</beans:beans>

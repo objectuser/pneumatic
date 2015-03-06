@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:etl="http://www.surgingsystems.com/schema/etl"
@@ -12,51 +12,51 @@
 
 	<context:component-scan base-package="com.surgingsystems.etl" />
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Item Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Item Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 	
-	<etl:schema id="aggregatorSchema" name="Aggregator Schema">
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="aggregatorSchema" name="Aggregator Schema">
+		<column name="Price" type="decimal" />
+	</schema>
 
-	<etl:pipe id="input" />
-	<etl:pipe id="output" />
-	<etl:pipe id="aggregatorOutput" />
-	<etl:aggregator id="aggregator1" name="Test Aggregator 1">
-		<etl:input ref="input" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="aggregatorOutput" />
-		<etl:outputSchema ref="aggregatorSchema" />
-		<etl:function>
-			<etl:sum>
-				<etl:in>
-					<etl:column name="Price" type="decimal" />
-				</etl:in>
-				<etl:out>
-					<etl:column name="Price" type="decimal" />
-				</etl:out>
-			</etl:sum>
-		</etl:function>
-	</etl:aggregator>
+	<pipe id="input" />
+	<pipe id="output" />
+	<pipe id="aggregatorOutput" />
+	<aggregator id="aggregator1" name="Test Aggregator 1">
+		<input ref="input" />
+		<inputSchema ref="inputSchema" />
+		<output ref="aggregatorOutput" />
+		<outputSchema ref="aggregatorSchema" />
+		<function>
+			<sum>
+				<in>
+					<column name="Price" type="decimal" />
+				</in>
+				<out>
+					<column name="Price" type="decimal" />
+				</out>
+			</sum>
+		</function>
+	</aggregator>
 	
-	<etl:aggregator id="aggregator2" name="Test Aggregator 2">
-		<etl:input ref="input" />
-		<etl:inputSchema ref="inputSchema" />
-		<etl:output ref="aggregatorOutput" />
-		<etl:outputSchema ref="aggregatorSchema" />
-		<etl:function>
-			<bean class="com.surgingsystems.etl.filter.function.SumFunction">
-				<property name="inputColumnDefinition">
-					<etl:column name="Price" type="decimal" />
-				</property>
-				<property name="outputColumnDefinition">
-					<etl:column name="Price" type="decimal" />
-				</property>
-			</bean>
-		</etl:function>
-	</etl:aggregator>
+	<aggregator id="aggregator2" name="Test Aggregator 2">
+		<input ref="input" />
+		<inputSchema ref="inputSchema" />
+		<output ref="aggregatorOutput" />
+		<outputSchema ref="aggregatorSchema" />
+		<function>
+			<beans:bean class="com.surgingsystems.etl.filter.function.SumFunction">
+				<beans:property name="inputColumnDefinition">
+					<column name="Price" type="decimal" />
+				</beans:property>
+				<beans:property name="outputColumnDefinition">
+					<column name="Price" type="decimal" />
+				</beans:property>
+			</beans:bean>
+		</function>
+	</aggregator>
 
-</beans>
+</beans:beans>

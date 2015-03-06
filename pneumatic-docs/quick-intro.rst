@@ -13,31 +13,31 @@ As a quick example, reading from a file and writing to a database might look lik
 		<jdbc:script location="classpath:db-test-data.sql" />
 	</jdbc:embedded-database>
 
-	<etl:schema id="mtbSchema" name="MTB Schema">
-		<etl:column name="name" type="string" />
-		<etl:column name="year" type="integer" />
-		<etl:column name="cost" type="decimal" />
-	</etl:schema>
+	<schema id="mtbSchema" name="MTB Schema">
+		<column name="name" type="string" />
+		<column name="year" type="integer" />
+		<column name="cost" type="decimal" />
+	</schema>
 
-	<etl:pipe id="fileReaderOutput" />
-	<etl:fileReader id="fileReader" name="File Reader">
-		<etl:fileResource location="classpath:data/mtb.txt" />
-		<etl:output ref="fileReaderOutput" />
-		<etl:outputSchema ref="mtbSchema" />
-	</etl:fileReader>
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="File Reader">
+		<fileResource location="classpath:data/mtb.txt" />
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="mtbSchema" />
+	</fileReader>
 
-	<etl:databaseWriter id="databaseWriter" name="Database Writer">
-		<etl:input ref="fileReaderOutput" />
-		<etl:inputSchema ref="mtbSchema" />
-		<etl:dataSource ref="dataSource" />
-		<etl:insertInto table-name="mtb" />
-	</etl:databaseWriter>
+	<databaseWriter id="databaseWriter" name="Database Writer">
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="mtbSchema" />
+		<dataSource ref="dataSource" />
+		<insertInto table-name="mtb" />
+	</databaseWriter>
 
 In this guide, configuration elements are indicated by their "IDs" (identifiers). The ID needs to be unique across all the files in your jobs.  An example of an ID is the first declaration (``id="dataSource"``). This refers to a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
 Next is a schema declaration (``id="mtbSchema"``)  used to declare the structure of records in the job. A pipe (``id="fileReaderOutput"``) provides a conduit for records, connecting one processing element (called "filters") to another. 
 
-A file reader (``id="fileReader"``) is a filter that reads a file, creating records and sending them to the pipe referenced in its "output". The file reader has an output (``etl:output ref="fileReaderOutput"``), which refers (using the ``ref`` keyword) to the ``fileReaderOutput`` pipe. This guide will often just use the reference portion of an element when describing it (``ref="fileReaderOutput"``).
+A file reader (``id="fileReader"``) is a filter that reads a file, creating records and sending them to the pipe referenced in its "output". The file reader has an output (``output ref="fileReaderOutput"``), which refers (using the ``ref`` keyword) to the ``fileReaderOutput`` pipe. This guide will often just use the reference portion of an element when describing it (``ref="fileReaderOutput"``).
 
 A database writer (``id="databaseWriter"``) writes records from the pipe referenced in its ``input`` to a table available in the data source (the ``mtb`` table in this case). Don't be confused by the input to the database writer referencing a pipe called ``fileReaderOutput``: pipes connect the output of one filter to the input of another filter. Pipes are often declared near the filter that is writing to them and so are named according to that relationship. A pipe could also be named something like ``fileReaderToDatabaseWriterPipe``. You can use any convention you like.
 

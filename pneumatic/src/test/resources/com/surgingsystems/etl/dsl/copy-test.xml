@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -11,19 +11,19 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<etl:schema id="inputSchema" name="Input Schema">
-		<etl:column name="Name" type="string" />
-		<etl:column name="Count" type="integer" />
-		<etl:column name="Price" type="decimal" />
-	</etl:schema>
+	<schema id="inputSchema" name="Input Schema">
+		<column name="Name" type="string" />
+		<column name="Count" type="integer" />
+		<column name="Price" type="decimal" />
+	</schema>
 	
-    <etl:pipe id="fileReaderOutput" />
-    <etl:pipe id="copyOutput1" />
-    <etl:pipe id="copyOutput2" />
-	<etl:copy id="copy" name="Test Copy">
-		<etl:input ref="fileReaderOutput" />
-		<etl:output ref="copyOutput1" />
-		<etl:output ref="copyOutput2" />
-	</etl:copy>
+    <pipe id="fileReaderOutput" />
+    <pipe id="copyOutput1" />
+    <pipe id="copyOutput2" />
+	<copy id="copy" name="Test Copy">
+		<input ref="fileReaderOutput" />
+		<output ref="copyOutput1" />
+		<output ref="copyOutput2" />
+	</copy>
 
-</beans>
+</beans:beans>
