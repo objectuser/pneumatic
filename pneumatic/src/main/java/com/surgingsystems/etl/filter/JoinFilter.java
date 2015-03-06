@@ -25,7 +25,7 @@ import com.surgingsystems.etl.schema.Schema;
  * <li>Inner and left outer join operations.</li>
  * </ul>
  */
-public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilter {
+public class JoinFilter extends GuardedFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(JoinFilter.class);
 
@@ -96,22 +96,8 @@ public class JoinFilter extends GuardedFilter implements InputFilter, OutputFilt
         return result;
     }
 
-    @Override
-    public void addOutput(Pipe pipe) {
-        output = pipe;
-    }
-
     public void setOutput(Pipe output) {
         this.output = output;
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        if (leftInput == null) {
-            leftInput = pipe;
-        } else {
-            rightInput = pipe;
-        }
     }
 
     public Pipe getLeftInput() {

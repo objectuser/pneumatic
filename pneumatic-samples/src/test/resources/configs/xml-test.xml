@@ -25,18 +25,9 @@
 		<beans:property name="fragmentRootElementName" value="item" />
 		<beans:property name="columnDefinitions">
 			<beans:list>
-				<beans:bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
-					<beans:property name="name" value="name" />
-					<beans:property name="columnType" ref="stringColumnType" />
-				</beans:bean>
-				<beans:bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
-					<beans:property name="name" value="count" />
-					<beans:property name="columnType" ref="integerColumnType" />
-				</beans:bean>
-				<beans:bean class="com.surgingsystems.etl.builders.ColumnFactoryBean">
-					<beans:property name="name" value="price" />
-					<beans:property name="columnType" ref="decimalColumnType" />
-				</beans:bean>
+				<column name="name" type="string" />
+				<column name="count" type="integer" />
+				<column name="price" type="decimal" />
 			</beans:list>
 		</beans:property>
 	</beans:bean>

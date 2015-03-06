@@ -12,7 +12,6 @@ import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import com.surgingsystems.etl.pipe.Pipe;
 import com.surgingsystems.etl.record.ArrayRecordAggregator;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.record.RecordAggregator;
@@ -31,7 +30,7 @@ import com.surgingsystems.etl.schema.SchemaRecordValidator;
  * <li>A single schema for the input.</li>
  * </ul>
  */
-public class FileWriterFilter extends SingleInputFilter implements InputFilter {
+public class FileWriterFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(FileWriterFilter.class);
 
@@ -99,11 +98,6 @@ public class FileWriterFilter extends SingleInputFilter implements InputFilter {
         }
 
         logSummary();
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        setInput(pipe);
     }
 
     public Schema getInputSchema() {

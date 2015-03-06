@@ -25,7 +25,7 @@ import com.surgingsystems.etl.record.Record;
  * </li>
  * </ul>
  */
-public class SortFilter extends SingleInputFilter implements InputFilter, OutputFilter {
+public class SortFilter extends SingleInputFilter {
 
     private static Logger logger = LogManager.getFormatterLogger(SortFilter.class);
 
@@ -69,16 +69,6 @@ public class SortFilter extends SingleInputFilter implements InputFilter, Output
         output.closedForInput();
 
         logSummary();
-    }
-
-    @Override
-    public void addOutput(Pipe pipe) {
-        output = pipe;
-    }
-
-    @Override
-    public void addInput(Pipe pipe) {
-        setInput(pipe);
     }
 
     public Pipe getOutput() {
