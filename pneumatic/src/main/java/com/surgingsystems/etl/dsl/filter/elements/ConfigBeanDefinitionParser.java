@@ -35,18 +35,18 @@ public class ConfigBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
 
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "output", "output");
         compositeBeanDefinitionParser.parse(element, parserContext, bean, "outputSchema", "outputSchema");
-        
+
         parseExpressions(element, bean);
-        
+
         Element outputConditionElement = DomUtils.getChildElementByTagName(element, "outputCondition");
         if (outputConditionElement != null) {
-            bean.addPropertyValue("outputCondition", outputConditionElement.getTextContent());
+            bean.addPropertyValue("conditionExpression", outputConditionElement.getTextContent());
         }
     }
 
     private void parseExpressions(Element element, BeanDefinitionBuilder bean) {
         List<Element> expressionsElements = DomUtils.getChildElementsByTagName(element, "expression");
-        
+
         ManagedList<String> expressions = new ManagedList<String>();
         for (Element expressionElement : expressionsElements) {
             String value = expressionElement.getTextContent();

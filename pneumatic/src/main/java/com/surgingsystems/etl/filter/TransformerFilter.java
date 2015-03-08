@@ -107,7 +107,7 @@ public class TransformerFilter extends SingleInputFilter {
                         outputCondition.toString());
             }
             if (outputCondition) {
-                Pipe pipe = config.getPipe();
+                Pipe pipe = config.getOutput();
                 Record record = (Record) evaluationContext.lookupVariable(config.getRecordName());
                 pipe.put(record);
             }
@@ -117,7 +117,7 @@ public class TransformerFilter extends SingleInputFilter {
     @Override
     protected void postProcess() throws Exception {
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
-            Pipe pipe = config.getPipe();
+            Pipe pipe = config.getOutput();
             pipe.closedForInput();
         }
     }
@@ -158,7 +158,7 @@ public class TransformerFilter extends SingleInputFilter {
         evaluationContext.setVariable("input", getInput());
 
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
-            evaluationContext.setVariable(config.getName(), config.getPipe());
+            evaluationContext.setVariable(config.getName(), config.getOutput());
         }
 
         for (Map.Entry<String, Object> variable : variables.entrySet()) {
@@ -187,7 +187,7 @@ public class TransformerFilter extends SingleInputFilter {
                 expressions.add(expressionParser.parseExpression(expression));
             }
 
-            outputConditions.put(config, expressionParser.parseExpression(config.getOutputCondition()));
+            outputConditions.put(config, expressionParser.parseExpression(config.getConditionExpression()));
         }
     }
 

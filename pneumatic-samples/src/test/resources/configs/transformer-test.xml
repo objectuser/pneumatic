@@ -33,19 +33,19 @@
 		<input ref="fileReaderOutput" />
 		<variable name="totalCount">0</variable>
 		<expression>#totalCount = #totalCount + 1</expression>
-		<config outputName="transformerOutput" recordName="outputRecord">
+		<outputConfiguration outputName="transformerOutput" recordName="outputRecord">
 			<output ref="transformerOutput" />
 			<outputSchema ref="inputSchema" />
 			<expression>#outputRecord.Name = #inputRecord.Name + #inputRecord.Name</expression>
 			<expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</expression>
 			<expression>#outputRecord.Price = #inputRecord.Price + #inputRecord.Price</expression>
-		</config>
-		<config outputName="transformerCountOutput" recordName="countRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerCountOutput" recordName="countRecord">
 			<output ref="transformerCountOutput" />
 			<outputSchema ref="countSchema" />
 			<outputCondition>#input.complete</outputCondition>
 			<expression>#countRecord.Count = #totalCount</expression>
-		</config>
+		</outputConfiguration>
 	</transformer>
 
 	<fileWriter id="fileWriter1" name="File Writer 1">

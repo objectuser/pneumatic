@@ -1,3 +1,5 @@
+.. _transformer:
+
 Transformer
 -----------
 
@@ -17,31 +19,31 @@ Consider the following transformer example::
 		<variable name="lastName">''</variable>
 		<variable name="orderingProblem">false</variable>
 		<variable name="orderingProblemCount">0</variable>
-		<expression>#orderingProblem = #lastName > #inputRecord.Name</expression>
+		<expression>#orderingProblem = #lastName &gt; #inputRecord.Name</expression>
 		<expression>#orderingProblemCount = #orderingProblemCount + (#orderingProblem ? 1 : 0)</expression>
 		<expression>#lastName = #inputRecord.Name</expression>
-		<config outputName="transformerOutput" recordName="outputRecord">
+		<outputConfiguration outputName="transformerOutput" recordName="outputRecord">
 			<output ref="output1" />
 			<outputSchema ref="inputSchema" />
 			<outputCondition>!#orderingProblem</outputCondition>
 			<expression>#outputRecord.Name = #inputRecord.Name</expression>
 			<expression>#outputRecord.Count = #inputRecord.Count</expression>
 			<expression>#outputRecord.Price = #inputRecord.Price</expression>
-		</config>
-		<config outputName="transformerOrderOutput" recordName="invalidRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerOrderOutput" recordName="invalidRecord">
 			<output ref="output2" />
 			<outputSchema ref="inputSchema" />
 			<outputCondition>#orderingProblem</outputCondition>
 			<expression>#invalidRecord.Name = #inputRecord.Name</expression>
 			<expression>#invalidRecord.Count = #inputRecord.Count</expression>
 			<expression>#invalidRecord.Price = #inputRecord.Price</expression>
-		</config>
-		<config outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
 			<output ref="output3" />
 			<outputSchema ref="countSchema" />
 			<outputCondition>#input.complete</outputCondition>
 			<expression>#invalidCountRecord.Count = #orderingProblemCount</expression>
-		</config>
+		</outputConfiguration>
 	</transformer>
 
 The first elements are pipes: one input (``id="input"``) and some outputs (``id="output1"``, ``id="output2"``, ``id="output3"``) that will be outputs from the transformer.
@@ -52,15 +54,17 @@ The first element of the transformer is its single input::
 
 	<input ref="input" />
 
-Next is a set of variables. The variables may be intialized to any constant value. The initialization of the variables occurs before any records have been processed. The values of previously declared variables or input records are not available for initializiation. The variables may be used in the output configuration for both output conditions and expressions.
+Next is a set of variables. The variables may be initialized to any constant value. The initialization of the variables occurs before any records have been processed. The values of previously declared variables or input records are not available for initialization. The variables may be used in the output configuration for both output conditions and expressions.
 
 The variables are followed by a set of expressions. The expressions are executed for each input record processed by the filter. The following expression sets the ``orderingProblem`` boolean value to true or false, depending on if the value of ``lastName`` is alpha-numerically greater than the value of the ``Name`` column on the current input record::
 
-	<expression>#orderingProblem = #lastName > #inputRecord.Name</expression>
+	<expression>#orderingProblem = #lastName &gt; #inputRecord.Name</expression>
 
 This means that if, for example, ``lastName`` is "Mojo" and the value of ``inputRecord.Name`` is "Bronson", ``lastName`` will be set to "true" because "M" comes after "B" in the alphabet.
 
-There are two forms for accessing a column on a record. One is using the "dot" notation as above: ``inputRecord.Name``. The name of the record is before the dot and the column name is after the dot. An alternative is to use brackets: "[]". This is expecially useful if the column name contains spaces. In the following example, the column name is "Column Name with Spaces"::
+(Note that this one of the cases in which XML is not the best format for expressing filter configurations: we must use the literal ``&lt;`` to express ``<`` and ``&gt;`` to express ``>``. Consult a `reference <http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references>`_ when creating expressions that cause issues with XML.)
+
+There are two forms for accessing a column on a record. One is using the "dot" notation as above: ``inputRecord.Name``. The name of the record is before the dot and the column name is after the dot. An alternative is to use brackets: "[]". This is especially useful if the column name contains spaces. In the following example, the column name is "Column Name with Spaces"::
 
 	<expression>#inputRecord["Column Name with Spaces"] = "A useful value"</expression>
 

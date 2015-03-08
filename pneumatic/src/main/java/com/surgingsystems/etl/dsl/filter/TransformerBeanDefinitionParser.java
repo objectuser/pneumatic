@@ -41,7 +41,7 @@ public class TransformerBeanDefinitionParser extends AbstractSingleBeanDefinitio
 
     private void parseOutputConfigurations(Element element, BeanDefinitionBuilder bean,
             ParserContext nestedParserContext) {
-        List<Element> configElements = DomUtils.getChildElementsByTagName(element, "config");
+        List<Element> configElements = DomUtils.getChildElementsByTagName(element, "outputConfiguration");
         ManagedList<Object> configs = new ManagedList<Object>();
         for (Element configElement : configElements) {
             ConfigBeanDefinitionParser parser = new ConfigBeanDefinitionParser();
@@ -53,7 +53,7 @@ public class TransformerBeanDefinitionParser extends AbstractSingleBeanDefinitio
 
     private void parseVariables(Element element, BeanDefinitionBuilder bean) {
         List<Element> variableElements = DomUtils.getChildElementsByTagName(element, "variable");
-        
+
         ManagedMap<String, String> variables = new ManagedMap<String, String>();
         for (Element variableElement : variableElements) {
             String name = variableElement.getAttribute("name");
@@ -66,7 +66,7 @@ public class TransformerBeanDefinitionParser extends AbstractSingleBeanDefinitio
 
     private void parseExpressions(Element element, BeanDefinitionBuilder bean) {
         List<Element> expressionsElements = DomUtils.getChildElementsByTagName(element, "expression");
-        
+
         ManagedList<String> expressions = new ManagedList<String>();
         for (Element expressionElement : expressionsElements) {
             String value = expressionElement.getTextContent();

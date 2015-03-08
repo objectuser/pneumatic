@@ -1,3 +1,5 @@
+.. _restful-lookup:
+
 RESTful Lookup
 --------------
 
