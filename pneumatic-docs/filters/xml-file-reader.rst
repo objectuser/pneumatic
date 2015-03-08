@@ -1,3 +1,5 @@
+.. xml-file-reader:
+
 XML File Reader
 ---------------
 

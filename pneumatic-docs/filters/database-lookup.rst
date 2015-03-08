@@ -1,3 +1,5 @@
+.. _database-lookup:
+
 Database Lookup
 ---------------
 

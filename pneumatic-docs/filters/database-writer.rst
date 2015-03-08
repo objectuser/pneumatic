@@ -1,3 +1,4 @@
+.. _database-writer:
 
 Database Writer
 ---------------

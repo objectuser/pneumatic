@@ -10,27 +10,26 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<context:component-scan base-package="com.surgingsystems.etl" />
-
-	<schema id="outputSchema" name="Output Schema">
+	<schema id="inputSchema" name="Input Schema">
 		<column name="Name" type="string" />
 		<column name="Count" type="integer" />
 		<column name="Price" type="decimal" />
 	</schema>
 
-	<pipe id="fileReaderOutput" />
-	<pipe id="transformerOutput" />
-	<transformer id="transformer" name="Test Transformer">
-		<input ref="fileReaderOutput" />
-		<variable name="v1">"value1"</variable>
-		<variable name="v2">0</variable>
-		<expression>#v1 = #v1 + #v1</expression>
-		<expression>#v2 = #v2 + 1</expression>
-		<outputConfiguration outputName="outputName" recordName="recordName">
-			<output ref="transformerOutput" />
-			<outputSchema ref="outputSchema" />
-			<outputCondition>#v2 > 0</outputCondition>
-		</outputConfiguration>
-	</transformer>
+	<pipe id="input" />
 
+	<pipe id="output1" />
+	<pipe id="output2" />
+	<splitter id="splitter" name="Splitter">
+		<input ref="input" />
+		<outputConfiguration name="aThroughM">
+			<output ref="output1" />
+			<outputCondition>#inputRecord.Name.substring(0, 1) &lt; 'N'</outputCondition>
+		</outputConfiguration>
+		<outputConfiguration name="nThroughZ">
+			<output ref="output2" />
+			<outputCondition>#inputRecord.Name.substring(0, 1) > 'M'</outputCondition>
+		</outputConfiguration>
+	</splitter>
+	
 </beans:beans>

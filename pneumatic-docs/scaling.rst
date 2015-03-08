@@ -2,4 +2,4 @@
 Scaling
 *******
 
-This section contains thoughts on scaling Pneumatic.
+This section contains thoughts on scaling Pneumatic.IO.

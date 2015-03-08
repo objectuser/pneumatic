@@ -1,3 +1,5 @@
+.. _restful-writer:
+
 RESTful Writer
 --------------
 

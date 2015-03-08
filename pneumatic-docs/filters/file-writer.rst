@@ -1,3 +1,4 @@
+.. _file-writer:
 
 File Writer
 -----------

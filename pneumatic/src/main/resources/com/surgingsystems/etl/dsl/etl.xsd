@@ -189,7 +189,9 @@
 
 	<xsd:complexType name="ExpressionType">
 		<xsd:simpleContent>
-			<xsd:extension base="xsd:string" />
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="value" type="xsd:string" />
+			</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>
 
@@ -534,6 +536,28 @@
 		</xsd:complexType>
 	</xsd:element>
 
+	<xsd:element name="splitter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="baseFilter">
+					<xsd:sequence>
+						<xsd:element name="input" type="PipeRefType" />
+
+						<xsd:element name="outputConfiguration" minOccurs="1" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="output" type="PipeRefType" />
+									<xsd:element name="outputCondition" minOccurs="1" maxOccurs="1" type="ExpressionType" />
+								</xsd:sequence>
+								<xsd:attribute name="name" type="xsd:string" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
 	<xsd:element name="transformer">
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -554,7 +578,7 @@
 
 						<xsd:element name="expression" minOccurs="0" maxOccurs="unbounded" type="ExpressionType" />
 
-						<xsd:element name="config" minOccurs="1" maxOccurs="unbounded">
+						<xsd:element name="outputConfiguration" minOccurs="1" maxOccurs="unbounded">
 							<xsd:complexType>
 								<xsd:sequence>
 

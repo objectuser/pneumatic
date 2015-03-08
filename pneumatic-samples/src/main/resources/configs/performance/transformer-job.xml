@@ -43,7 +43,7 @@
 	<pipe id="transformerOutput" />
 	<transformer id="transformer" name="Transformer">
 		<input ref="fileReaderOutput" />
-		<config outputName="transformerOutput" recordName="outputRecord">
+		<outputConfiguration outputName="transformerOutput" recordName="outputRecord">
 			<output ref="transformerOutput" />
 			<outputSchema ref="inputSchema" />
 			<expression>#outputRecord["Provider ID"] = #inputRecord["Provider ID"]</expression>
@@ -62,7 +62,7 @@
 			<expression>#outputRecord["Footnote"] = #inputRecord["Footnote"]</expression>
 			<expression>#outputRecord["Measure Start Date"] = #inputRecord["Measure Start Date"]</expression>
 			<expression>#outputRecord["Measure End Date"] = #inputRecord["Measure End Date"]</expression>
-		</config>
+		</outputConfiguration>
 	</transformer>
 
 	<fileWriter id="fileWriter1" name="File Writer 1">

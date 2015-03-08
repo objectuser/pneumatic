@@ -1,3 +1,4 @@
+.. _database-reader:
 
 Database Reader
 ---------------

@@ -1,3 +1,5 @@
+.. _aggregator:
+
 Aggregator
 ----------
 

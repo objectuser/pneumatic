@@ -29,19 +29,19 @@
 		<input ref="input" />
 		<variable name="totalCount">0</variable>
 		<expression>#totalCount = #totalCount + 1</expression>
-		<config outputName="transformerOutput" recordName="outputRecord">
+		<outputConfiguration outputName="transformerOutput" recordName="outputRecord">
 			<output ref="output1" />
 			<outputSchema ref="inputSchema" />
 			<expression>#outputRecord.Name = #inputRecord.Name</expression>
 			<expression>#outputRecord.Count = #inputRecord.Count + #inputRecord.Count</expression>
 			<expression>#outputRecord.Price = #inputRecord.Price</expression>
-		</config>
-		<config outputName="transformerCountOutput" recordName="countRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerCountOutput" recordName="countRecord">
 			<output ref="output2" />
 			<outputSchema ref="countSchema" />
 			<outputCondition>#input.complete</outputCondition>
 			<expression>#countRecord.Count = #totalCount</expression>
-		</config>
+		</outputConfiguration>
 	</transformer>
 	
 	<transformer id="validatingTransformer" name="Validating Transformer">
@@ -49,29 +49,29 @@
 		<variable name="lastName">''</variable>
 		<variable name="orderingProblem">false</variable>
 		<variable name="orderingProblemCount">0</variable>
-		<expression>#orderingProblem = #lastName > #inputRecord.Name</expression>
+		<expression>#orderingProblem = #lastName &gt; #inputRecord.Name</expression>
 		<expression>#orderingProblemCount = #orderingProblemCount + (#orderingProblem ? 1 : 0)</expression>
 		<expression>#lastName = #inputRecord.Name</expression>
-		<config outputName="transformerOutput" recordName="outputRecord">
+		<outputConfiguration outputName="transformerOutput" recordName="outputRecord">
 			<output ref="output1" />
 			<outputSchema ref="inputSchema" />
 			<outputCondition>!#orderingProblem</outputCondition>
 			<expression>#outputRecord.Name = #inputRecord.Name</expression>
 			<expression>#outputRecord.Count = #inputRecord.Count</expression>
 			<expression>#outputRecord.Price = #inputRecord.Price</expression>
-		</config>
-		<config outputName="transformerOrderOutput" recordName="invalidRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerOrderOutput" recordName="invalidRecord">
 			<output ref="output2" />
 			<outputSchema ref="inputSchema" />
 			<outputCondition>#orderingProblem</outputCondition>
 			<expression>#invalidRecord = #inputRecord</expression>
-		</config>
-		<config outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
+		</outputConfiguration>
+		<outputConfiguration outputName="transformerOrderCountOutput" recordName="invalidCountRecord">
 			<output ref="output3" />
 			<outputSchema ref="countSchema" />
 			<outputCondition>#input.complete</outputCondition>
 			<expression>#invalidCountRecord.Count = #orderingProblemCount</expression>
-		</config>
+		</outputConfiguration>
 	</transformer>
 	
 </beans:beans>
