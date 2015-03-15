@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<!-- An HSQL database that uses a file -->
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<beans:property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<beans:property name="url" value="jdbc:hsqldb:file:output/db/data" />
+		<beans:property name="username" value="sa" />
+		<beans:property name="password" value="" />
+	</beans:bean>
+
+	<jdbc:initialize-database data-source="dataSource">
+		<jdbc:script location="classpath:db-schema.sql" />
+	</jdbc:initialize-database>
+
+	<!-- A MySQL connection might look like this -->
+<!-- 	<beans:bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"> -->
+<!-- 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+<!-- 		<beans:property name="url" value="jdbc:mysql://127.0.0.1:3306/pn" /> -->
+<!-- 		<beans:property name="username" value="root" /> -->
+<!-- 		<beans:property name="password" value="root" /> -->
+<!-- 		<beans:property name="defaultAutoCommit" value="false" /> -->
+<!-- 	</beans:bean> -->
+
+	<schema id="schema" name="Input File Schema">
+		<column name="ProviderID" type="string" />
+		<column name="HospitalName" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIPCode" type="string" />
+		<column name="CountyName" type="string" />
+		<column name="PhoneNumber" type="string" />
+		<column name="HospitalCondition" type="string" />
+		<column name="MeasureID" type="string" />
+		<column name="MeasureName" type="string" />
+		<column name="Score" type="string" />
+		<column name="Sample" type="string" />
+		<column name="Footnote" type="string" />
+		<column name="MeasureStartDate" type="string" />
+		<column name="MeasureEndDate" type="string" />
+	</schema>
+
+	<pipe id="fileReaderOutput" />
+	<fileReader id="fileReader" name="Hospital File Reader">
+		<fileResource location="classpath:data/Timely and Effective Care - Hospital.csv">
+			<skipLines value="1" />
+		</fileResource>
+		<output ref="fileReaderOutput" />
+		<outputSchema ref="schema" />
+	</fileReader>
+
+	<databaseWriter id="databaseWriter" name="Database Writer">
+		<input ref="fileReaderOutput" />
+		<inputSchema ref="schema" />
+		<dataSource ref="dataSource" />
+		<insertInto table-name="hospital" />
+	</databaseWriter>
+
+</beans:beans>

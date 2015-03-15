@@ -2,13 +2,14 @@ package com.surgingsystems.etl.filter.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.Column;
@@ -17,11 +18,21 @@ import com.surgingsystems.etl.schema.Schema;
 
 public class InsertDatabaseWriteStrategy implements DatabaseWriteStrategy {
 
+    private static Logger logger = LogManager.getFormatterLogger(InsertDatabaseWriteStrategy.class);
+
     private String insertStatement;
 
-    private JdbcTemplate jdbcTemplate;
+    private Connection connection;
+
+    private PreparedStatement ps;
 
     private String tableName;
+
+    private int batchSize = 1000;
+
+    private List<Record> batch = new ArrayList<>(batchSize);
+
+    private int batchCount = 0;
 
     @Override
     public void initialize(DataSource dataSource, Schema schema) {
@@ -51,25 +62,52 @@ public class InsertDatabaseWriteStrategy implements DatabaseWriteStrategy {
 
         insertStatement = insertBuilder.toString();
 
-        jdbcTemplate = new JdbcTemplate(dataSource);
+        try {
+            connection = dataSource.getConnection();
+            ps = connection.prepareStatement(insertStatement);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void write(Record record) {
-        jdbcTemplate.update(new PreparedStatementCreator() {
+        batch.add(record);
+        ++batchCount;
 
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(insertStatement);
+        if (batchCount >= batchSize) {
+            writeBatch();
+            batch.clear();
+            batchCount = 0;
+        }
+    }
 
-                int i = 0;
+    @Override
+    public void close() {
+        try {
+            writeBatch();
+            batch.clear();
+            connection.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeBatch() {
+        logger.info("Writing batch of size %d", batch.size());
+
+        try {
+            for (Record record : batch) {
+                int j = 1;
                 for (Column<?> column : record) {
-                    statement.setObject(++i, column.getValue());
+                    ps.setObject(j++, column.getValue());
                 }
-
-                return statement;
+                ps.executeUpdate();
             }
-        });
+            connection.commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getTableName() {

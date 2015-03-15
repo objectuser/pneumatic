@@ -20,8 +20,8 @@
 
 	<schema id="mtbSchema" name="MTB Schema">
 		<column name="name" type="string" />
-		<column name="model_year" type="integer" />
-		<column name="price" type="decimal" />
+		<column name="year" type="integer" />
+		<column name="cost" type="decimal" />
 	</schema>
 	
 	<pipe id="input" />
