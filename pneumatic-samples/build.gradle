@@ -21,6 +21,7 @@ task boot(type: JavaExec, dependsOn:[classes]) {
 
 task cleanHsql(type: Delete) {
     delete fileTree(dir: "output/db")
+    delete "output/db"
 }
 
 repositories {
