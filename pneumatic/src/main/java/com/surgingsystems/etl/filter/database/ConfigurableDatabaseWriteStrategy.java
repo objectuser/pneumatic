@@ -34,7 +34,7 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
     private StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
 
     private RecordPropertyAccessor recordPropertyAccessor = new RecordPropertyAccessor();
-    
+
     private List<Expression> parameterExpressions = new ArrayList<Expression>();
 
     @Override
@@ -96,5 +96,9 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
             Expression expression = expressionParser.parseExpression(parameter);
             parameterExpressions.add(expression);
         }
+    }
+
+    @Override
+    public void close() {
     }
 }

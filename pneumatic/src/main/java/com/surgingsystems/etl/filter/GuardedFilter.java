@@ -21,6 +21,8 @@ public abstract class GuardedFilter implements RunnableFilter {
     public void run() {
         try {
 
+            logger.info("%s is starting up", getName());
+
             filter();
 
             logger.info("%s is shutting down", getName());

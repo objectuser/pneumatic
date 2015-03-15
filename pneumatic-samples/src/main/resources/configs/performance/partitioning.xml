@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.surgingsystems.com/schema/etl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:etl="http://www.surgingsystems.com/schema/etl"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.surgingsystems.com/schema/etl
+        http://www.surgingsystems.com/schema/etl/etl.xsd">
+
+	<beans:bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<beans:property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<beans:property name="url" value="jdbc:hsqldb:file:output/db/data" />
+		<beans:property name="username" value="sa" />
+		<beans:property name="password" value="" />
+	</beans:bean>
+
+	<schema id="schema" name="Input File Schema">
+		<column name="ProviderID" type="string" />
+		<column name="HospitalName" type="string" />
+		<column name="Address" type="string" />
+		<column name="City" type="string" />
+		<column name="State" type="string" />
+		<column name="ZIPCode" type="string" />
+		<column name="CountyName" type="string" />
+		<column name="PhoneNumber" type="string" />
+		<column name="HospitalCondition" type="string" />
+		<column name="MeasureID" type="string" />
+		<column name="MeasureName" type="string" />
+		<column name="Score" type="string" />
+		<column name="Sample" type="string" />
+		<column name="Footnote" type="string" />
+		<column name="MeasureStartDate" type="string" />
+		<column name="MeasureEndDate" type="string" />
+	</schema>
+
+	<pipe id="databaseOutput1" />
+	<databaseReader id="databaseReader1" name="Database Reader A-I">
+		<output ref="databaseOutput1" />
+		<outputSchema ref="schema" />
+		<dataSource ref="dataSource" />
+		<select>
+			<sql>
+				select *
+				from hospital
+				where HospitalName &lt; 'J'
+			</sql>
+		</select>
+	</databaseReader>
+
+	<pipe id="databaseOutput2" />
+	<databaseReader id="databaseReader2" name="Database Reader J-R">
+		<output ref="databaseOutput2" />
+		<outputSchema ref="schema" />
+		<dataSource ref="dataSource" />
+		<select>
+			<sql>
+				select *
+				from hospital
+				where HospitalName &gt;= 'J'
+				  and HospitalName &lt; 'S'
+			</sql>
+		</select>
+	</databaseReader>
+
+	<pipe id="databaseOutput3" />
+	<databaseReader id="databaseReader3" name="Database Reader S-Z">
+		<output ref="databaseOutput3" />
+		<outputSchema ref="schema" />
+		<dataSource ref="dataSource" />
+		<select>
+			<sql>
+				select *
+				from hospital
+				where HospitalName &gt;= 'S'
+			</sql>
+		</select>
+	</databaseReader>
+
+	<fileWriter id="fileWriter1" name="File Writer 1">
+		<fileResource location="file:output/output1.txt" />
+		<input ref="databaseOutput1" />
+		<inputSchema ref="schema" />
+	</fileWriter>
+
+	<fileWriter id="fileWriter2" name="File Writer 2">
+		<fileResource location="file:output/output2.txt" />
+		<input ref="databaseOutput2" />
+		<inputSchema ref="schema" />
+	</fileWriter>
+
+	<fileWriter id="fileWriter3" name="File Writer 3">
+		<fileResource location="file:output/output3.txt" />
+		<input ref="databaseOutput3" />
+		<inputSchema ref="schema" />
+	</fileWriter>
+
+</beans:beans>

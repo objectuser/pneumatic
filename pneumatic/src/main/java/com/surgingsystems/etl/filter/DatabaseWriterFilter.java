@@ -78,6 +78,7 @@ public class DatabaseWriterFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+        writeStrategy.close();
     }
 
     public Schema getInputSchema() {

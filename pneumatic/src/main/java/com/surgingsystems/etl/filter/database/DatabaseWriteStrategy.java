@@ -10,4 +10,6 @@ public interface DatabaseWriteStrategy {
     void initialize(DataSource dataSource, Schema schema);
 
     void write(Record record);
+
+    void close();
 }
