@@ -1,0 +1,20 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+input: !pipe
+output: !pipe
+sort: !sort
+  name: Sort
+  input: ->input
+  output: ->output
+  comparator:
+    name: Name
+    type: string

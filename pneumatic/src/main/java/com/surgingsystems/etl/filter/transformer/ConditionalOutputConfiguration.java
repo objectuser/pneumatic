@@ -8,7 +8,7 @@ public abstract class ConditionalOutputConfiguration {
 
     private Pipe output;
 
-    private String conditionExpression;
+    private String outputCondition;
 
     public void close() {
         output.closedForInput();
@@ -30,12 +30,12 @@ public abstract class ConditionalOutputConfiguration {
         this.output = output;
     }
 
-    public String getConditionExpression() {
-        return conditionExpression;
+    public String getOutputCondition() {
+        return outputCondition;
     }
 
-    public void setConditionExpression(String outputCondition) {
-        this.conditionExpression = outputCondition;
+    public void setOutputCondition(String outputCondition) {
+        this.outputCondition = outputCondition;
     }
 
     @Override

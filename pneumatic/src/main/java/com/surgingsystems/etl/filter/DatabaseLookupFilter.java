@@ -54,7 +54,7 @@ public class DatabaseLookupFilter extends SingleInputFilter {
 
     private RecordValidator outputRecordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     private String sql;
 
@@ -63,7 +63,7 @@ public class DatabaseLookupFilter extends SingleInputFilter {
     private List<Expression> parameterExpressions = new ArrayList<Expression>();
 
     private EtlExpressionHelper expressionHelper = new EtlExpressionHelper();
-    
+
     private JdbcTemplate jdbcTemplate;
 
     public DatabaseLookupFilter() {
@@ -98,6 +98,13 @@ public class DatabaseLookupFilter extends SingleInputFilter {
         outputRecordValidator = new SchemaRecordValidator(outputSchema);
 
         setupExpressions();
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
     }
 
     @Override

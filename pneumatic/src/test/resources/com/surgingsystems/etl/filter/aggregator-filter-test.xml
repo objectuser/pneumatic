@@ -10,8 +10,6 @@
         http://www.surgingsystems.com/schema/etl
         http://www.surgingsystems.com/schema/etl/etl.xsd">
 
-	<context:component-scan base-package="com.surgingsystems.etl" />
-
 	<schema id="inputSchema" name="Input Schema">
 		<column name="Name" type="string" />
 		<column name="Item Count" type="integer" />

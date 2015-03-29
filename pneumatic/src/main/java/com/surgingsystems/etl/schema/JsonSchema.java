@@ -26,7 +26,7 @@ public class JsonSchema implements Schema {
     }
 
     @Override
-    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumnDefinitions() {
+    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumns() {
         // TODO Auto-generated method stub
         return null;
     }

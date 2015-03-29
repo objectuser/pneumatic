@@ -1,0 +1,13 @@
+---
+input: !pipe
+output1: !pipe
+output2: !pipe
+output3: !pipe
+
+copyInTriplicate: !copy
+  name: Copy in Triplicate
+  input: ->input
+  outputs:
+    - ->output1
+    - ->output2
+    - ->output3

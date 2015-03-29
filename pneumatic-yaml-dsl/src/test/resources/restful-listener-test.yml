@@ -1,0 +1,17 @@
+---
+mtbSchema: !schema
+  name: Input Schema
+  columns:
+    - name: name
+      type: string
+    - name: year
+      type: integer
+    - name: cost
+      type: decimal
+
+restfulListenerOutput: !pipe
+restfulListener: !restfulListener
+  name: Restful Listener
+  path: mtb
+  output: ->restfulListenerOutput
+  outputSchema: ->mtbSchema

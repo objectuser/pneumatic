@@ -3,9 +3,6 @@ package com.surgingsystems.etl.dsl.filter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.batch.item.file.mapping.ArrayFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -35,11 +32,6 @@ public class FileBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
         } else {
             throw new IllegalArgumentException("The element must provide either a location or a locationExpression");
         }
-
-        DefaultLineMapper<String[]> lineMapper = new DefaultLineMapper<String[]>();
-        lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
-        lineMapper.setFieldSetMapper(new ArrayFieldSetMapper());
-        bean.addPropertyValue("lineMapper", lineMapper);
 
         logger.trace("Creating file for resource location %s", location);
 

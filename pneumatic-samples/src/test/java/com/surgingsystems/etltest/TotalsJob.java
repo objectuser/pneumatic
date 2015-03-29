@@ -7,7 +7,7 @@ import com.surgingsystems.etl.XmlRunner;
 public class TotalsJob {
 
     @Test
-    public void sort() throws Exception {
+    public void run() throws Exception {
         XmlRunner.main(new String[] { "configs/totals-job.xml" });
     }
 }

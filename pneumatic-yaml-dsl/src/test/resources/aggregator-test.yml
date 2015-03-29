@@ -1,0 +1,32 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+aggregatorSchema: !schema
+  name: Aggregator Schema
+  columns:
+    - name: Price
+      type: decimal
+
+input: !pipe
+output: !pipe
+aggregatorOutput: !pipe
+aggregator: !aggregator
+  name: Test Aggregator
+  input: ->input
+  output: ->aggregatorOutput
+  outputSchema: ->aggregatorSchema
+  function: !sum
+    in:
+      name: Price
+      type: decimal
+    out:
+      name: Price
+      type: decimal

@@ -47,7 +47,7 @@ public class MapperFilter extends SingleInputFilter {
 
     private RecordValidator outputRecordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     public MapperFilter() {
     }
@@ -81,6 +81,13 @@ public class MapperFilter extends SingleInputFilter {
         }
 
         outputRecordValidator = new SchemaRecordValidator(outputSchema);
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
     }
 
     @Override

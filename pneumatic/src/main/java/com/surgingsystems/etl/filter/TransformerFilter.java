@@ -55,7 +55,7 @@ public class TransformerFilter extends SingleInputFilter {
     public void validate() {
         Assert.notNull(getName(), "The name is required");
         Assert.notNull(getInput(), "The input pipe is required");
-        Assert.isTrue(getOutputConfigurations().size() > 0, "The input pipe is required");
+        Assert.isTrue(getOutputConfigurations().size() > 0, "At least one output configuration is required");
     }
 
     @PostConstruct
@@ -187,7 +187,7 @@ public class TransformerFilter extends SingleInputFilter {
                 expressions.add(expressionParser.parseExpression(expression));
             }
 
-            outputConditions.put(config, expressionParser.parseExpression(config.getConditionExpression()));
+            outputConditions.put(config, expressionParser.parseExpression(config.getOutputCondition()));
         }
     }
 

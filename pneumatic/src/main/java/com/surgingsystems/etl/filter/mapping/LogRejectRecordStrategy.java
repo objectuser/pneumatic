@@ -20,6 +20,11 @@ public class LogRejectRecordStrategy implements RejectRecordStrategy {
     public LogRejectRecordStrategy() {
     }
 
+    public LogRejectRecordStrategy(String loggerName) {
+        this.loggerName = loggerName;
+        this.logger = LogManager.getFormatterLogger(loggerName);
+    }
+
     @PostConstruct
     public void setupLogger() {
         logger = LogManager.getFormatterLogger(loggerName);

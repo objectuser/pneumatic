@@ -15,9 +15,9 @@ public class CsvRecordParser implements RecordParser<String> {
     public Record parse(String line, Schema schema) {
         DataRecord result = new DataRecord();
         String[] values = line.split(",");
-        if (values.length != schema.getColumnDefinitions().size()) {
+        if (values.length != schema.getColumns().size()) {
             logger.warn("Record (%s...) has a different number of values (%d) than schema (%s) (%d)", line.substring(0,
-                    Math.min(line.length(), 100)), values.length, schema.getName(), schema.getColumnDefinitions()
+                    Math.min(line.length(), 100)), values.length, schema.getName(), schema.getColumns()
                     .size());
             return null;
         }

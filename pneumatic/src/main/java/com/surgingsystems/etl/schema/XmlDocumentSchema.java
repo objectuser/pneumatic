@@ -38,7 +38,7 @@ public class XmlDocumentSchema implements Schema {
 
     @Override
     public Iterator<ColumnDefinition<? extends Comparable<?>>> iterator() {
-        return getColumnDefinitions().iterator();
+        return getColumns().iterator();
     }
 
     /**
@@ -58,7 +58,7 @@ public class XmlDocumentSchema implements Schema {
 
     @Override
     public boolean contains(ColumnDefinition<?> columnDefinition) {
-        return getColumnDefinitions().contains(columnDefinition);
+        return getColumns().contains(columnDefinition);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class XmlDocumentSchema implements Schema {
     }
 
     @Override
-    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumnDefinitions() {
+    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumns() {
         return columnNameToDefinitionMap.values();
     }
 

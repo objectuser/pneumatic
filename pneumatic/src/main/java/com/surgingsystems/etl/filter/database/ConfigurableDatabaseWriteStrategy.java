@@ -25,7 +25,7 @@ public class ConfigurableDatabaseWriteStrategy implements DatabaseWriteStrategy 
 
     private String sql;
 
-    private List<String> parameters;
+    private List<String> parameters = new ArrayList<>();
 
     private JdbcTemplate jdbcTemplate;
 

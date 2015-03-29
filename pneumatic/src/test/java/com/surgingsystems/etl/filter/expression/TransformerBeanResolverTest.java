@@ -51,9 +51,9 @@ public class TransformerBeanResolverTest {
         evaluationContext.setVariable("inputRecord", inRecord);
         evaluationContext.setVariable("outputRecord", outRecord);
         
-        outputSchema.addColumnDefinition(new ColumnDefinition<String>("Name", new StringColumnType()));
-        outputSchema.addColumnDefinition(new ColumnDefinition<Integer>("Count", new IntegerColumnType()));
-        outputSchema.addColumnDefinition(new ColumnDefinition<Double>("Price", new DecimalColumnType()));
+        outputSchema.addColumn(new ColumnDefinition<String>("Name", new StringColumnType()));
+        outputSchema.addColumn(new ColumnDefinition<Integer>("Count", new IntegerColumnType()));
+        outputSchema.addColumn(new ColumnDefinition<Double>("Price", new DecimalColumnType()));
     }
     
     @Test

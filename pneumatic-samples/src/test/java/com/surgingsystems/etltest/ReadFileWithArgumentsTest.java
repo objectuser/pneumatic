@@ -15,10 +15,10 @@ import com.surgingsystems.etl.XmlRunner;
 @ContextConfiguration({ "classpath:etl-context.xml", "classpath:configs/file-with-job-arguments-test.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class ReadFileWithArgumentsTest {
-    
+
     @Autowired
     private ApplicationContext applicationContext;
-    
+
     @Test
     public void write() throws Exception {
         XmlRunner.main(new String[] { "-Dfile=classpath:data/input1.txt", "classpath:configs/file-test.xml" });

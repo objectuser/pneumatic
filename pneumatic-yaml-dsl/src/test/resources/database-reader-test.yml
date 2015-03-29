@@ -1,0 +1,20 @@
+---
+outputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+output: !pipe
+databaseReader: !databaseReader
+  name: Database Reader
+  output: ->output
+  outputSchema: ->outputSchema
+  dataSource: ->dataSource
+  sql: select * from table where name = ?
+  parameters:
+    - Trance

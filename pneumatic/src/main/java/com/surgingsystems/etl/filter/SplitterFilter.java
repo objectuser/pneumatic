@@ -57,7 +57,7 @@ public class SplitterFilter extends SingleInputFilter {
 
         for (OutputCondition outputCondition : outputConditions) {
             if (logger.isTraceEnabled()) {
-                logger.trace("Evaluating condition: %s", outputCondition.getConditionExpression());
+                logger.trace("Evaluating condition: %s", outputCondition.getOutputCondition());
             }
 
             Expression expression = expressions.get(outputCondition);
@@ -90,7 +90,7 @@ public class SplitterFilter extends SingleInputFilter {
 
     private void initializeExpressions() {
         for (OutputCondition outputCondition : outputConditions) {
-            expressions.put(outputCondition, expressionParser.parseExpression(outputCondition.getConditionExpression()));
+            expressions.put(outputCondition, expressionParser.parseExpression(outputCondition.getOutputCondition()));
         }
     }
 

@@ -8,6 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileParseException;
+import org.springframework.batch.item.file.mapping.ArrayFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
@@ -48,7 +51,7 @@ public class FileReaderFilter extends GuardedFilter {
 
     private FlatFileRecordReader itemReader;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     public FileReaderFilter() {
     }
@@ -65,6 +68,18 @@ public class FileReaderFilter extends GuardedFilter {
         Assert.notNull(output, "The output pipe is required");
         Assert.notNull(outputSchema, "The output schema is required");
         Assert.notNull(itemReader, "The file resource is required");
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
+
+        DefaultLineMapper<String[]> lineMapper = new DefaultLineMapper<String[]>();
+        lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
+        lineMapper.setFieldSetMapper(new ArrayFieldSetMapper());
+        itemReader.setLineMapper(lineMapper);
     }
 
     public void setOutputSchema(Schema schema) {

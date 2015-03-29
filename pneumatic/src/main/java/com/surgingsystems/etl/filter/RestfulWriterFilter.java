@@ -50,7 +50,7 @@ public class RestfulWriterFilter extends SingleInputFilter {
 
     private RecordValidator inputRecordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -82,6 +82,13 @@ public class RestfulWriterFilter extends SingleInputFilter {
                 ColumnDefinition<?> columnDefinition = inputSchema.getColumnForName(requestParameter);
                 Assert.notNull(columnDefinition, "The input schema must have a column defined for " + requestParameter);
             }
+        }
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
         }
     }
 

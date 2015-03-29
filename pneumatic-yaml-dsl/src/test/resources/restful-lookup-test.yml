@@ -1,0 +1,40 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: name
+      type: string
+    - name: count
+      type: integer
+    - name: cost
+      type: decimal
+
+outputSchema: !schema
+  name: Output Schema
+  columns:
+    - name: name
+      type: string
+    - name: count
+      type: integer
+    - name: cost
+      type: decimal
+    - name: price
+      type: string
+
+responseSchema: !schema
+  name: Response Schema
+  columns:
+    - name: price
+      type: string
+
+input: !pipe
+output: !pipe
+restfulLookup: !restfulLookup
+  name: Test Restful Lookup
+  httpMethod: GET
+  requestUrl: http://localhost:8080/mtb/{name}/price
+  input: ->input
+  inputSchema: ->inputSchema
+  output: ->output
+  outputSchema: ->outputSchema
+  responseSchema: ->responseSchema

@@ -42,6 +42,11 @@ public class FlatFileRecordReader implements ItemReader<String[]> {
         delegate.setLinesToSkip(linesToSkip);
     }
 
+    public void setLineRange(Range range) {
+        delegate.setLinesToSkip(range.getMin());
+        delegate.setMaxItemCount(range.getMax() - range.getMin() + 1);
+    }
+
     public void setLineMapper(LineMapper<String[]> lineMapper) {
         delegate.setLineMapper(lineMapper);
     }
@@ -78,11 +83,6 @@ public class FlatFileRecordReader implements ItemReader<String[]> {
 
     public void setResourceExpression(String resourceExpression) {
         this.resourceExpression = resourceExpression;
-    }
-
-    public void setLineRange(Range range) {
-        delegate.setLinesToSkip(range.getMin());
-        delegate.setMaxItemCount(range.getMax() - range.getMin() + 1);
     }
 
 }

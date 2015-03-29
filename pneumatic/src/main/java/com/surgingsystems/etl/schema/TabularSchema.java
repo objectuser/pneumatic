@@ -7,6 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.util.Assert;
+
 import com.surgingsystems.etl.record.DataRecord;
 import com.surgingsystems.etl.record.Record;
 
@@ -31,8 +35,14 @@ public class TabularSchema implements Schema {
         setName(name);
 
         for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
-            addColumnDefinition(columnDefinition);
+            addColumn(columnDefinition);
         }
+    }
+
+    @PostConstruct
+    public void validate() {
+        Assert.notNull(getName(), "The name is required");
+        Assert.isTrue(!columnNameToDefinitionMap.isEmpty(), "Columns are required");
     }
 
     @Override
@@ -42,12 +52,12 @@ public class TabularSchema implements Schema {
 
     @Override
     public Iterator<ColumnDefinition<? extends Comparable<?>>> iterator() {
-        return getColumnDefinitions().iterator();
+        return getColumns().iterator();
     }
 
     @Override
     public boolean contains(ColumnDefinition<?> columnDefinition) {
-        return getColumnDefinitions().contains(columnDefinition);
+        return getColumns().contains(columnDefinition);
     }
 
     @Override
@@ -56,7 +66,7 @@ public class TabularSchema implements Schema {
     }
 
     @Override
-    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumnDefinitions() {
+    public Collection<ColumnDefinition<? extends Comparable<?>>> getColumns() {
         return columnNameToDefinitionMap.values();
     }
 
@@ -65,13 +75,13 @@ public class TabularSchema implements Schema {
         return new DataRecord(this);
     }
 
-    public void addColumnDefinition(ColumnDefinition<?> columnDefinition) {
+    public void addColumn(ColumnDefinition<?> columnDefinition) {
         columnNameToDefinitionMap.put(columnDefinition.getName(), columnDefinition);
     }
 
-    public void setColumnDefinitions(Collection<ColumnDefinition<? extends Comparable<?>>> columnDefinitions) {
+    public void setColumns(Collection<ColumnDefinition<? extends Comparable<?>>> columnDefinitions) {
         for (ColumnDefinition<? extends Comparable<?>> columnDefinition : columnDefinitions) {
-            addColumnDefinition(columnDefinition);
+            addColumn(columnDefinition);
         }
     }
 

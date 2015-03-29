@@ -4,9 +4,9 @@ import com.surgingsystems.etl.pipe.Pipe;
 import com.surgingsystems.etl.record.Record;
 
 public class PipeRejectRecordStrategy implements RejectRecordStrategy {
-    
+
     private Pipe pipe;
-    
+
     public PipeRejectRecordStrategy() {
     }
 
