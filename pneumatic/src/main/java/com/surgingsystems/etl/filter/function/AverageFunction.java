@@ -7,14 +7,11 @@ import org.springframework.stereotype.Component;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.ColumnDefinition;
-import com.surgingsystems.etl.schema.DecimalColumnType;
 import com.surgingsystems.etl.schema.Schema;
 
 @Component
 @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AverageFunction implements Function<Double> {
-
-    private DecimalColumnType decimalColumnType;
 
     private ColumnDefinition<?> inputColumnDefinition;
 
@@ -27,9 +24,9 @@ public class AverageFunction implements Function<Double> {
     @Override
     public void apply(Record record) {
         Object value = record.getValueFor(inputColumnDefinition);
-        if (value != null && decimalColumnType.isCompatible(value)) {
-            Double doubleValue = decimalColumnType.convert(value);
-            result += doubleValue;
+        if (value != null && outputColumnDefinition.acceptsValue(value)) {
+            Column<Double> doubleColumn = outputColumnDefinition.applyToValue(value);
+            result += doubleColumn.getValue();
             ++recordCount;
         }
     }
@@ -59,10 +56,6 @@ public class AverageFunction implements Function<Double> {
 
     public long getRecordCount() {
         return recordCount;
-    }
-
-    public void setDecimalColumnType(DecimalColumnType decimalColumnType) {
-        this.decimalColumnType = decimalColumnType;
     }
 
     @Override

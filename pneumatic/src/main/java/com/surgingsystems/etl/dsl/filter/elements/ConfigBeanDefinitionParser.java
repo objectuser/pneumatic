@@ -40,7 +40,7 @@ public class ConfigBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
 
         Element outputConditionElement = DomUtils.getChildElementByTagName(element, "outputCondition");
         if (outputConditionElement != null) {
-            bean.addPropertyValue("conditionExpression", outputConditionElement.getTextContent());
+            bean.addPropertyValue("outputCondition", outputConditionElement.getTextContent());
         }
     }
 

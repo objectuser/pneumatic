@@ -21,10 +21,10 @@ public class DataRecord extends RecordWithColumnDefaults {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public DataRecord(Schema schema, Object... values) {
-        if (schema.getColumnDefinitions().size() != values.length) {
+        if (schema.getColumns().size() != values.length) {
             throw new IllegalArgumentException(String.format(
                     "Record has %d columns, %d values provided - there must be one value for each column definition",
-                    schema.getColumnDefinitions().size(), values.length));
+                    schema.getColumns().size(), values.length));
         }
 
         int i = 0;

@@ -15,10 +15,10 @@ public class ArrayRecordParser implements RecordParser<String[]> {
     public Record parse(String[] input, Schema schema) {
 
         DataRecord result = new DataRecord();
-        if (input.length != schema.getColumnDefinitions().size()) {
+        if (input.length != schema.getColumns().size()) {
             String line = input.toString();
             logger.warn("Record (%s...) has a different number of values (%d) than schema (%s) (%d)", line.substring(0,
-                    Math.min(line.length(), 100)), input.length, schema.getName(), schema.getColumnDefinitions()
+                    Math.min(line.length(), 100)), input.length, schema.getName(), schema.getColumns()
                     .size());
             return null;
         }

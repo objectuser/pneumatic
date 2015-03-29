@@ -1,0 +1,172 @@
+---
+inputSchema: !schema
+  name: Input File Schema
+  columns:
+    - name: Symbol
+      type: string
+    - name: Name
+      type: string
+    - name: LastSale
+      type: string
+    - name: MarketCap
+      type: string
+    - name: ADR TSO
+      type: string
+    - name: IPOyear
+      type: string
+    - name: Sector
+      type: string
+    - name: industry
+      type: string
+    - name: Summary Quote
+      type: string
+    - name: Empty
+      type: string
+
+stockSchema: !schema
+  name: Stock Listing Schema
+  columns:
+    - name: Symbol
+      type: string
+    - name: Name
+      type: string
+    - name: LastSale
+      type: decimal
+    - name: MarketCap
+      type: decimal
+    - name: ADR TSO
+      type: string
+    - name: IPOyear
+      type: integer
+    - name: Sector
+      type: string
+    - name: industry
+      type: string
+    - name: Summary Quote
+      type: string
+
+fileReaderOutput: !pipe
+fileReader: !fileReader
+  name: File Reader 1
+  fileResource:
+    location: classpath:data/companylist.csv
+    linesToSkip: 1
+  output: ->fileReaderOutput
+  outputSchema: ->inputSchema  
+  
+mapperOutput: !pipe
+mapperRejectionOutput: !pipe
+nameMapper: !mapper
+  name: Remove Trailing Empty Column Mapper
+  input: ->fileReaderOutput
+  inputSchema: ->inputSchema
+  output: ->mapperOutput
+  outputSchema: ->stockSchema
+
+copyOutputToSort: !pipe
+copyOutputToCount: !pipe
+copyOutputToAveragePrice: !pipe
+copyOutputToTotalCap: !pipe
+copyFilter: !copy
+  name: Copy
+  input: ->mapperOutput
+  outputs:
+    - ->copyOutputToSort
+    - ->copyOutputToCount
+    - ->copyOutputToAveragePrice
+    - ->copyOutputToTotalCap
+
+sortOutput: !pipe
+sortFilter: !sort
+  name: Symbol Sorter
+  input: ->copyOutputToSort
+  output: ->sortOutput
+  comparator:
+    name: Symbol
+    type: string
+
+fileWriter: !fileWriter
+  name: File Writer 1
+  fileResource: file:output/output1.csv
+  input: ->sortOutput
+  inputSchema: ->stockSchema
+
+# Count
+countSchema: !schema
+  name: Count Schema
+  columns:
+    - name: Count
+      type: integer
+
+countFunctionOutput: !pipe
+countFilter: !aggregator
+  name: Counter
+  input: ->copyOutputToCount
+  output: ->countFunctionOutput
+  outputSchema: ->countSchema
+  function: !count
+    out:
+      name: Count
+      type: integer
+
+countFileWriter: !fileWriter
+  name: Count File Writer
+  fileResource: file:output/count-output.txt
+  input: ->countFunctionOutput
+  inputSchema: ->countSchema
+
+# Average Price
+averagePriceSchema: !schema
+  name: Average Price Schema
+  columns:
+    - name: Average
+      type: decimal
+
+averagePriceFunctionOutput: !pipe
+averagePriceFilter: !aggregator
+  name: Average Price
+  input: ->copyOutputToAveragePrice
+  inputSchema: ->stockSchema
+  output: ->averagePriceFunctionOutput
+  outputSchema: ->averagePriceSchema
+  function: !average
+    in:
+      name: LastSale
+      type: decimal
+    out:
+      name: Average
+      type: decimal
+
+averagePriceFileWriter: !fileWriter
+  name: Average Price File Writer
+  fileResource: file:output/average-price-output.txt
+  input: ->averagePriceFunctionOutput
+  inputSchema: ->averagePriceSchema
+
+# Total Cap
+totalCapSchema: !schema
+  name: Total Cap Schema
+  columns:
+    - name: Sum
+      type: decimal
+
+totalCapFunctionOutput: !pipe
+totalCapFilter: !aggregator
+  name: Total Cap
+  input: ->copyOutputToTotalCap
+  inputSchema: ->stockSchema
+  output: ->totalCapFunctionOutput
+  outputSchema: ->totalCapSchema
+  function: !average
+    in:
+      name: MarketCap
+      type: decimal
+    out:
+      name: Sum
+      type: decimal
+
+totalCapFileWriter: !fileWriter
+  name: Total Cap File Writer
+  fileResource: file:output/total-cap-output.txt
+  input: ->totalCapFunctionOutput
+  inputSchema: ->totalCapSchema

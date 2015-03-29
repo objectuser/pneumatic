@@ -11,7 +11,7 @@ public class CsvRecordWriter implements RecordWriter {
     public String write(Record record, Schema schema) {
         StringBuilder result = new StringBuilder();
         int i = 0;
-        int columnCount = schema.getColumnDefinitions().size();
+        int columnCount = schema.getColumns().size();
         for (ColumnDefinition<?> columnDefinition : schema) {
             Column column = record.getColumnFor(columnDefinition);
             Object value = column.getValue();

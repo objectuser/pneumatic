@@ -31,7 +31,7 @@ public class ColumnDefinitionMappingStrategy implements ColumnMappingStrategy {
     public void validate(Schema outputSchema, Schema... inputSchemas) {
         Set<ColumnDefinition<?>> inputColumns = new HashSet<ColumnDefinition<?>>();
         for (Schema inputSchema : inputSchemas) {
-            inputColumns.addAll(inputSchema.getColumnDefinitions());
+            inputColumns.addAll(inputSchema.getColumns());
         }
 
         for (Map.Entry<ColumnDefinition<?>, ColumnDefinition<?>> entry : outputColumnDefinitionToInputColumnDefinitionMap

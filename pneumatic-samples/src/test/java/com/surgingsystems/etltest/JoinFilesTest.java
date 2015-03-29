@@ -8,6 +8,6 @@ public class JoinFilesTest {
 
     @Test
     public void write() throws Exception {
-	XmlRunner.main(new String[] { "configs/join-test.xml" });
+        XmlRunner.main(new String[] { "configs/join-test.xml" });
     }
 }

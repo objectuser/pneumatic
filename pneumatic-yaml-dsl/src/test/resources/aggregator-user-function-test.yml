@@ -1,0 +1,27 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+aggregatorSchema: !schema
+  name: Aggregator Schema
+  columns:
+    - name: Average
+      type: decimal
+
+input: !pipe
+output: !pipe
+aggregatorOutput: !pipe
+aggregator: !aggregator
+  name: Test Aggregator
+  input: ->input
+  inputSchema: ->inputSchema
+  output: ->aggregatorOutput
+  outputSchema: ->aggregatorSchema
+  function: ->myAverageFunction

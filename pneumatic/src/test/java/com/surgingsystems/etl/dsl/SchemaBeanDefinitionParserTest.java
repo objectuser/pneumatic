@@ -26,7 +26,7 @@ public class SchemaBeanDefinitionParserTest {
         Assert.assertNotNull("Found the bean", schema);
 
         Assert.assertEquals("Name is right", "Input Schema", schema.getName());
-        Assert.assertTrue("Columns are in the schema", schema.getColumnDefinitions().size() > 0);
+        Assert.assertTrue("Columns are in the schema", schema.getColumns().size() > 0);
     }
 
 }

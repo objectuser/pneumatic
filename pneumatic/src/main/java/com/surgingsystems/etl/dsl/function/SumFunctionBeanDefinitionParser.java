@@ -18,9 +18,10 @@ public class SumFunctionBeanDefinitionParser extends FunctionColumnBeanDefinitio
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
         parseColumn(element, parserContext, bean, "in", "inputColumnDefinition");
-        BeanDefinition outputColumnDefinition = parseColumn(element, parserContext, bean, "out", "outputColumnDefinition");
-        
-        BeanReference type = (BeanReference) outputColumnDefinition.getPropertyValues().get("columnType");
+        BeanDefinition outputColumnDefinition = parseColumn(element, parserContext, bean, "out",
+                "outputColumnDefinition");
+
+        BeanReference type = (BeanReference) outputColumnDefinition.getPropertyValues().get("type");
         if ("integerColumnType".equals(type.getBeanName())) {
             bean.addPropertyReference("sumStrategy", "sumIntegerStrategy");
         } else {

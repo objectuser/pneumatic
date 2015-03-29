@@ -1,0 +1,44 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+fileReaderOutput: !pipe
+transformerOutput1: !pipe
+transformerOutput2: !pipe
+transformer: !transformer
+  name: Transformer
+  input: ->fileReaderOutput
+  variables:
+    # yaml removes the quotes, but SpEL requires this to be a string
+    # and that requires quotes
+    v1: "'value1'"
+    v2: 0
+  expressions:
+    - "#v1 = #v1 + #v1"
+    - "#v2 = #v2 + 1"
+  outputConfigurations:
+    - name: Output One
+      recordName: record1
+      output: ->transformerOutput1
+      outputSchema: ->inputSchema
+      outputCondition: "#v2 > 0"
+      expressions:
+        - "#outputRecord.Name = #inputRecord.Name"
+        - "#outputRecord.Count = #inputRecord.Count"
+        - "#outputRecord.Price = #inputRecord.Price"
+    - name: Output Two
+      recordName: record2
+      output: ->transformerOutput2
+      outputSchema: ->inputSchema
+      outputCondition: "#v2 <= 0"
+      expressions:
+        - "#outputRecord.Name = #inputRecord.Name"
+        - "#outputRecord.Count = #inputRecord.Count"
+        - "#outputRecord.Price = #inputRecord.Price"

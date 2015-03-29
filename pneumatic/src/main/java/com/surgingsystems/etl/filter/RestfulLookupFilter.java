@@ -106,10 +106,10 @@ public class RestfulLookupFilter extends SingleInputFilter {
         }
 
         Set<ColumnDefinition<?>> outputColumnDefinitions = new HashSet<ColumnDefinition<?>>();
-        outputColumnDefinitions.addAll(outputSchema.getColumnDefinitions());
+        outputColumnDefinitions.addAll(outputSchema.getColumns());
         Set<ColumnDefinition<?>> inputColumnDefinitions = new HashSet<ColumnDefinition<?>>();
-        inputColumnDefinitions.addAll(inputSchema.getColumnDefinitions());
-        inputColumnDefinitions.addAll(responseSchema.getColumnDefinitions());
+        inputColumnDefinitions.addAll(inputSchema.getColumns());
+        inputColumnDefinitions.addAll(responseSchema.getColumns());
         Assert.isTrue(inputColumnDefinitions.containsAll(outputColumnDefinitions),
                 "The input and response schemas must have columns matching the names of those in the output schema");
 

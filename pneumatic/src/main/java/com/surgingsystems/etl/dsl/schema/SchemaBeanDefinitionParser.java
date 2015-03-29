@@ -34,6 +34,6 @@ public class SchemaBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
             columnDefinitions.add(parser.parse(columnElement, nestedParserContext));
         }
 
-        bean.addPropertyValue("columnDefinitions", columnDefinitions);
+        bean.addPropertyValue("columns", columnDefinitions);
     }
 }

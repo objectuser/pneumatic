@@ -6,7 +6,7 @@ public class ColumnDefinition<T extends Comparable<T>> {
 
     private String name;
 
-    private ColumnType<T> columnType;
+    private ColumnType<T> type;
 
     private int width = 0;
 
@@ -15,9 +15,9 @@ public class ColumnDefinition<T extends Comparable<T>> {
     public ColumnDefinition() {
     }
 
-    public ColumnDefinition(String name, ColumnType<T> columnType) {
+    public ColumnDefinition(String name, ColumnType<T> type) {
         this.name = name;
-        this.columnType = columnType;
+        this.type = type;
     }
 
     public Column<T> applyTo(Column<?> column) {
@@ -25,15 +25,15 @@ public class ColumnDefinition<T extends Comparable<T>> {
     }
 
     public Column<T> applyToValue(Object value) {
-        if (columnType.isCompatible(value)) {
-            return new Column<T>(this, columnType.convert(value));
+        if (type.isCompatible(value)) {
+            return new Column<T>(this, type.convert(value));
         } else {
             return null;
         }
     }
 
     public Class<T> getCoreType() {
-        return getColumnType().getCoreType();
+        return getType().getCoreType();
     }
 
     public boolean accepts(Column<?> column) {
@@ -41,7 +41,7 @@ public class ColumnDefinition<T extends Comparable<T>> {
     }
 
     public boolean acceptsValue(Object value) {
-        return (value != null || nullable) && columnType.isCompatible(value);
+        return (value != null || nullable) && type.isCompatible(value);
     }
 
     public String getName() {
@@ -52,12 +52,12 @@ public class ColumnDefinition<T extends Comparable<T>> {
         this.name = name;
     }
 
-    public ColumnType<T> getColumnType() {
-        return columnType;
+    public ColumnType<T> getType() {
+        return type;
     }
 
-    public void setColumnType(ColumnType<T> columnType) {
-        this.columnType = columnType;
+    public void setType(ColumnType<T> columnType) {
+        this.type = columnType;
     }
 
     public int getWidth() {
@@ -87,13 +87,13 @@ public class ColumnDefinition<T extends Comparable<T>> {
         if (other == null) {
             return false;
         } else {
-            return getName().equals(other.getName()) && getColumnType().equals(other.getColumnType());
+            return getName().equals(other.getName()) && getType().equals(other.getType());
         }
     }
 
     @Override
     public String toString() {
-        return String.format("%s(%s, %s)", getClass().getSimpleName(), getName(), getColumnType());
+        return String.format("%s(%s, %s)", getClass().getSimpleName(), getName(), getType());
     }
 
 }

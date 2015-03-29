@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.file.mapping.ArrayFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 
 import com.surgingsystems.etl.filter.FlatFileRecordReader;
 import com.surgingsystems.etl.record.ArrayRecordParser;
@@ -25,7 +30,7 @@ public class FileRecordFactory implements RecordFactory {
     public void readRecords() {
         try {
             flatFileRecordReader.open(new ExecutionContext());
-            
+
             String[] values = null;
             while ((values = flatFileRecordReader.read()) != null) {
                 records.add(recordParser.parse(values, schema));
@@ -33,6 +38,14 @@ public class FileRecordFactory implements RecordFactory {
         } catch (Exception e) {
             throw new RuntimeException("Unable to read records from file", e);
         }
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        DefaultLineMapper<String[]> lineMapper = new DefaultLineMapper<String[]>();
+        lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
+        lineMapper.setFieldSetMapper(new ArrayFieldSetMapper());
+        flatFileRecordReader.setLineMapper(lineMapper);
     }
 
     @Override

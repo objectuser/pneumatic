@@ -50,7 +50,7 @@ public class AggregatorFilter extends SingleInputFilter {
 
     private RecordValidator inputRecordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     private Function<?> function;
 
@@ -88,6 +88,13 @@ public class AggregatorFilter extends SingleInputFilter {
                     String.format(
                             "Aggregator (%s): The aggregator schema must have a column matching the output column of the function",
                             getName()));
+        }
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
         }
     }
 

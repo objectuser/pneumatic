@@ -59,7 +59,7 @@ public class DatabaseReaderFilter extends GuardedFilter {
 
     private RecordValidator recordValidator;
 
-    private RejectRecordStrategy rejectRecordStrategy = new LogRejectRecordStrategy();
+    private RejectRecordStrategy rejectRecordStrategy;
 
     private EtlExpressionHelper expressionHelper = new EtlExpressionHelper();
 
@@ -85,6 +85,13 @@ public class DatabaseReaderFilter extends GuardedFilter {
         recordValidator = new SchemaRecordValidator(outputSchema);
 
         setupExpressions();
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
     }
 
     @Override

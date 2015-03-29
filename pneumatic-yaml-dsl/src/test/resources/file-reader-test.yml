@@ -1,0 +1,26 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+fileReaderOutput: !pipe
+fileReader1: !fileReader
+  name: Test File Reader
+  fileResource: classpath:data/input1.txt
+  output: ->fileReaderOutput
+  outputSchema: ->inputSchema
+
+fileReaderOutput: !pipe
+fileReader2: !fileReader
+  name: Test File Reader
+  fileResource:
+    location: classpath:data/input1.txt
+    linesToSkip: 100
+  output: ->fileReaderOutput
+  outputSchema: ->inputSchema

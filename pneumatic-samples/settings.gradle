@@ -1,3 +1,5 @@
 
 include ":pneumatic"
 project(":pneumatic").projectDir = new File("../pneumatic")
+include ":pneumatic-yaml-dsl"
+project(":pneumatic-yaml-dsl").projectDir = new File("../pneumatic-yaml-dsl")

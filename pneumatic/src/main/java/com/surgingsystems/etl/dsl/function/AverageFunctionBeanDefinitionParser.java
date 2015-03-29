@@ -15,10 +15,7 @@ public class AverageFunctionBeanDefinitionParser extends FunctionColumnBeanDefin
 
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder bean) {
-
         parseColumn(element, parserContext, bean, "in", "inputColumnDefinition");
         parseColumn(element, parserContext, bean, "out", "outputColumnDefinition");
-
-        bean.addPropertyReference("decimalColumnType", "decimalColumnType");
     }
 }

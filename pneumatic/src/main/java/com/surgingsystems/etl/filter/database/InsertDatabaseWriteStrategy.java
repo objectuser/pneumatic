@@ -41,7 +41,7 @@ public class InsertDatabaseWriteStrategy implements DatabaseWriteStrategy {
         StringBuilder valuesBuilder = new StringBuilder(") values (");
 
         for (Iterator<ColumnDefinition<? extends Comparable<?>>> columnDefinitionIterator = schema
-                .getColumnDefinitions().iterator(); columnDefinitionIterator.hasNext();) {
+                .getColumns().iterator(); columnDefinitionIterator.hasNext();) {
 
             ColumnDefinition<? extends Comparable<?>> columnDefinition = columnDefinitionIterator.next();
 

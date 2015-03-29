@@ -1,0 +1,23 @@
+---
+mtbSchema: !schema
+  name: Input Schema
+  columns:
+    - name: name
+      type: string
+    - name: year
+      type: integer
+    - name: cost
+      type: decimal
+
+input: !pipe
+databaseWriter: !databaseWriter
+  name: Database Writer
+  input: ->input
+  inputSchema: ->mtbSchema
+  dataSource: ->dataSource
+  updateWith:
+    sql: update mtb set year = ?, price = ? where name = ?
+    parameters:
+      - "#inputRecord.year"
+      - "#inputRecord.price"
+      - "#inputRecord.name"

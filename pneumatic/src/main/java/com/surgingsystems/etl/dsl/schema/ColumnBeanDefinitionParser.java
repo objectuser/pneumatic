@@ -27,15 +27,15 @@ public class ColumnBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
         if (!StringUtils.isEmpty(nullable)) {
             bean.addPropertyValue("nullable", nullable);
         }
-        
+
         logger.trace("Building column (%s, %s)", name, type);
-        
+
         if ("string".equals(type)) {
-            bean.addPropertyReference("columnType", "stringColumnType");
+            bean.addPropertyReference("type", "stringColumnType");
         } else if ("integer".equals(type)) {
-            bean.addPropertyReference("columnType", "integerColumnType");
+            bean.addPropertyReference("type", "integerColumnType");
         } else if ("decimal".equals(type)) {
-            bean.addPropertyReference("columnType", "decimalColumnType");
+            bean.addPropertyReference("type", "decimalColumnType");
         } else {
             logger.error("Unknown column type (%s)", type);
             throw new RuntimeException(String.format("Unknown column type (%s)", type));

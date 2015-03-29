@@ -29,7 +29,8 @@ repositories {
 }
 
 dependencies {
-	compile project(":pneumatic")
+    compile project(":pneumatic")
+    compile project(":pneumatic-yaml-dsl")
 
 	compile "org.springframework:spring-context:$springVersion"
 	compile "org.springframework:spring-context-support:$springVersion"

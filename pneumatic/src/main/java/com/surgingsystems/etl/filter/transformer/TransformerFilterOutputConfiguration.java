@@ -14,7 +14,7 @@ public class TransformerFilterOutputConfiguration extends ConditionalOutputConfi
     private List<String> expressions = new ArrayList<String>();
 
     public TransformerFilterOutputConfiguration() {
-        setConditionExpression("true");
+        setOutputCondition("true");
     }
 
     public Schema getOutputSchema() {

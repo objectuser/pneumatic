@@ -91,7 +91,7 @@ public class InputPipeBuilder {
     public Pipe build() {
 
         Schema schema = SchemaBuilder.create().withDefaultDefinitions().build();
-        columnDefinitions.addAll(schema.getColumnDefinitions());
+        columnDefinitions.addAll(schema.getColumns());
 
         Pipe input = new BlockingQueuePipe();
 

@@ -12,7 +12,7 @@ public interface Schema extends Iterable<ColumnDefinition<? extends Comparable<?
 
     ColumnDefinition<? extends Comparable<?>> getColumnForName(String name);
 
-    Collection<ColumnDefinition<? extends Comparable<?>>> getColumnDefinitions();
+    Collection<ColumnDefinition<? extends Comparable<?>>> getColumns();
     
     Record createEmptyRecord();
 }

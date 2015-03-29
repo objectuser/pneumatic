@@ -39,7 +39,7 @@ public class OutputBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
                 value = outputConditionElement.getTextContent();
             }
 
-            bean.addPropertyValue("conditionExpression", value);
+            bean.addPropertyValue("outputCondition", value);
         }
     }
 }
