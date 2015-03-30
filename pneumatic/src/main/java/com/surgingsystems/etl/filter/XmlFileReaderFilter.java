@@ -46,7 +46,7 @@ public class XmlFileReaderFilter extends GuardedFilter {
 
     @SuppressWarnings("serial")
     @Override
-    protected void filter() throws Exception {
+    protected void process() throws Exception {
 
         StaxEventItemReader<Map<String, String>> itemReader = new StaxEventItemReader<Map<String, String>>();
         itemReader.setFragmentRootElementName(schema.getFragmentRootElementName());
@@ -76,13 +76,16 @@ public class XmlFileReaderFilter extends GuardedFilter {
                 output.put(record);
             }
 
-            output.closedForInput();
-
             logSummary();
 
         } finally {
             itemReader.close();
         }
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     private Record createRecord(Map<String, String> input) {
@@ -158,5 +161,4 @@ public class XmlFileReaderFilter extends GuardedFilter {
         }
 
     }
-
 }

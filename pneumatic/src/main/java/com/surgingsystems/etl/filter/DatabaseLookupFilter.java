@@ -108,7 +108,7 @@ public class DatabaseLookupFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) {
+    protected void processRecord(Record inputRecord) {
 
         if (!inputRecordValidator.accepts(inputRecord)) {
             rejectRecordStrategy.rejected(inputRecord);
@@ -150,6 +150,10 @@ public class DatabaseLookupFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         output.closedForInput();
     }
 

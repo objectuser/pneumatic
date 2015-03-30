@@ -93,7 +93,7 @@ public class RestfulWriterFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) throws Exception {
+    protected void processRecord(Record inputRecord) throws Exception {
 
         if (!inputRecordValidator.accepts(inputRecord)) {
             rejectRecordStrategy.rejected(inputRecord);
@@ -124,6 +124,10 @@ public class RestfulWriterFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         rejectRecordStrategy.close();
     }
 

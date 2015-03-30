@@ -99,7 +99,7 @@ public class AggregatorFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
 
         recordProcessed();
 
@@ -128,11 +128,14 @@ public class AggregatorFilter extends SingleInputFilter {
         aggregationRecord.addColumn(aggregation);
 
         output.put(aggregationRecord);
-        output.closedForInput();
-
-        rejectRecordStrategy.close();
 
         logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
+        rejectRecordStrategy.close();
     }
 
     public Schema getInputSchema() {

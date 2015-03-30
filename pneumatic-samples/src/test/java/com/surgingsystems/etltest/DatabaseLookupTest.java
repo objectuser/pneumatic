@@ -19,8 +19,8 @@ import com.surgingsystems.etl.Job;
 import com.surgingsystems.etl.JobConfigurer;
 import com.surgingsystems.etl.XmlJobConfigurer;
 import com.surgingsystems.etl.pipe.Pipe;
+import com.surgingsystems.etl.pipe.PipeUtility;
 import com.surgingsystems.etl.record.Record;
-import com.surgingsystems.etl.test.filter.pipe.PipeUtility;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:etl-context.xml", "classpath:configs/database-lookup-test.xml" })

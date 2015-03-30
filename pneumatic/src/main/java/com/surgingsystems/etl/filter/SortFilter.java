@@ -52,7 +52,7 @@ public class SortFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
         recordProcessed();
         logRecord(record);
 
@@ -69,6 +69,11 @@ public class SortFilter extends SingleInputFilter {
         output.closedForInput();
 
         logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     public Pipe getOutput() {

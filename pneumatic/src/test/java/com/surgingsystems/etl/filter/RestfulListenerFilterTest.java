@@ -15,11 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surgingsystems.etl.pipe.Pipe;
+import com.surgingsystems.etl.pipe.PipeUtility;
 import com.surgingsystems.etl.record.JsonRecord;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.Schema;
-import com.surgingsystems.etl.test.filter.pipe.PipeUtility;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:etl-context.xml", "restful-listener-filter-test.xml" })

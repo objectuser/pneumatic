@@ -1,6 +1,7 @@
 package com.surgingsystems.etl.filter;
 
 import com.surgingsystems.etl.pipe.Pipe;
+import com.surgingsystems.etl.pipe.PipeUtility;
 import com.surgingsystems.etl.record.Record;
 
 /**
@@ -19,21 +20,20 @@ public abstract class SingleInputFilter extends GuardedFilter {
     }
 
     @Override
-    protected void filter() throws Exception {
-        preProcess();
-        do {
-            Record record = input.pull();
-            if (record != null) {
-                process(record);
-            }
-        } while (!input.isComplete());
-        postProcess();
+    protected void process() throws Exception {
+        try {
+            preProcess();
+            do {
+                Record record = input.pull();
+                if (record != null) {
+                    processRecord(record);
+                }
+            } while (!input.isComplete());
+        } catch (Exception e) {
+            PipeUtility.drain(getInput());
+            throw e;
+        }
     }
 
-    protected void preProcess() throws Exception {
-    }
-
-    protected abstract void process(Record record) throws Exception;
-
-    protected abstract void postProcess() throws Exception;
+    protected abstract void processRecord(Record record) throws Exception;
 }

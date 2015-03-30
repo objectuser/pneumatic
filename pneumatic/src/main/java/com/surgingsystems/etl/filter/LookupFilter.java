@@ -13,7 +13,7 @@ public class LookupFilter extends SingleInputFilter {
     private Pipe inputFromLookup;
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
         outputToLookup.put(record);
     }
 
@@ -21,4 +21,7 @@ public class LookupFilter extends SingleInputFilter {
     protected void postProcess() throws Exception {
     }
 
+    @Override
+    protected void cleanUp() throws Exception {
+    }
 }

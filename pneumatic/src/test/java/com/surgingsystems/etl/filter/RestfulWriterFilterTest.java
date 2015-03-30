@@ -34,13 +34,13 @@ import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.surgingsystems.etl.pipe.Pipe;
+import com.surgingsystems.etl.pipe.PipeUtility;
 import com.surgingsystems.etl.record.JsonRecord;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.DecimalColumnType;
 import com.surgingsystems.etl.schema.IntegerColumnType;
 import com.surgingsystems.etl.schema.Schema;
 import com.surgingsystems.etl.schema.StringColumnType;
-import com.surgingsystems.etl.test.filter.pipe.PipeUtility;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RestfulWriterFilterTest.Config.class)
@@ -113,7 +113,7 @@ public class RestfulWriterFilterTest {
 
         input.closedForInput();
 
-        restfulWriterFilter.filter();
+        restfulWriterFilter.run();
 
         List<Record> rejectedRecords = PipeUtility.toList(rejectionOutput);
         Assert.assertEquals("Rejection is right", Arrays.asList(mach6), rejectedRecords);

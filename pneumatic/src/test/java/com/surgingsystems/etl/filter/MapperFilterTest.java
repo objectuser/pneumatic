@@ -14,10 +14,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.surgingsystems.etl.pipe.Pipe;
+import com.surgingsystems.etl.pipe.PipeUtility;
 import com.surgingsystems.etl.record.DataRecord;
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.Schema;
-import com.surgingsystems.etl.test.filter.pipe.PipeUtility;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:etl-context.xml", "mapper-filter-test.xml" })
