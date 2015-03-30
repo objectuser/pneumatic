@@ -66,7 +66,7 @@ public class TransformerFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) throws Exception {
+    protected void processRecord(Record inputRecord) throws Exception {
 
         // for each record, we setup the input record for the expressions
         evaluationContext.setVariable("inputRecord", inputRecord);
@@ -119,6 +119,13 @@ public class TransformerFilter extends SingleInputFilter {
         for (TransformerFilterOutputConfiguration config : outputConfigurations) {
             Pipe pipe = config.getOutput();
             pipe.closedForInput();
+        }
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        for (TransformerFilterOutputConfiguration config : outputConfigurations) {
+            config.close();
         }
     }
 

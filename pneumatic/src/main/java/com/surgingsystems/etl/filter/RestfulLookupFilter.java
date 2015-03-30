@@ -22,6 +22,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.surgingsystems.etl.filter.mapping.LogRejectRecordStrategy;
 import com.surgingsystems.etl.filter.mapping.Mapping;
 import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
 import com.surgingsystems.etl.pipe.Pipe;
@@ -125,7 +126,7 @@ public class RestfulLookupFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) throws Exception {
+    protected void processRecord(Record inputRecord) throws Exception {
 
         if (!inputRecordValidator.accepts(inputRecord)) {
             rejectRecordStrategy.rejected(inputRecord);
@@ -160,7 +161,18 @@ public class RestfulLookupFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         output.closedForInput();
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
     }
 
     public String getRequestUrl() {

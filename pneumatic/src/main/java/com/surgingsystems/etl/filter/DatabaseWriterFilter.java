@@ -68,7 +68,7 @@ public class DatabaseWriterFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
         if (recordValidator.accepts(record)) {
             writeStrategy.write(record);
         } else {
@@ -78,6 +78,10 @@ public class DatabaseWriterFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         writeStrategy.close();
     }
 

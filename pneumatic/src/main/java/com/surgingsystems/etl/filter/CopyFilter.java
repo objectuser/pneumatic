@@ -43,7 +43,7 @@ public class CopyFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
 
         recordProcessed();
         logRecord(record);
@@ -55,12 +55,14 @@ public class CopyFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() {
+        logSummary();
+    }
 
+    @Override
+    protected void cleanUp() throws Exception {
         for (Pipe output : outputs) {
             output.closedForInput();
         }
-
-        logSummary();
     }
 
     public List<Pipe> getOutputs() {

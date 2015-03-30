@@ -95,7 +95,7 @@ public class MapperFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) throws Exception {
+    protected void processRecord(Record inputRecord) throws Exception {
 
         if (!inputRecordValidator.accepts(inputRecord)) {
             rejectRecordStrategy.rejected(inputRecord);
@@ -115,8 +115,12 @@ public class MapperFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() {
-        output.closedForInput();
         logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     public Pipe getOutput() {

@@ -15,11 +15,11 @@ public class CaptureFilter extends SingleInputFilter {
     private Logger logger = LogManager.getFormatterLogger(CaptureFilter.class);
 
     private List<Record> records = new ArrayList<Record>();
-    
+
     private Pipe input;
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
         logger.debug("Capturing record " + record);
         records.add(record);
     }
@@ -27,6 +27,10 @@ public class CaptureFilter extends SingleInputFilter {
     @Override
     protected void postProcess() throws Exception {
         logger.debug("Capture complete");
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
     }
 
     public List<Record> getRecords() {

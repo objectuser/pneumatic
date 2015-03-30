@@ -14,10 +14,15 @@ public class CannedDataFilter extends GuardedFilter {
     private Pipe output;
 
     @Override
-    protected void filter() throws Exception {
+    protected void process() throws Exception {
         for (Record record : records) {
             output.put(record);
         }
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     public List<Record> getRecords() {

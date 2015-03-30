@@ -23,7 +23,16 @@ public abstract class GuardedFilter implements RunnableFilter {
 
             logger.info("%s is starting up", getName());
 
-            filter();
+            try {
+                preProcess();
+                process();
+            } catch (Exception e) {
+                cleanUp();
+                throw e;
+            }
+
+            postProcess();
+            cleanUp();
 
             logger.info("%s is shutting down", getName());
 
@@ -31,6 +40,14 @@ public abstract class GuardedFilter implements RunnableFilter {
             logger.error(String.format("Error processing filter (%s)", getName()), exception);
         }
     }
+
+    protected void preProcess() throws Exception {
+    }
+
+    protected void postProcess() throws Exception {
+    }
+
+    protected abstract void cleanUp() throws Exception;
 
     @Override
     public String getName() {
@@ -45,7 +62,7 @@ public abstract class GuardedFilter implements RunnableFilter {
     /**
      * Override to implement subclass behavior.
      */
-    protected abstract void filter() throws Exception;
+    protected abstract void process() throws Exception;
 
     protected void recordProcessed() {
         ++recordsProcessed;

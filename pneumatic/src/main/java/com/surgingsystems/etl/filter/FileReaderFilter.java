@@ -91,49 +91,49 @@ public class FileReaderFilter extends GuardedFilter {
     }
 
     @Override
-    protected void filter() throws Exception {
+    protected void process() throws Exception {
 
         itemReader.open(new ExecutionContext());
 
-        try {
-            String[] input = null;
-            while (true) {
+        String[] input = null;
+        while (true) {
 
-                try {
-                    input = itemReader.read();
-                    if (input == null) {
-                        break;
-                    }
-
-                    if (logger.isTraceEnabled()) {
-                        String line = Arrays.toString(input);
-                        logger.trace("Reading from [%s]: [%s...]", itemReader.getResource(),
-                                line.substring(0, Math.min(line.length(), 100)));
-                    }
-
-                    Record record = recordParser.parse(input, outputSchema);
-                    if (record == null) {
-                        rejectRecordStrategy.rejected(new StringRecord(stringColumnType, input));
-                        logger.warn("Parser returned null record when parsing according to schema (%s)",
-                                outputSchema.getName());
-                    } else {
-                        recordProcessed();
-                        logRecord(record);
-                        output.put(record);
-                    }
-
-                } catch (FlatFileParseException e) {
-                    rejectRecordStrategy.rejected(new StringRecord(stringColumnType, e.getInput()));
+            try {
+                input = itemReader.read();
+                if (input == null) {
+                    break;
                 }
+
+                if (logger.isTraceEnabled()) {
+                    String line = Arrays.toString(input);
+                    logger.trace("Reading from [%s]: [%s...]", itemReader.getResource(),
+                            line.substring(0, Math.min(line.length(), 100)));
+                }
+
+                Record record = recordParser.parse(input, outputSchema);
+                if (record == null) {
+                    rejectRecordStrategy.rejected(new StringRecord(stringColumnType, input));
+                    logger.warn("Parser returned null record when parsing according to schema (%s)",
+                            outputSchema.getName());
+                } else {
+                    recordProcessed();
+                    logRecord(record);
+                    output.put(record);
+                }
+
+            } catch (FlatFileParseException e) {
+                rejectRecordStrategy.rejected(new StringRecord(stringColumnType, e.getInput()));
             }
-
-            logSummary();
-
-        } finally {
-            output.closedForInput();
-            itemReader.close();
-            rejectRecordStrategy.close();
         }
+
+        logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
+        itemReader.close();
+        rejectRecordStrategy.close();
     }
 
     public Pipe getOutput() {

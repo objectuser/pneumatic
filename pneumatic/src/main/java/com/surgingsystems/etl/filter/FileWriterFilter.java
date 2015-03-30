@@ -76,7 +76,7 @@ public class FileWriterFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record record) throws Exception {
+    protected void processRecord(Record record) throws Exception {
 
         if (!recordValidator.accepts(record)) {
             logger.warn("Schema (%s) is incompatible with record [%s...]", inputSchema.getName(),
@@ -93,11 +93,14 @@ public class FileWriterFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+        logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         if (itemWriter != null) {
             itemWriter.close();
         }
-
-        logSummary();
     }
 
     public Schema getInputSchema() {

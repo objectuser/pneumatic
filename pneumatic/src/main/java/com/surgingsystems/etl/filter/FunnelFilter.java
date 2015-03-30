@@ -44,7 +44,7 @@ public class FunnelFilter extends GuardedFilter {
     }
 
     @Override
-    protected void filter() throws Exception {
+    protected void process() throws Exception {
 
         while (!allInputsComplete()) {
 
@@ -63,9 +63,12 @@ public class FunnelFilter extends GuardedFilter {
             }
         }
 
-        output.closedForInput();
-
         logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     private boolean allInputsComplete() {

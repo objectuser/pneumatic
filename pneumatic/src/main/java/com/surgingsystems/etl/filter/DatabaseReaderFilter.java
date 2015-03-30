@@ -95,7 +95,7 @@ public class DatabaseReaderFilter extends GuardedFilter {
     }
 
     @Override
-    protected void filter() {
+    protected void process() {
 
         List<Object> arguments = new ArrayList<Object>();
         for (String parameter : parameters) {
@@ -126,7 +126,10 @@ public class DatabaseReaderFilter extends GuardedFilter {
                 return outputRecord;
             }
         });
+    }
 
+    @Override
+    protected void cleanUp() throws Exception {
         output.closedForInput();
     }
 

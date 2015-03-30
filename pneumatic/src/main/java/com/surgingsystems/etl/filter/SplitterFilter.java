@@ -51,7 +51,7 @@ public class SplitterFilter extends SingleInputFilter {
     }
 
     @Override
-    protected void process(Record inputRecord) throws Exception {
+    protected void processRecord(Record inputRecord) throws Exception {
 
         evaluationContext.setVariable("inputRecord", inputRecord);
 
@@ -71,6 +71,10 @@ public class SplitterFilter extends SingleInputFilter {
 
     @Override
     protected void postProcess() throws Exception {
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
         for (OutputCondition outputCondition : outputConditions) {
             outputCondition.close();
         }

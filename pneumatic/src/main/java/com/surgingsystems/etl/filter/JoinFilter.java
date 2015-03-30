@@ -65,12 +65,14 @@ public class JoinFilter extends GuardedFilter {
     }
 
     @Override
-    protected void filter() throws Exception {
+    protected void process() throws Exception {
         joinStrategy.join();
-
-        output.closedForInput();
-
         logSummary();
+    }
+
+    @Override
+    protected void cleanUp() throws Exception {
+        output.closedForInput();
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
