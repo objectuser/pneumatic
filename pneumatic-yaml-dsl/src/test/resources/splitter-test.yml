@@ -1,14 +1,4 @@
 ---
-inputSchema: !schema
-  name: Input Schema
-  columns:
-    - name: Name
-      type: string
-    - name: Count
-      type: integer
-    - name: Price
-      type: decimal
-
 fileReaderOutput: !pipe
 splitterOutput1: !pipe
 splitterOutput2: !pipe
