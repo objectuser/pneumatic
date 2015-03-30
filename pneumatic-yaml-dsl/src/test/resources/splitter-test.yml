@@ -1,0 +1,24 @@
+---
+inputSchema: !schema
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+fileReaderOutput: !pipe
+splitterOutput1: !pipe
+splitterOutput2: !pipe
+splitter: !splitter
+  name: Splitter
+  input: ->fileReaderOutput
+  outputConditions:
+    - name: Output One
+      output: ->splitterOutput1
+      outputCondition: "#v2 > 0"
+    - name: Output Two
+      output: ->splitterOutput2
+      outputCondition: "#v2 <= 0"

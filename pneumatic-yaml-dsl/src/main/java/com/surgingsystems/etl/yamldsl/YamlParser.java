@@ -44,12 +44,14 @@ import com.surgingsystems.etl.filter.RestfulListenerFilter;
 import com.surgingsystems.etl.filter.RestfulLookupFilter;
 import com.surgingsystems.etl.filter.RestfulWriterFilter;
 import com.surgingsystems.etl.filter.SortFilter;
+import com.surgingsystems.etl.filter.SplitterFilter;
 import com.surgingsystems.etl.filter.TransformerFilter;
 import com.surgingsystems.etl.filter.database.ConfigurableDatabaseWriteStrategy;
 import com.surgingsystems.etl.filter.function.AverageFunction;
 import com.surgingsystems.etl.filter.function.CounterFunction;
 import com.surgingsystems.etl.filter.function.Function;
 import com.surgingsystems.etl.filter.function.SumFunction;
+import com.surgingsystems.etl.filter.transformer.OutputCondition;
 import com.surgingsystems.etl.filter.transformer.TransformerFilterOutputConfiguration;
 import com.surgingsystems.etl.pipe.BlockingQueuePipe;
 import com.surgingsystems.etl.pipe.Pipe;
@@ -77,6 +79,7 @@ public class YamlParser {
             put("!restfulListener", RestfulListenerFilter.class);
             put("!restfulLookup", RestfulLookupFilter.class);
             put("!restfulWriter", RestfulWriterFilter.class);
+            put("!splitter", SplitterFilter.class);
             put("!sort", SortFilter.class);
             put("!transformer", TransformerFilter.class);
 
@@ -247,6 +250,17 @@ public class YamlParser {
                     put("inputSchema", TabularSchema.class);
                 }
             });
+            put(SplitterFilter.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("name", String.class);
+                    put("input", Pipe.class);
+                    put("outputConditions", new ArrayList<Class<?>>() {
+                        {
+                            add(OutputCondition.class);
+                        }
+                    });
+                }
+            });
             put(SortFilter.class, new LinkedHashMap<String, Object>() {
                 {
                     put("name", String.class);
@@ -320,6 +334,13 @@ public class YamlParser {
                             add(String.class);
                         }
                     });
+                }
+            });
+            put(OutputCondition.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("name", String.class);
+                    put("output", Pipe.class);
+                    put("outputCondition", String.class);
                 }
             });
         }
