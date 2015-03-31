@@ -32,14 +32,14 @@ mtbSchema: !schema
 
 # Declare a pipe to join the file reader and database writer
 fileReaderOutput: !pipe
-# Declare a file reader to read from `mtb.txt`
+# Declare a file reader to read from mtb.txt
 mtbFileReader: !fileReader
   name: File Reader
   fileResource: data/mtb.txt
   output: ->fileReaderOutput
   outputSchema: ->inputSchema
 
-# Declare a database writer to read from the pipe and write to the `mtb` table
+# Declare a database writer to read from the pipe and write to the mtb table
 mtbDatabaseWriter: !databaseWriter
   name: Database Writer
   input: ->fileReaderOutput
