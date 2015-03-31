@@ -3,9 +3,11 @@
 
 [Pneumatic.IO](http://pneumatic.io) is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required.
 
-Pneumatic is declarative, using either a custom YAML, or XML markup based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the texutal forms provide a proof of concept that still makes creating ETL jobs really easy.
+Pneumatic is declarative, using either a custom YAML markup, or XML markup based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the texutal forms provide a proof of concept that still makes creating ETL jobs really easy.
 
-As a quick example, reading from a file and writing to a database might look like this, with the data source is declared in Spring's XML namespace, followed by Pneumatic declarations in YAML:
+As a quick example, here's how you might read from a file and write its contents to a database in Pneumatic.
+
+First, here is a Spring data source definition:
 
 ```XML
 	<jdbc:embedded-database id="dataSource" type="HSQL">
@@ -13,6 +15,8 @@ As a quick example, reading from a file and writing to a database might look lik
 		<jdbc:script location="classpath:db-test-data.sql" />
 	</jdbc:embedded-database>
 ```
+
+Next, here are the YAML-based Pneumatic declarations:
 
 ```YAML
 # Declare a schema that defines our records
