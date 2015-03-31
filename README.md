@@ -35,7 +35,7 @@ fileReaderOutput: !pipe
 # Declare a file reader to read from `mtb.txt`
 mtbFileReader: !fileReader
   name: File Reader
-  fileResource: classpath:data/mtb.txt
+  fileResource: data/mtb.txt
   output: ->fileReaderOutput
   outputSchema: ->inputSchema
 
