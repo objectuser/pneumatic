@@ -2,43 +2,53 @@
 Quick Intro
 ***********
 
-Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required. This section provides a preview of Pneumatic. The concepts referenced here will be explained in the rest of this guide, but this section should provide a flavor of what it's all about.
+Pneumatic.IO is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required.
 
-Pneumatic is declarative, using an XML markup  based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the XML provides a proof of concept that still makes creating ETL jobs really easy. There might be, however, a conceptual hurdle of understanding how Spring declares beans.
+Pneumatic is declarative, using either a custom YAML markup, or XML markup based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the texutal forms provide a proof of concept that still makes creating ETL jobs really easy.
 
-As a quick example, reading from a file and writing to a database might look like this (omitting some boilerplate XML)::
+As a quick example, here's how you might read from a file and write its contents to a database in Pneumatic.
 
-	<jdbc:embedded-database id="dataSource" type="HSQL">
-		<jdbc:script location="classpath:db-schema.sql" />
-		<jdbc:script location="classpath:db-test-data.sql" />
-	</jdbc:embedded-database>
+First, here is a Spring data source definition::
 
-	<schema id="mtbSchema" name="MTB Schema">
-		<column name="name" type="string" />
-		<column name="year" type="integer" />
-		<column name="cost" type="decimal" />
-	</schema>
+  <jdbc:embedded-database id="dataSource" type="HSQL">
+    <jdbc:script location="classpath:db-schema.sql" />
+    <jdbc:script location="classpath:db-test-data.sql" />
+  </jdbc:embedded-database>
 
-	<pipe id="fileReaderOutput" />
-	<fileReader id="fileReader" name="File Reader">
-		<fileResource location="classpath:data/mtb.txt" />
-		<output ref="fileReaderOutput" />
-		<outputSchema ref="mtbSchema" />
-	</fileReader>
+Next, here are the YAML-based Pneumatic declarations::
 
-	<databaseWriter id="databaseWriter" name="Database Writer">
-		<input ref="fileReaderOutput" />
-		<inputSchema ref="mtbSchema" />
-		<dataSource ref="dataSource" />
-		<insertInto table-name="mtb" />
-	</databaseWriter>
+  # Declare a schema that defines our records
+  mtbSchema: !schema
+    name: Input Schema
+    columns:
+      - name: name
+        type: string
+      - name: year
+        type: integer
+      - name: cost
+        type: decimal
+  
+  # Declare a pipe to join the file reader and database writer
+  fileReaderOutput: !pipe
+  # Declare a file reader to read from mtb.txt
+  mtbFileReader: !fileReader
+    name: File Reader
+    fileResource: data/mtb.txt
+    output: ->fileReaderOutput
+    outputSchema: ->inputSchema
+  
+  # Declare a database writer to read from the pipe and write to the mtb table
+  mtbDatabaseWriter: !databaseWriter
+    name: Database Writer
+    input: ->fileReaderOutput
+    inputSchema: ->mtbSchema
+    dataSource: ->dataSource # Reference the data source declared in Spring XML
+    insertInto: mtb
 
-In this guide, configuration elements are indicated by their "IDs" (identifiers). The ID needs to be unique across all the files in your jobs.  An example of an ID is the first declaration (``id="dataSource"``). This refers to a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
+The first declaration (``id="dataSource"``) is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
-Next is a schema declaration (``id="mtbSchema"``)  used to declare the structure of records in the job. A pipe (``id="fileReaderOutput"``) provides a conduit for records, connecting one processing element (called "filters") to another. 
+Next is a schema declaration (``mtbSchema``)  used to declare the structure of records in the job. A pipe (``fileReaderOutput``) provides a conduit from one processing element (called "filters") to another. A file reader (``mtbFileReader``) reads a file, creating records and sending them to the pipe referenced in its ``output``.
 
-A file reader (``id="fileReader"``) is a filter that reads a file, creating records and sending them to the pipe referenced in its "output". The file reader has an output (``output ref="fileReaderOutput"``), which refers (using the ``ref`` keyword) to the ``fileReaderOutput`` pipe. This guide will often just use the reference portion of an element when describing it (``ref="fileReaderOutput"``).
-
-A database writer (``id="databaseWriter"``) writes records from the pipe referenced in its ``input`` to a table available in the data source (the ``mtb`` table in this case). Don't be confused by the input to the database writer referencing a pipe called ``fileReaderOutput``: pipes connect the output of one filter to the input of another filter. Pipes are often declared near the filter that is writing to them and so are named according to that relationship. A pipe could also be named something like ``fileReaderToDatabaseWriterPipe``. You can use any convention you like.
+A database writer (`mtbDatabaseWriter`) writes records from the pipe referenced in its ``input`` to a table available in the data source: the ``mtb`` table referenced in the ``insertInto`` property in this case.
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.

@@ -9,20 +9,20 @@ The splitter is like an enhanced :ref:`copy` or a simplified :ref:`transformer`.
 
 Consider the following transformer example::
 
-	<pipe id="input" />
-	<pipe id="output1" />
-	<pipe id="output2" />
-	<splitter id="splitter" name="Splitter">
-		<input ref="input" />
-		<outputConfiguration name="aThroughM">
-			<output ref="output1" />
-			<outputCondition>#inputRecord.Name.substring(0, 1) &lt; 'N'</outputCondition>
-		</outputConfiguration>
-		<outputConfiguration name="nThroughZ">
-			<output ref="output2" />
-			<outputCondition>#inputRecord.Name.substring(0, 1) &gt; 'M'</outputCondition>
-		</outputConfiguration>
-	</splitter>
+  <pipe id="input" />
+  <pipe id="output1" />
+  <pipe id="output2" />
+  <splitter id="splitter" name="Splitter">
+    <input ref="input" />
+    <outputConfiguration name="aThroughM">
+      <output ref="output1" />
+      <outputCondition>#inputRecord.Name.substring(0, 1) &lt; 'N'</outputCondition>
+    </outputConfiguration>
+    <outputConfiguration name="nThroughZ">
+      <output ref="output2" />
+      <outputCondition>#inputRecord.Name.substring(0, 1) &gt; 'M'</outputCondition>
+    </outputConfiguration>
+  </splitter>
 
 The first elements are pipes: one input (``id="input"``) and two outputs (``id="output1"``, ``id="output2"``) that will be outputs from the splitter.
 
@@ -30,7 +30,7 @@ Next, the splitter is declared (``id="splitter"``).
 
 The first element of the splitter is its single input::
 
-	<input ref="input" />
+  <input ref="input" />
 
 Next in the example is a set of "output configurations". These define the outputs of the splitter. Each configuration (``outputConfiguration``) has a name (e.g., ``name="aThroughM"``) which supports logging and debugging but plays no other role in the functioning of the splitter.
 
