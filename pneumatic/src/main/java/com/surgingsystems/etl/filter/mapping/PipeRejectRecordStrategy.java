@@ -5,30 +5,30 @@ import com.surgingsystems.etl.record.Record;
 
 public class PipeRejectRecordStrategy implements RejectRecordStrategy {
 
-    private Pipe pipe;
+    private Pipe output;
 
     public PipeRejectRecordStrategy() {
     }
 
     public PipeRejectRecordStrategy(Pipe pipe) {
-        this.pipe = pipe;
+        this.output = pipe;
     }
 
     @Override
     public void rejected(Record record) {
-        pipe.put(record);
+        output.put(record);
     }
 
     @Override
     public void close() {
-        pipe.closedForInput();
+        output.closedForInput();
     }
 
-    public Pipe getPipe() {
-        return pipe;
+    public Pipe getOutput() {
+        return output;
     }
 
-    public void setPipe(Pipe pipe) {
-        this.pipe = pipe;
+    public void setOutput(Pipe pipe) {
+        this.output = pipe;
     }
 }

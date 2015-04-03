@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.surgingsystems.etl.schema.ColumnDefinition;
 
-public class ColumnLikePropertyAdapter implements YamlAdapter {
+class ColumnLikePropertyAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     private String property;
 

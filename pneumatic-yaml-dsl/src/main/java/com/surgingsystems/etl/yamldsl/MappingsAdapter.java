@@ -12,7 +12,7 @@ import com.surgingsystems.etl.filter.mapping.Mapping;
  * This is crazy complicated. Might look for a better way to map this. Can we
  * use a factory bean?
  */
-public class MappingsAdapter implements YamlAdapter {
+class MappingsAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

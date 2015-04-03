@@ -4,7 +4,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 
-public class ResourceAdapter implements YamlAdapter {
+class ResourceAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

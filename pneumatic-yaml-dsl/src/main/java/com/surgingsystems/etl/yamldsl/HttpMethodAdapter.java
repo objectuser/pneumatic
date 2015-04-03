@@ -4,7 +4,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpMethod;
 
-public class HttpMethodAdapter implements YamlAdapter {
+class HttpMethodAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

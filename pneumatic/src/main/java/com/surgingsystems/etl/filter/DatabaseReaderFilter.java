@@ -180,4 +180,12 @@ public class DatabaseReaderFilter extends GuardedFilter {
     private void setupExpressions() {
         expressionHelper.applyContext(etlContextHolder);
     }
+
+    public RejectRecordStrategy getRejectRecordStrategy() {
+        return rejectRecordStrategy;
+    }
+
+    public void setRejectRecordStrategy(RejectRecordStrategy rejectRecordStrategy) {
+        this.rejectRecordStrategy = rejectRecordStrategy;
+    }
 }

@@ -16,7 +16,6 @@ aggregatorSchema: !schema
       type: decimal
 
 input: !pipe
-output: !pipe
 aggregatorOutput: !pipe
 aggregator: !aggregator
   name: Test Aggregator

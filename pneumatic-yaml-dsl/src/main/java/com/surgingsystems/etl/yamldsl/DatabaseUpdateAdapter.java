@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.surgingsystems.etl.filter.database.ConfigurableDatabaseWriteStrategy;
 
-public class DatabaseUpdateAdapter implements YamlAdapter {
+class DatabaseUpdateAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

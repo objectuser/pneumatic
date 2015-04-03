@@ -34,8 +34,8 @@ public class DatabaseWriterFilterTest {
 
         Assert.assertNotNull("Name is set", databaseWriter.getName());
         Assert.assertEquals("Name is right", "Database Writer", databaseWriter.getName());
-        Assert.assertNotNull("Output is set", databaseWriter.getInput());
-        Assert.assertNotNull("Output schema set", databaseWriter.getInput());
+        Assert.assertNotNull("Input is set", databaseWriter.getInput());
+        Assert.assertNotNull("Input schema set", databaseWriter.getInput());
         Assert.assertNotNull("SQL is set", databaseWriter.getDataSource());
     }
 
@@ -49,8 +49,8 @@ public class DatabaseWriterFilterTest {
 
         Assert.assertNotNull("Name is set", databaseWriter.getName());
         Assert.assertEquals("Name is right", "Database Writer", databaseWriter.getName());
-        Assert.assertNotNull("Output is set", databaseWriter.getInput());
-        Assert.assertNotNull("Output schema set", databaseWriter.getInput());
+        Assert.assertNotNull("Input is set", databaseWriter.getInput());
+        Assert.assertNotNull("Input schema set", databaseWriter.getInput());
         Assert.assertNotNull("SQL is set", databaseWriter.getDataSource());
         ConfigurableDatabaseWriteStrategy writeStrategy = (ConfigurableDatabaseWriteStrategy) databaseWriter
                 .getWriteStrategy();

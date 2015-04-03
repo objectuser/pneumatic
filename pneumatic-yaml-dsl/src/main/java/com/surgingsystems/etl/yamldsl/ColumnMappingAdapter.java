@@ -2,7 +2,7 @@ package com.surgingsystems.etl.yamldsl;
 
 import com.surgingsystems.etl.schema.ColumnDefinition;
 
-public class ColumnMappingAdapter {
+class ColumnMappingAdapter {
 
     private ColumnDefinition<?> from;
 

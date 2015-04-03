@@ -7,7 +7,7 @@ import org.springframework.core.io.Resource;
 
 import com.surgingsystems.etl.filter.FlatFileRecordReader;
 
-public class FlatFileRecordReaderAdapter implements YamlAdapter {
+class FlatFileRecordReaderAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     private String propertyName;
 

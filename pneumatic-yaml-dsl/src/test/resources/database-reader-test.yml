@@ -10,6 +10,7 @@ outputSchema: !schema
       type: decimal
 
 output: !pipe
+rejectionOutput: !pipe
 databaseReader: !databaseReader
   name: Database Reader
   output: ->output
@@ -18,3 +19,5 @@ databaseReader: !databaseReader
   sql: select * from table where name = ?
   parameters:
     - Trance
+  rejection:
+    output: ->rejectionOutput

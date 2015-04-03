@@ -38,7 +38,7 @@ public class RejectionBeanDefinitionParser extends AbstractSingleBeanDefinitionP
         if (outputElement != null) {
             bean.getBeanDefinition().setBeanClass(PipeRejectRecordStrategy.class);
             String outputPipe = outputElement.getAttribute("ref");
-            bean.addPropertyReference("pipe", outputPipe);
+            bean.addPropertyReference("output", outputPipe);
         }
 
         Element logElement = DomUtils.getChildElementByTagName(element, "log");
