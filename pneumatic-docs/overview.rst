@@ -44,8 +44,6 @@ If you have, for example, RESTful services provided by your job, use the Spring 
 
 The boot runner will stay resident until Spring Boot shuts down.
 
-From these examples, it's obvious that Pneumatic requires Java. Pneumataic is currently compiled to Java 8.
-
 Using the script is easy, but it does quite a few things. The script uses `Gradle <http://gradle.org/>`_ to:
 
 #. download the latest version of Gradle
