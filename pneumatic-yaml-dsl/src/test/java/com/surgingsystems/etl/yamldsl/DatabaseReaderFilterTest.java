@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.surgingsystems.etl.filter.DatabaseReaderFilter;
+import com.surgingsystems.etl.filter.mapping.PipeRejectRecordStrategy;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:etl-context.xml", "classpath:datasource.xml" })
@@ -38,6 +39,8 @@ public class DatabaseReaderFilterTest {
         Assert.assertNotNull("SQL is set", databaseReader.getSql());
         Assert.assertNotNull("Parameters are set", databaseReader.getParameters());
         Assert.assertTrue("Parameters are not empty", databaseReader.getParameters().size() > 0);
+        Assert.assertTrue("Reject by pipe",
+                databaseReader.getRejectRecordStrategy() instanceof PipeRejectRecordStrategy);
     }
 
 }

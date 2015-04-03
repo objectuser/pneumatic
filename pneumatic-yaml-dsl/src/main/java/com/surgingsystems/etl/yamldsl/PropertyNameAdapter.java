@@ -3,7 +3,7 @@ package com.surgingsystems.etl.yamldsl;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.context.ApplicationContext;
 
-public class PropertyNameAdapter implements YamlAdapter {
+class PropertyNameAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     private String propertyName;
 

@@ -32,6 +32,7 @@ import org.yaml.snakeyaml.nodes.Tag;
 
 import com.surgingsystems.etl.filter.AggregatorFilter;
 import com.surgingsystems.etl.filter.CopyFilter;
+import com.surgingsystems.etl.filter.DatabaseLookupFilter;
 import com.surgingsystems.etl.filter.DatabaseReaderFilter;
 import com.surgingsystems.etl.filter.DatabaseWriterFilter;
 import com.surgingsystems.etl.filter.FileReaderFilter;
@@ -51,6 +52,7 @@ import com.surgingsystems.etl.filter.function.AverageFunction;
 import com.surgingsystems.etl.filter.function.CounterFunction;
 import com.surgingsystems.etl.filter.function.Function;
 import com.surgingsystems.etl.filter.function.SumFunction;
+import com.surgingsystems.etl.filter.mapping.RejectRecordStrategy;
 import com.surgingsystems.etl.filter.transformer.OutputCondition;
 import com.surgingsystems.etl.filter.transformer.TransformerFilterOutputConfiguration;
 import com.surgingsystems.etl.pipe.BlockingQueuePipe;
@@ -69,6 +71,7 @@ public class YamlParser {
         {
             put("!aggregator", AggregatorFilter.class);
             put("!copy", CopyFilter.class);
+            put("!databaseLookup", DatabaseLookupFilter.class);
             put("!databaseReader", DatabaseReaderFilter.class);
             put("!databaseWriter", DatabaseWriterFilter.class);
             put("!fileReader", FileReaderFilter.class);
@@ -102,23 +105,7 @@ public class YamlParser {
                     put("output", Pipe.class);
                     put("outputSchema", TabularSchema.class);
                     put("function", Function.class);
-                }
-            });
-            put(AverageFunction.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("in", new ColumnLikePropertyAdapter("inputColumnDefinition"));
-                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
-                }
-            });
-            put(CounterFunction.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
-                }
-            });
-            put(SumFunction.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("in", new ColumnLikePropertyAdapter("inputColumnDefinition"));
-                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(CopyFilter.class, new LinkedHashMap<String, Object>() {
@@ -130,6 +117,23 @@ public class YamlParser {
                             add(Pipe.class);
                         }
                     });
+                }
+            });
+            put(DatabaseLookupFilter.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("name", String.class);
+                    put("input", Pipe.class);
+                    put("inputSchema", TabularSchema.class);
+                    put("output", Pipe.class);
+                    put("outputSchema", TabularSchema.class);
+                    put("dataSource", DataSource.class);
+                    put("sql", String.class);
+                    put("parameters", new ArrayList<Class<?>>() {
+                        {
+                            add(String.class);
+                        }
+                    });
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(DatabaseReaderFilter.class, new LinkedHashMap<String, Object>() {
@@ -144,6 +148,7 @@ public class YamlParser {
                             add(String.class);
                         }
                     });
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(DatabaseWriterFilter.class, new LinkedHashMap<String, Object>() {
@@ -162,12 +167,7 @@ public class YamlParser {
                     put("fileResource", new FlatFileRecordReaderAdapter("itemReader"));
                     put("output", Pipe.class);
                     put("outputSchema", TabularSchema.class);
-                }
-            });
-            put(FlatFileRecordReader.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("location", new PropertyNameAdapter("resource"));
-                    put("linesToSkip", String.class);
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(FileWriterFilter.class, new LinkedHashMap<String, Object>() {
@@ -200,11 +200,6 @@ public class YamlParser {
                     put("leftOuterJoin", String.class);
                 }
             });
-            put(SingleColumnComparator.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("columnDefinition", new ColumnLikePropertyAdapter("columnDefinition"));
-                }
-            });
             put(MapperFilter.class, new LinkedHashMap<String, Object>() {
                 {
                     put("name", String.class);
@@ -213,12 +208,7 @@ public class YamlParser {
                     put("output", Pipe.class);
                     put("outputSchema", TabularSchema.class);
                     put("mappings", new MappingsAdapter());
-                }
-            });
-            put(ColumnMappingAdapter.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("from", new ColumnLikePropertyAdapter("from"));
-                    put("to", new ColumnLikePropertyAdapter("to"));
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(RestfulLookupFilter.class, new LinkedHashMap<String, Object>() {
@@ -231,6 +221,7 @@ public class YamlParser {
                     put("output", Pipe.class);
                     put("outputSchema", TabularSchema.class);
                     put("responseSchema", TabularSchema.class);
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(RestfulListenerFilter.class, new LinkedHashMap<String, Object>() {
@@ -248,6 +239,7 @@ public class YamlParser {
                     put("url", String.class);
                     put("input", Pipe.class);
                     put("inputSchema", TabularSchema.class);
+                    put("rejection", new RejectRecordStrategyAdapter());
                 }
             });
             put(SplitterFilter.class, new LinkedHashMap<String, Object>() {
@@ -267,33 +259,6 @@ public class YamlParser {
                     put("input", Pipe.class);
                     put("output", Pipe.class);
                     put("comparator", new ComparatorAdapter("comparator"));
-                }
-            });
-            put(ConfigurableDatabaseWriteStrategy.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("sql", String.class);
-                    put("parameters", new ArrayList<Class<?>>() {
-                        {
-                            add(String.class);
-                        }
-                    });
-                }
-            });
-            put(BlockingQueuePipe.class, new LinkedHashMap<String, Object>());
-            put(TabularSchema.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("name", String.class);
-                    put("columns", new ArrayList<Class<?>>() {
-                        {
-                            add(ColumnDefinition.class);
-                        }
-                    });
-                }
-            });
-            put(ColumnDefinition.class, new LinkedHashMap<String, Object>() {
-                {
-                    put("name", String.class);
-                    put("type", new ColumnTypeAdapter());
                 }
             });
             put(TransformerFilter.class, new LinkedHashMap<String, Object>() {
@@ -317,6 +282,74 @@ public class YamlParser {
                     });
                 }
             });
+
+            put(SingleColumnComparator.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("columnDefinition", new ColumnLikePropertyAdapter("columnDefinition"));
+                }
+            });
+
+            put(FlatFileRecordReader.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("location", new PropertyNameAdapter("resource"));
+                    put("linesToSkip", String.class);
+                }
+            });
+
+            put(ConfigurableDatabaseWriteStrategy.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("sql", String.class);
+                    put("parameters", new ArrayList<Class<?>>() {
+                        {
+                            add(String.class);
+                        }
+                    });
+                }
+            });
+
+            put(BlockingQueuePipe.class, new LinkedHashMap<String, Object>());
+
+            put(TabularSchema.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("name", String.class);
+                    put("columns", new ArrayList<Class<?>>() {
+                        {
+                            add(ColumnDefinition.class);
+                        }
+                    });
+                }
+            });
+            put(ColumnDefinition.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("name", String.class);
+                    put("type", new ColumnTypeAdapter());
+                }
+            });
+            put(ColumnMappingAdapter.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("from", new ColumnLikePropertyAdapter("from"));
+                    put("to", new ColumnLikePropertyAdapter("to"));
+                }
+            });
+
+            put(AverageFunction.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("in", new ColumnLikePropertyAdapter("inputColumnDefinition"));
+                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
+                }
+            });
+            put(CounterFunction.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
+                }
+            });
+            put(SumFunction.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("in", new ColumnLikePropertyAdapter("inputColumnDefinition"));
+                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
+                }
+            });
+
             put(TransformerFilterOutputConfiguration.class, new LinkedHashMap<String, Object>() {
                 {
                     put("name", String.class);
@@ -343,6 +376,12 @@ public class YamlParser {
                     put("outputCondition", String.class);
                 }
             });
+
+            put(RejectRecordStrategy.class, new LinkedHashMap<String, Object>() {
+                {
+                    put("output", Pipe.class);
+                }
+            });
         }
     };
 
@@ -358,7 +397,7 @@ public class YamlParser {
                 ScalarNode key = (ScalarNode) nodeTuple.getKeyNode();
                 String beanIdentifier = key.getValue();
                 logger.debug("Building bean %s", beanIdentifier);
-                BeanDefinition beanDefinition = buildBean(nodeTuple.getValueNode());
+                BeanDefinition beanDefinition = createBeanDefinition(nodeTuple.getValueNode());
                 applicationContext.registerBeanDefinition(beanIdentifier, beanDefinition);
             }
         } catch (Exception exception) {
@@ -371,13 +410,21 @@ public class YamlParser {
         return new BufferedReader(new FileReader(resource.getFile()));
     }
 
-    private BeanDefinition buildBean(Node node) {
+    private BeanDefinition createBeanDefinition(Node node) {
         Tag tag = node.getTag();
         Class<?> type = nameToTypeMap.get(tag.getValue());
-        return buildBeanOfType(type, node);
+        if (type == null) {
+            throw new IllegalArgumentException(String.format("Type not found for tag (%s)", tag.getValue()));
+        }
+        return createBeanOfType(type, node);
     }
 
-    private BeanDefinition buildBeanOfType(Class<?> type, Node node) {
+    private BeanDefinition createBeanOfType(Class<?> type, Node node) {
+        BeanDefinitionBuilder builder = buildBeanOfType(type, node);
+        return builder.getBeanDefinition();
+    }
+
+    private BeanDefinitionBuilder buildBeanOfType(Class<?> type, Node node) {
         Map<String, Object> beanMap = typeToBeanMap.get(type);
         logger.debug("Bean type is %s", type.getSimpleName());
 
@@ -390,7 +437,7 @@ public class YamlParser {
             // a simple mapping like a pipe.
         }
 
-        return builder.getBeanDefinition();
+        return builder;
     }
 
     /**
@@ -404,7 +451,7 @@ public class YamlParser {
             Node nodeValue = nodeTuple.getValueNode();
             Object target = beanMap.get(propertyName);
             if (isTypeTagged(nodeValue)) {
-                BeanDefinition beanDefinition = buildBean(nodeValue);
+                BeanDefinition beanDefinition = createBeanDefinition(nodeValue);
                 builder.addPropertyValue(propertyName, beanDefinition);
             } else if (target instanceof List) {
                 List<Class<?>> typeList = (List<Class<?>>) target;
@@ -416,24 +463,22 @@ public class YamlParser {
                 builder.addPropertyValue(propertyName, map);
             } else if (target instanceof YamlAdapter) {
                 YamlAdapter adapter = (YamlAdapter) target;
-                Object value = null;
                 if (nodeValue instanceof ScalarNode) {
                     ScalarNode scalarNode = (ScalarNode) nodeValue;
-                    value = scalarNode.getValue();
+                    adapter.adapt(builder, propertyName, scalarNode.getValue(), applicationContext);
                 } else if (nodeValue instanceof SequenceNode) {
                     ManagedList<Object> list = createListOf(adapter.getTargetType(), nodeValue);
-                    value = list;
+                    adapter.adapt(builder, propertyName, list, applicationContext);
                 } else {
-                    BeanDefinition beanDefinition = buildBeanOfType(adapter.getTargetType(), nodeValue);
-                    value = beanDefinition;
+                    BeanDefinitionBuilder valueBuilder = buildBeanOfType(adapter.getTargetType(), nodeValue);
+                    adapter.adaptBuilder(builder, propertyName, valueBuilder, applicationContext);
                 }
-                adapter.adapt(builder, propertyName, value, applicationContext);
             } else if (isSimpleValue(target, nodeValue)) {
                 ScalarNode scalarNode = (ScalarNode) nodeValue;
                 builder.addPropertyValue(propertyName, buildValue(scalarNode.getValue()));
             } else if (target instanceof Class) {
                 Class<?> targetType = (Class<?>) target;
-                BeanDefinition beanDefinition = buildBeanOfType(targetType, nodeValue);
+                BeanDefinition beanDefinition = createBeanOfType(targetType, nodeValue);
                 builder.addPropertyValue(propertyName, beanDefinition);
             } else {
                 throw new IllegalArgumentException(String.format("Key (%s) is unknown for type %s", propertyName,
@@ -468,7 +513,7 @@ public class YamlParser {
                 ScalarNode scalarNode = (ScalarNode) value;
                 list.add(buildValue(scalarNode.getValue()));
             } else {
-                BeanDefinition beanDefinition = buildBeanOfType(targetType, value);
+                BeanDefinition beanDefinition = createBeanOfType(targetType, value);
                 list.add(beanDefinition);
             }
         }

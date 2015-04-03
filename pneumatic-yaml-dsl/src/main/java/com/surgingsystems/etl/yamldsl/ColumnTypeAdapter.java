@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.surgingsystems.etl.schema.ColumnType;
 
-class ColumnTypeAdapter implements YamlAdapter {
+class ColumnTypeAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

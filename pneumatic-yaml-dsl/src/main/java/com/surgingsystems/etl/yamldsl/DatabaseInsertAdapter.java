@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import com.surgingsystems.etl.filter.database.DatabaseWriteStrategy;
 import com.surgingsystems.etl.filter.database.InsertDatabaseWriteStrategy;
 
-public class DatabaseInsertAdapter implements YamlAdapter {
+class DatabaseInsertAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     @Override
     public Class<?> getTargetType() {

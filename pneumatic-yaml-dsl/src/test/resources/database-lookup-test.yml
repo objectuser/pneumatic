@@ -1,0 +1,32 @@
+---
+mtbSchema: !schema
+  name: Input Schema
+  columns:
+    - name: name
+      type: string
+    - name: model_year
+      type: integer
+
+sqlSelectSchema: !schema
+  name: MTB Schema
+  columns:
+    - name: name
+      type: string
+    - name: model_year
+      type: integer
+    - name: cost
+      type: decimal
+
+input: !pipe
+output: !pipe
+databaseLookup: !databaseLookup
+  name: Database Lookup
+  input: ->input
+  inputSchema: ->mtbSchema
+  output: ->output
+  outputSchema: ->sqlSelectSchema
+  dataSource: ->dataSource
+  sql: select cost from mtb where name = ? and year = ?
+  parameters:
+    - "#inputRecord.name"
+    - "#inputRecord.model_year"

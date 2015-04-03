@@ -8,4 +8,7 @@ interface YamlAdapter {
     Class<?> getTargetType();
 
     void adapt(BeanDefinitionBuilder builder, String toProperty, Object value, ApplicationContext applicationContext);
+
+    void adaptBuilder(BeanDefinitionBuilder builder, String toProperty, BeanDefinitionBuilder value,
+            ApplicationContext applicationContext);
 }

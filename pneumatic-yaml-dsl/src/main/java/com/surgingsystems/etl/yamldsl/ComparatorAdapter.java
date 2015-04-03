@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import com.surgingsystems.etl.record.SingleColumnComparator;
 import com.surgingsystems.etl.schema.ColumnDefinition;
 
-public class ComparatorAdapter implements YamlAdapter {
+class ComparatorAdapter extends SimpleYamlAdapter implements YamlAdapter {
 
     private String property;
 
