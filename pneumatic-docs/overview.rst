@@ -36,11 +36,11 @@ Jobs may be run in a variety of ways. The easiest way to run a job is using the 
 
 If your job is contained in ``job.xml``, run it like this::
 
-	sh pn.sh run job.xml
+  sh pn.sh run job.xml
 
 If you have, for example, RESTful services provided by your job, use the Spring Boot runner::
 
-	sh pn.sh boot job.xml
+  sh pn.sh boot job.xml
 
 The boot runner will stay resident until Spring Boot shuts down.
 
@@ -61,13 +61,17 @@ Schemas
 
 Schemas describe the structure of data. Filters use schemas for validating and generating structured data in the form of "records". A record may be thought of as an "instance" of a schema. A schema is to a record like a car is to a 2015 Porsche 911.
 
-From the previous example, a schema is defined using the ``schema`` tag. A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types.::
+From the previous example, a schema is defined using the ``schema`` tag. A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types::
 
-	<schema id="mtbSchema" name="MTB Schema">
-		<column name="name" type="string" />
-		<column name="year" type="integer" />
-		<column name="cost" type="decimal" />
-	</schema>
+  mtbSchema: !schema
+    name: Input Schema
+    columns:
+      - name: name
+        type: string
+      - name: year
+        type: integer
+      - name: cost
+        type: decimal
 
 If a record does not need to be validated or generated, no schema is required by the filter. An example of this is the copy filter which copies the input records to the configured outputs, unmodified.
 

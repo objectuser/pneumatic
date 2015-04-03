@@ -7,22 +7,22 @@ RESTful Listener
 
 The RESTful listener is a filter that accepts RESTful requests. The requests must use the POST HTTP method and send JSON as the request body. Consider the following example::
 
-	<schema id="mtbSchema" name="MTB Schema">
-		<column name="name" type="string" />
-		<column name="year" type="integer" />
-		<column name="cost" type="decimal" />
-	</schema>
+  <schema id="mtbSchema" name="MTB Schema">
+    <column name="name" type="string" />
+    <column name="year" type="integer" />
+    <column name="cost" type="decimal" />
+  </schema>
 
-	<pipe id="restfulListenerOutput" />
-	<restfulListener id="restfulListener" name="Restful Input">
-		<path value="mtb" />
-		<output ref="restfulListenerOutput" />
-		<outputSchema ref="mtbSchema" />
-	</restfulListener>
+  <pipe id="restfulListenerOutput" />
+  <restfulListener id="restfulListener" name="Restful Input">
+    <path value="mtb" />
+    <output ref="restfulListenerOutput" />
+    <outputSchema ref="mtbSchema" />
+  </restfulListener>
 
 The schema (``id="mtbSchema"``) is shown here because the RESTful listener uses the schema to convert JSON to a record. For the schema above, the following is an example message::
 
-	{"name": "Mojo HDR", "year": "2015", "cost": "3000.00"}
+  {"name": "Mojo HDR", "year": "2015", "cost": "3000.00"}
 
 Note that the names and the data types conform to the declared schema.
 
