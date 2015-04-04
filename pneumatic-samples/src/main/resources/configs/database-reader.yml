@@ -1,0 +1,24 @@
+---
+mtbSchema: !schema
+  name: MTB Schema
+  columns:
+    - name: name
+      type: string
+    - name: model_year
+      type: integer
+    - name: cost
+      type: decimal
+
+databaseReaderOutput: !pipe
+databaseReader: !databaseReader
+  name: Database Reader
+  output: ->databaseReaderOutput
+  outputSchema: ->mtbSchema
+  dataSource: ->dataSource
+  sql: select * from mtb
+
+fileWriter: !fileWriter
+  name: File Writer
+  fileResource: file:output/output1.txt
+  input: ->databaseReaderOutput
+  inputSchema: ->mtbSchema

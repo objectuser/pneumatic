@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 def springVersion = '4.1.+'
 
 task run(type: JavaExec, dependsOn:[classes]) { 
-	main = "com.surgingsystems.etl.XmlRunner"
+	main = "com.surgingsystems.etl.YamlRunner"
 	classpath = sourceSets.main.runtimeClasspath
     if (project.hasProperty("args")) {  
         args project.args.split('\\s+')

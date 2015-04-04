@@ -1,3 +1,8 @@
 #!/bin/sh
 
-./gradlew $1 -Pargs=$2
+set -x
+
+task=$1
+shift
+
+./gradlew $task -Pargs="$*"
