@@ -3,7 +3,6 @@ package com.surgingsystems.etltest;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,9 +29,6 @@ public class DatabaseLookupTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private DataSource dataSource;
-    
     @Resource(name = "copyOutputForTest")
     private Pipe testPipe;
 
@@ -41,12 +37,12 @@ public class DatabaseLookupTest {
         JobConfigurer configurer = new XmlJobConfigurer(applicationContext);
         Job job = configurer.buildJob();
         job.start();
-        
+
         List<Record> outputRecords = PipeUtility.toList(testPipe);
         Assert.assertEquals("Have all the records", 6, outputRecords.size());
         for (Record record : outputRecords) {
             int year = record.getValueForName("year");
-            Assert.assertEquals("Year is right",  2015, year);
+            Assert.assertEquals("Year is right", 2015, year);
         }
     }
 }
