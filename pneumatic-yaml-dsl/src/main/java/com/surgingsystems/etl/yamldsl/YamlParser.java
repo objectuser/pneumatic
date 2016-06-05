@@ -95,6 +95,37 @@ public class YamlParser {
     };
 
     @SuppressWarnings("serial")
+    private static Map<String, Class<?>> conventionNameToTypeMap = new LinkedHashMap<String, Class<?>>() {
+        {
+            put("Aggregator", AggregatorFilter.class);
+            put("Copy", CopyFilter.class);
+            put("DatabaseLookup", DatabaseLookupFilter.class);
+            put("DatabaseReader", DatabaseReaderFilter.class);
+            put("DatabaseWriter", DatabaseWriterFilter.class);
+            put("FileReader", FileReaderFilter.class);
+            put("FileWriter", FileWriterFilter.class);
+            put("Funnel", FunnelFilter.class);
+            put("Join", JoinFilter.class);
+            put("Mapper", MapperFilter.class);
+            put("RestfulListener", RestfulListenerFilter.class);
+            put("RestfulLookup", RestfulLookupFilter.class);
+            put("RestfulWriter", RestfulWriterFilter.class);
+            put("Splitter", SplitterFilter.class);
+            put("Sort", SortFilter.class);
+            put("Transformer", TransformerFilter.class);
+
+            put("Pipe", BlockingQueuePipe.class);
+            put("Input", BlockingQueuePipe.class);
+            put("Output", BlockingQueuePipe.class);
+            put("Schema", TabularSchema.class);
+
+            put("Average", AverageFunction.class);
+            put("Count", CounterFunction.class);
+            put("Sum", SumFunction.class);
+        }
+    };
+
+    @SuppressWarnings("serial")
     private static Map<Class<?>, Map<String, Object>> typeToBeanMap = new LinkedHashMap<Class<?>, Map<String, Object>>() {
         {
             put(AggregatorFilter.class, new LinkedHashMap<String, Object>() {
@@ -396,8 +427,9 @@ public class YamlParser {
             for (NodeTuple nodeTuple : node.getValue()) {
                 ScalarNode key = (ScalarNode) nodeTuple.getKeyNode();
                 String beanIdentifier = key.getValue();
-                logger.debug("Building bean %s", beanIdentifier);
-                BeanDefinition beanDefinition = createBeanDefinition(nodeTuple.getValueNode());
+                logger.debug("Building bean named %s", beanIdentifier);
+
+                BeanDefinition beanDefinition = createBeanDefinition(beanIdentifier, nodeTuple.getValueNode());
                 applicationContext.registerBeanDefinition(beanIdentifier, beanDefinition);
             }
         } catch (Exception exception) {
@@ -410,12 +442,31 @@ public class YamlParser {
         return new BufferedReader(new FileReader(resource.getFile()));
     }
 
-    private BeanDefinition createBeanDefinition(Node node) {
-        Tag tag = node.getTag();
-        Class<?> type = nameToTypeMap.get(tag.getValue());
-        if (type == null) {
-            throw new IllegalArgumentException(String.format("Type not found for tag (%s)", tag.getValue()));
+    private Class<?> determineTypeForBean(String name, String declaredType) {
+        Class<?> result = nameToTypeMap.get(declaredType);
+        logger.debug("Declared type %s not found", declaredType);
+        if (result != null) {
+            return result;
+        } else {
+            for (Map.Entry<String, Class<?>> entry : conventionNameToTypeMap.entrySet()) {
+                if (name.toLowerCase().endsWith(entry.getKey().toLowerCase())) {
+                    return entry.getValue();
+                }
+            }
+
+            throw new IllegalArgumentException(String.format("Unable to determine type for (%s)", name));
         }
+
+    }
+
+    private BeanDefinition createBeanDefinition(String beanIdentifier, Node node) {
+
+        Tag tag = node.getTag();
+        String declaredType = tag.getValue();
+        logger.debug("Declared type %s", declaredType);
+
+        Class<?> type = determineTypeForBean(beanIdentifier, declaredType);
+
         return createBeanOfType(type, node);
     }
 
@@ -451,7 +502,7 @@ public class YamlParser {
             Node nodeValue = nodeTuple.getValueNode();
             Object target = beanMap.get(propertyName);
             if (isTypeTagged(nodeValue)) {
-                BeanDefinition beanDefinition = createBeanDefinition(nodeValue);
+                BeanDefinition beanDefinition = createBeanDefinition(propertyName, nodeValue);
                 builder.addPropertyValue(propertyName, beanDefinition);
             } else if (target instanceof List) {
                 List<Class<?>> typeList = (List<Class<?>>) target;

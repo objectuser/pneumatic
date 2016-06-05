@@ -42,10 +42,10 @@ dependencies {
 
 
 task jarTest (type: Jar, dependsOn: testClasses) {
-    from sourceSets.test.output
-    classifier = 'test'
+	from sourceSets.test.output
+	classifier = 'test'
 }
 
 artifacts {
-    testOutput jarTest
+	testOutput jarTest
 }
