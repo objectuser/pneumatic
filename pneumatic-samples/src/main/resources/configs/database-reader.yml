@@ -1,5 +1,5 @@
 ---
-mtbSchema: !schema
+mtbSchema:
   name: MTB Schema
   columns:
     - name: name
@@ -9,15 +9,16 @@ mtbSchema: !schema
     - name: cost
       type: decimal
 
-databaseReaderOutput: !pipe
-databaseReader: !databaseReader
+databaseReaderOutput:
+
+databaseReader:
   name: Database Reader
   output: ->databaseReaderOutput
   outputSchema: ->mtbSchema
   dataSource: ->dataSource
   sql: select * from mtb
 
-fileWriter: !fileWriter
+fileWriter:
   name: File Writer
   fileResource: file:output/output1.txt
   input: ->databaseReaderOutput

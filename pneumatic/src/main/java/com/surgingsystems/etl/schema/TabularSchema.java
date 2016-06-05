@@ -27,7 +27,8 @@ public class TabularSchema implements Schema {
         setName(name);
     }
 
-    public TabularSchema(String name, @SuppressWarnings("rawtypes") ColumnDefinition... columnDefinitions) {
+    @SafeVarargs
+    public TabularSchema(String name, ColumnDefinition<? extends Comparable<?>>... columnDefinitions) {
         this(name, Arrays.asList(columnDefinitions));
     }
 
