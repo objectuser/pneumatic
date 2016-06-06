@@ -57,3 +57,16 @@ A database writer (`mtbDatabaseWriter`) writes records from the pipe referenced 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
 
 Ready for more? Read the full docs [here](http://pneumatic.io/pneumatic/) and get updates [here](http://pneumatic.io/).
+
+Ready to get started? Clone this repository and run the Gradle build from the `pneumatic-samples` project:
+
+```bash
+./gradlew build
+```
+
+Then run one of the sample jobs:
+
+```
+sh pn.sh run configs/totals-job.yml
+```
+
