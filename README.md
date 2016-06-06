@@ -62,7 +62,7 @@ Ready to get started? Clone this repository and run the Gradle build from the `p
 
 Then run one of the sample jobs:
 
-```
+```bash
 >pwd
 ../pneumatic-samples
 >sh pn.sh run configs/totals-job.yml

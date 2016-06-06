@@ -19,15 +19,15 @@ The copy filter has a single input pipe. It may have any number of output pipes.
 
 Here's the same example in XML, which has a slightly different form::
 
-  <pipe id="copyOutput1" />
-  <pipe id="copyOutput2" />
+  <pipe id="output1" />
+  <pipe id="output2" />
   <copy id="duplicate" name="Duplicate">
     <input ref="fileReaderOutput" />
-    <output ref="copyOutput1" />
-    <output ref="copyOutput2" />
+    <output ref="output1" />
+    <output ref="output2" />
   </copy>
 
-In this example, the records from the input (``ref="fileReaderOutput"``) are sent, unaltered, to both outputs (``ref="copyOutput1"``, ``ref="copyOutput2"``).
+In this example, the records from the input (``fileReaderOutput``) are sent, unaltered, to both outputs (``output1``, ``output2``).
 
 
 Specification

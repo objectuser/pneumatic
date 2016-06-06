@@ -377,7 +377,7 @@ public class YamlParser {
             put(SumFunction.class, new LinkedHashMap<String, Object>() {
                 {
                     put("in", new ColumnLikePropertyAdapter("inputColumnDefinition"));
-                    put("out", new ColumnLikePropertyAdapter("outputColumnDefinition"));
+                    put("out", new SumOutputColumnAdapter("outputColumnDefinition"));
                 }
             });
 
@@ -400,6 +400,7 @@ public class YamlParser {
                     });
                 }
             });
+
             put(OutputCondition.class, new LinkedHashMap<String, Object>() {
                 {
                     put("name", String.class);

@@ -17,7 +17,7 @@ Concepts
 Jobs and Filters
 ================
 
-Pneumatic "programs" are represented as "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
+Pneumatic "programs" are known as "jobs". Jobs read from files, from databases, from services and write to those same things. They transform data, join it, filter it, aggregate it and more.
 
 The reading, writing, transforming, etc. are done in "filters". Filters are connected through pipes that carry the data from one filter to the next. This `pipes and filters <http://www.eaipatterns.com/PipesAndFilters.html>`_ architecture is widely-known. It's conceptually simple, yet quite powerful, and is the fundamental pattern of Pneumatic jobs.
 
@@ -34,13 +34,13 @@ Running a Job
 
 Jobs may be run in a variety of ways. The easiest way to run a job is using the "Pneumatic Shell" (``pn.sh`` on most systems or ``pn.cmd`` on Windows). The file ``pn.sh`` is in the ``pneumatic-samples`` project on `GitHub <https://github.com/objectuser/pneumatic>`_.
 
-If your job is contained in ``job.xml``, run it like this::
+If your job is contained in ``job.yml``, run it like this::
 
-  sh pn.sh run job.xml
+  sh pn.sh run job.yml
 
 If you have, for example, RESTful services provided by your job, use the Spring Boot runner::
 
-  sh pn.sh boot job.xml
+  sh pn.sh boot job.yml
 
 The boot runner will stay resident until Spring Boot shuts down.
 
@@ -59,9 +59,9 @@ Schemas
 
 Schemas describe the structure of data. Filters use schemas for validating and generating structured data in the form of "records". A record may be thought of as an "instance" of a schema. A schema is to a record like a car is to a 2015 Porsche 911.
 
-From the previous example, a schema is defined using the ``schema`` tag. A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types::
+From the previous example, a schema is defined by convention: ending the item with ``Schema``. A YAML tag can also be used (``!schema``). A schema may have one to any number of columns, each with a name and a type. Currently, Pneumatic only supports ``string`` (Java String), ``integer`` (Java Integer) and ``decimal`` (Java Double) column types::
 
-  mtbSchema: !schema
+  mtbSchema:
     name: Input Schema
     columns:
       - name: name
@@ -73,7 +73,7 @@ From the previous example, a schema is defined using the ``schema`` tag. A schem
 
 If a record does not need to be validated or generated, no schema is required by the filter. An example of this is the copy filter which copies the input records to the configured outputs, unmodified.
 
-Sometimes a schema is optional. If the schema is not provided, information is derived from other configuration or runtime elements (like the structure of the incoming record). If the schema is supplied, it can be used to validate the configuration of the filter. This requires slightly more configuration, but schema information in validated before a job starts, so supplying a schema can save time spent processing with an invalid configuration.
+Sometimes a schema is optional. If the schema is not provided, information is derived from other configuration or runtime elements (like the structure of the incoming record). If the schema is supplied, it can be used to validate the configuration of the filter. This requires slightly more configuration, but schema information is validated before a job starts, so supplying a schema can save time spent processing with an invalid configuration.
 
 Schema Types
 ------------
@@ -87,7 +87,7 @@ There are three types of schemas:
 Pipes
 =====
 
-Pipes are conduits for data. Pipes hold data after it is processed by a filter, until it is extracted by another filter. Pipes have a fixed (and configurable) capacity. When the capacity is reached, a filter putting a record into a pipe will block until the filter on the other end of the pipe removes a record.
+Pipes are conduits for data. Pipes hold data after it is processed by a filter, until it is extracted by another filter. Pipes have a fixed (and configurable) capacity. When the capacity is reached, a filter adding a record to a pipe will block until the filter on the other end of the pipe removes a record.
 
 Foundations
 ===========

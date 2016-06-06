@@ -53,6 +53,7 @@
 				<beans:property name="outputColumnDefinition">
 					<column name="Price" type="decimal" />
 				</beans:property>
+				<beans:property name="sumStrategy" ref="sumDecimalStrategy" />
 			</beans:bean>
 		</function>
 	</aggregator>

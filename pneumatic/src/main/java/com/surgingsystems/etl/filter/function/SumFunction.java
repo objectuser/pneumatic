@@ -1,5 +1,11 @@
 package com.surgingsystems.etl.filter.function;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.Assert;
+
 import com.surgingsystems.etl.record.Record;
 import com.surgingsystems.etl.schema.Column;
 import com.surgingsystems.etl.schema.ColumnDefinition;
@@ -7,11 +13,21 @@ import com.surgingsystems.etl.schema.Schema;
 
 public class SumFunction<T extends Comparable<T>> implements Function<T> {
 
-    private ColumnDefinition<?> inputColumnDefinition;
+    private static Logger logger = LogManager.getFormatterLogger(SumFunction.class);
+
+    private ColumnDefinition<T> inputColumnDefinition;
 
     private ColumnDefinition<T> outputColumnDefinition;
 
     private SumStrategy<T> sumStrategy;
+
+    @PostConstruct
+    public void validate() {
+        logger.trace("Sum Function: validating");
+        Assert.notNull(getInputColumnDefinition(), "The 'in' column is required");
+        Assert.notNull(getOutputColumnDefinition(), "The 'out' column is required");
+        Assert.notNull(getSumStrategy(), "The summation strategy is not set");
+    }
 
     @Override
     public void apply(Record record) {
@@ -24,7 +40,7 @@ public class SumFunction<T extends Comparable<T>> implements Function<T> {
         return new Column<T>(getOutputColumnDefinition(), sumStrategy.getResult());
     }
 
-    public void setInputColumnDefinition(ColumnDefinition<?> inputColumnDefinition) {
+    public void setInputColumnDefinition(ColumnDefinition<T> inputColumnDefinition) {
         this.inputColumnDefinition = inputColumnDefinition;
     }
 

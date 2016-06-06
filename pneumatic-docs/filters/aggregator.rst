@@ -8,13 +8,13 @@ Description
 
 The aggregator filter has a single input pipe. It also has a single output pipe: the aggregator output to which the aggregator's function is applied.
 
-A single record is written to the after all input records have been processed from the aggregator's input.
+A single record is written to the output after all input records have been processed.
 
 Consider the following example::
 
-  input: !pipe
-  aggregatorOutput: !pipe
-  aggregator: !aggregator
+  input:
+  aggregatorOutput:
+  aggregator:
     name: Test Aggregator
     input: ->input
     output: ->aggregatorOutput
@@ -48,7 +48,7 @@ Here's the same example in XML::
     </function>
   </aggregator>
 
-The ``function`` element is the heart of the aggregator. In this case, we have a "sum" function (``sum``). The sum function sums the input selected by the ``in`` column and writes it to the output in the column defined in ``out``.
+The ``function`` element is the heart of the aggregator. In this case, we have a "sum" function (``!sum``). The sum function sums the input selected by the ``in`` column and writes it to the output in the column defined in ``out``.
 
 The available functions are:
 
@@ -88,9 +88,9 @@ If you're using the YAML DSL, first define the function in Spring XML::
 
 Then simply reference the function::
 
-  input: !pipe
-  aggregatorOutput: !pipe
-  aggregator: !aggregator
+  input:
+  aggregatorOutput:
+  aggregator:
     name: Test Aggregator
     input: ->input
     inputSchema: ->inputSchema

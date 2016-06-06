@@ -18,9 +18,9 @@ It is important to avoid name collisions to ensure the results are as expected. 
 
 Consider the following example::
 
-  input: !pipe
-  output: !pipe
-  databaseLookup: !databaseLookup
+  input:
+  output:
+  databaseLookup:
     name: Database Lookup
     input: ->input
     inputSchema: ->mtbSchema

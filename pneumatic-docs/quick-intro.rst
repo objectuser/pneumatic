@@ -8,10 +8,10 @@ Pneumatic is declarative, using either a custom YAML markup, or XML markup based
 
 As a quick example, here's how you might read from a file and write its contents to a database.
 
-Next, here are the YAML-based Pneumatic declarations. Generally, the first line of a declaration is the item's "identifier" (like ``mtbSchema``), followed by a YAML tag indicating the type of the item (``!schema`` means this item is of the ``schema`` type).
+Next, here are the YAML-based Pneumatic declarations. Generally, the first line of a declaration is the item's "identifier" (like ``mtbSchema``), optionally followed by a YAML tag indicating the type of the item (``!schema`` means this item is of the ``schema`` type). If the item is named according to convention, the type tag may be omitted. For example, because ``mtbSchema`` ends in ``Schema`` Pneumatic knows it's a schema.
 
   # Declare a schema that defines our records
-  mtbSchema: !schema
+  mtbSchema:
     name: Input Schema
     columns:
       - name: name
@@ -22,16 +22,16 @@ Next, here are the YAML-based Pneumatic declarations. Generally, the first line 
         type: decimal
   
   # Declare a pipe to join the file reader and database writer
-  fileReaderOutput: !pipe
+  fileReaderOutput:
   # Declare a file reader to read from mtb.txt
-  mtbFileReader: !fileReader
+  mtbFileReader:
     name: File Reader
     fileResource: data/mtb.txt
     output: ->fileReaderOutput # reference to fileReaderOutput
     outputSchema: ->mtbSchema # reference to mtbSchema
   
   # Declare a database writer to read from the pipe and write to the mtb table
-  mtbDatabaseWriter: !databaseWriter
+  mtbDatabaseWriter:
     name: Database Writer
     input: ->fileReaderOutput
     inputSchema: ->mtbSchema
@@ -40,9 +40,9 @@ Next, here are the YAML-based Pneumatic declarations. Generally, the first line 
 
 The schema declaration (``mtbSchema``) is used to declare the structure of records in the job. A pipe (``fileReaderOutput``) provides a conduit from one processing element (called "filters") to another.
 
-A file reader (``mtbFileReader: !fileReader``) reads a file, creating records according to its schema (``outputSchema: ->mtbSchema``) and sending them to the pipe referenced in its ``output``.
+A file reader (``mtbFileReader``) reads a file, creating records according to its schema (``outputSchema: ->mtbSchema``) and sending them to the pipe referenced in its ``output``.
 
-A database writer (``mtbDatabaseWriter: !databaseWriter``) writes records from the pipe referenced in its ``input`` to a table available in the data source: the ``mtb`` table referenced in the ``insertInto`` property in this case. The data source is specified using the Spring framework::
+A database writer (``mtbDatabaseWriter``) writes records from the pipe referenced in its ``input`` to a table available in the data source: the ``mtb`` table referenced in the ``insertInto`` property in this case. The data source is specified using the Spring framework::
 
   <jdbc:embedded-database id="dataSource" type="HSQL" />
 
