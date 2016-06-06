@@ -20,7 +20,7 @@ Next, here are the YAML-based Pneumatic declarations:
 
 ```YAML
 # Declare a schema that defines our records
-mtbSchema: !schema
+mtbSchema:
   name: Input Schema
   columns:
     - name: name
@@ -31,16 +31,16 @@ mtbSchema: !schema
       type: decimal
 
 # Declare a pipe to join the file reader and database writer
-fileReaderOutput: !pipe
+fileReaderOutput:
 # Declare a file reader to read from mtb.txt
-mtbFileReader: !fileReader
+mtbFileReader:
   name: File Reader
   fileResource: data/mtb.txt
   output: ->fileReaderOutput
   outputSchema: ->inputSchema
 
 # Declare a database writer to read from the pipe and write to the mtb table
-mtbDatabaseWriter: !databaseWriter
+mtbDatabaseWriter:
   name: Database Writer
   input: ->fileReaderOutput
   inputSchema: ->mtbSchema
