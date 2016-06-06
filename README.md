@@ -60,13 +60,11 @@ Ready for more? Read the full docs [here](http://pneumatic.io/pneumatic/) and ge
 
 Ready to get started? Clone this repository and run the Gradle build from the `pneumatic-samples` project:
 
-```bash
-./gradlew build
-```
-
 Then run one of the sample jobs:
 
 ```
-sh pn.sh run configs/totals-job.yml
+>pwd
+../pneumatic-samples
+>sh pn.sh run configs/totals-job.yml
 ```
 
