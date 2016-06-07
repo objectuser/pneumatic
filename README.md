@@ -58,13 +58,13 @@ Declaring these elements provides Pneumatic enough information to read all the r
 
 Ready for more? Read the full docs [here](http://pneumatic.io/pneumatic/) and get updates [here](http://pneumatic.io/).
 
-Ready to get started? Clone this repository and run the Gradle build from the `pneumatic-samples` project:
-
-Then run one of the sample jobs:
+Ready to get started? Clone this repository and run one of the sample jobs:
 
 ```bash
 >pwd
 ../pneumatic-samples
 >sh pn.sh run configs/totals-job.yml
 ```
+That will build Pneumatic if it's not already built and then run the job.
 
+Next, look at the `configs/totals-job.yml` file and read through it with the documentation handy. Pneumatic jobs are pretty easy to understand.
