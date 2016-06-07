@@ -1,0 +1,50 @@
+---
+databaseSchema:
+  name: Database Schema
+  columns:
+    - name: ProviderID
+      type: string
+    - name: HospitalName
+      type: string
+    - name: Address
+      type: string
+    - name: City
+      type: string
+    - name: State
+      type: string
+    - name: ZIPCode
+      type: string
+    - name: CountyName
+      type: string
+    - name: PhoneNumber
+      type: string
+    - name: HospitalCondition
+      type: string
+    - name: MeasureID
+      type: string
+    - name: MeasureName
+      type: string
+    - name: Score
+      type: string
+    - name: Sample
+      type: string
+    - name: Footnote
+      type: string
+    - name: MeasureStartDate
+      type: string
+    - name: MeasureEndDate
+      type: string
+
+databaseReaderOutput:
+databaseReader:
+  name: Database Reader
+  output: databaseReaderOutput
+  outputSchema: databaseSchema
+  dataSource: dataSource
+  sql: select * from hospital
+
+fileWriter:
+  name: File Writer
+  fileResource: file:output/output1.txt
+  input: databaseReaderOutput
+  inputSchema: databaseSchema

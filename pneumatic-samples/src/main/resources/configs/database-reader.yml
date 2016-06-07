@@ -13,13 +13,13 @@ databaseReaderOutput:
 
 databaseReader:
   name: Database Reader
-  output: ->databaseReaderOutput
-  outputSchema: ->mtbSchema
-  dataSource: ->dataSource
+  output: databaseReaderOutput
+  outputSchema: mtbSchema
+  dataSource: dataSource
   sql: select * from mtb
 
 fileWriter:
   name: File Writer
   fileResource: file:output/output1.txt
-  input: ->databaseReaderOutput
-  inputSchema: ->mtbSchema
+  input: databaseReaderOutput
+  inputSchema: mtbSchema

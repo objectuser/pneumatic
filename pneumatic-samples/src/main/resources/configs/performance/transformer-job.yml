@@ -1,0 +1,83 @@
+---
+
+# Compare the performance of a transformer to a copy job.
+# Transformers use an expression language (SpEL) which could be a performance hit.
+# However, the performance is comparable in this test.
+
+inputSchema:
+  name: Input File Schema
+  columns:
+    - name: Provider ID
+      type: string
+    - name: Hospital Name
+      type: string
+    - name: Address
+      type: string
+    - name: City
+      type: string
+    - name: State
+      type: string
+    - name: ZIP Code
+      type: string
+    - name: County Name
+      type: string
+    - name: Phone Number
+      type: string
+    - name: Condition
+      type: string
+    - name: Measure ID
+      type: string
+    - name: Measure Name
+      type: string
+    - name: Score
+      type: string
+    - name: Sample
+      type: string
+    - name: Footnote
+      type: string
+    - name: Measure Start Date
+      type: string
+    - name: Measure End Date
+      type: string
+
+fileReaderOutput:
+fileReader:
+  name: Hospital File Reader
+  fileResource:
+    location: classpath:data/Timely and Effective Care - Hospital.csv
+    linesToSkip: 1
+  output: fileReaderOutput
+  outputSchema: inputSchema
+
+transformerOutput:
+transformer:
+  name: Transformer
+  input: fileReaderOutput
+  outputConfigurations:
+    - name: Transformer Output
+      recordName: outputRecord
+      output: transformerOutput
+      outputSchema: inputSchema
+      expressions:
+        - "#outputRecord['Provider ID'] = #inputRecord['Provider ID']"
+        - "#outputRecord['Hospital Name'] = #inputRecord['Hospital Name']"
+        - "#outputRecord['Address'] = #inputRecord['Address']"
+        - "#outputRecord['City'] = #inputRecord['City']"
+        - "#outputRecord['State'] = #inputRecord['State']"
+        - "#outputRecord['ZIP Code'] = #inputRecord['ZIP Code']"
+        - "#outputRecord['County Name'] = #inputRecord['County Name']"
+        - "#outputRecord['Phone Number'] = #inputRecord['Phone Number']"
+        - "#outputRecord['Condition'] = #inputRecord['Condition']"
+        - "#outputRecord['Measure ID'] = #inputRecord['Measure ID']"
+        - "#outputRecord['Measure Name'] = #inputRecord['Measure Name']"
+        - "#outputRecord['Score'] = #inputRecord['Score']"
+        - "#outputRecord['Sample'] = #inputRecord['Sample']"
+        - "#outputRecord['Footnote'] = #inputRecord['Footnote']"
+        - "#outputRecord['Measure Start Date'] = #inputRecord['Measure Start Date']"
+        - "#outputRecord['Measure End Date'] = #inputRecord['Measure End Date']"
+
+fileWriter:
+  name: File Writer 1
+  fileResource: file:output/output1.txt
+  input: transformerOutput
+  inputSchema: inputSchema

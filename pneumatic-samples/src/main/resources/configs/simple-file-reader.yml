@@ -1,0 +1,24 @@
+---
+inputSchema:
+  name: Input Schema
+  columns:
+    - name: Name
+      type: string
+    - name: Count
+      type: integer
+    - name: Price
+      type: decimal
+
+fileReaderOutput:
+
+fileReader:
+  name: Test File Reader
+  fileResource: file:src/test/resources/data/input1.txt
+  output: fileReaderOutput
+  outputSchema: inputSchema
+
+fileWriter:
+  name: File Writer 1
+  fileResource: file:output/output1.txt
+  input: fileReaderOutput
+  inputSchema: inputSchema
