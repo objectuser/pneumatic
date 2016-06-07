@@ -14,5 +14,5 @@ restfulWriter: !restfulWriter
   name: Restful Writer
   httpMethod: PUT
   url: http://localhost:8080/mtb/{name}/price
-  input: ->input
-  inputSchema: ->inputSchema
+  input: input
+  inputSchema: inputSchema

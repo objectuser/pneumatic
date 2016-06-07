@@ -528,6 +528,9 @@ public class YamlParser {
             } else if (isSimpleValue(target, nodeValue)) {
                 ScalarNode scalarNode = (ScalarNode) nodeValue;
                 builder.addPropertyValue(propertyName, buildValue(scalarNode.getValue()));
+            } else if (isRefValue(target, nodeValue)) {
+                ScalarNode scalarNode = (ScalarNode) nodeValue;
+                builder.addPropertyValue(propertyName, buildRef(scalarNode.getValue()));
             } else if (target instanceof Class) {
                 Class<?> targetType = (Class<?>) target;
                 BeanDefinition beanDefinition = createBeanOfType(targetType, nodeValue);
@@ -539,14 +542,18 @@ public class YamlParser {
         }
     }
 
+    /**
+     * Is the value a string?
+     */
     private boolean isSimpleValue(Object target, Node node) {
-        if (node instanceof ScalarNode && target instanceof Class) {
-            Class<?> targetType = (Class<?>) target;
-            ScalarNode scalarNode = (ScalarNode) node;
-            return String.class.isAssignableFrom(targetType) || isRef(scalarNode.getValue());
-        } else {
-            return false;
-        }
+        return node instanceof ScalarNode && String.class.equals(target);
+    }
+
+    /**
+     * Is the value a reference?
+     */
+    private boolean isRefValue(Object target, Node node) {
+        return node instanceof ScalarNode && target instanceof Class;
     }
 
     private boolean isTypeTagged(Node node) {
@@ -564,6 +571,9 @@ public class YamlParser {
             if (isSimpleValue(targetType, value)) {
                 ScalarNode scalarNode = (ScalarNode) value;
                 list.add(buildValue(scalarNode.getValue()));
+            } else if (isRefValue(targetType, value)) {
+                ScalarNode scalarNode = (ScalarNode) value;
+                list.add(buildRef(scalarNode.getValue()));
             } else {
                 BeanDefinition beanDefinition = createBeanOfType(targetType, value);
                 list.add(beanDefinition);
@@ -596,18 +606,10 @@ public class YamlParser {
     }
 
     private Object buildValue(String value) {
-        if (isRef(value)) {
-            return new RuntimeBeanReference(getRefFrom(value));
-        } else {
-            return value;
-        }
+        return value;
     }
 
-    private boolean isRef(String value) {
-        return value.startsWith("->");
-    }
-
-    private String getRefFrom(String value) {
-        return value.substring("->".length());
+    private Object buildRef(String value) {
+        return new RuntimeBeanReference(value);
     }
 }

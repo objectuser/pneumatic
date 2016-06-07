@@ -19,8 +19,8 @@ input: !pipe
 aggregatorOutput: !pipe
 aggregator: !aggregator
   name: Test Aggregator
-  input: ->input
-  inputSchema: ->inputSchema
-  output: ->aggregatorOutput
-  outputSchema: ->aggregatorSchema
-  function: ->myAverageFunction
+  input: input
+  inputSchema: inputSchema
+  output: aggregatorOutput
+  outputSchema: aggregatorSchema
+  function: myAverageFunction

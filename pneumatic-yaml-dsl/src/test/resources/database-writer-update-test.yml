@@ -12,9 +12,9 @@ mtbSchema: !schema
 input: !pipe
 databaseWriter: !databaseWriter
   name: Database Writer
-  input: ->input
-  inputSchema: ->mtbSchema
-  dataSource: ->dataSource
+  input: input
+  inputSchema: mtbSchema
+  dataSource: dataSource
   updateWith:
     sql: update mtb set year = ?, price = ? where name = ?
     parameters:

@@ -36,15 +36,15 @@ fileReaderOutput:
 mtbFileReader:
   name: File Reader
   fileResource: data/mtb.txt
-  output: ->fileReaderOutput
-  outputSchema: ->inputSchema
+  output: fileReaderOutput
+  outputSchema: inputSchema
 
 # Declare a database writer to read from the pipe and write to the mtb table
 mtbDatabaseWriter:
   name: Database Writer
-  input: ->fileReaderOutput
-  inputSchema: ->mtbSchema
-  dataSource: ->dataSource # Reference the data source declared in Spring XML
+  input: fileReaderOutput
+  inputSchema: mtbSchema
+  dataSource: dataSource # Reference the data source declared in Spring XML
   insertInto: mtb
 ```
 

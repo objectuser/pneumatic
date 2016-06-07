@@ -33,8 +33,8 @@ restfulLookup: !restfulLookup
   name: Test Restful Lookup
   httpMethod: GET
   requestUrl: http://localhost:8080/mtb/{name}/price
-  input: ->input
-  inputSchema: ->inputSchema
-  output: ->output
-  outputSchema: ->outputSchema
-  responseSchema: ->responseSchema
+  input: input
+  inputSchema: inputSchema
+  output: output
+  outputSchema: outputSchema
+  responseSchema: responseSchema

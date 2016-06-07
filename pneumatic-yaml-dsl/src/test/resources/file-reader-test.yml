@@ -13,8 +13,8 @@ fileReaderOutput: !pipe
 fileReader1: !fileReader
   name: Test File Reader
   fileResource: classpath:data/input1.txt
-  output: ->fileReaderOutput
-  outputSchema: ->inputSchema
+  output: fileReaderOutput
+  outputSchema: inputSchema
 
 fileReaderOutput: !pipe
 fileReader2: !fileReader
@@ -22,5 +22,5 @@ fileReader2: !fileReader
   fileResource:
     location: classpath:data/input1.txt
     linesToSkip: 100
-  output: ->fileReaderOutput
-  outputSchema: ->inputSchema
+  output: fileReaderOutput
+  outputSchema: inputSchema

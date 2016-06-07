@@ -15,20 +15,20 @@ joinOutput: !pipe
 
 innerJoin: !join
   name: Inner Join
-  leftInput: ->input1
-  rightInput: ->input2
-  output: ->joinOutput
-  outputSchema: ->outputSchema
+  leftInput: input1
+  rightInput: input2
+  output: joinOutput
+  outputSchema: outputSchema
   comparator:
     name: Name
     type: string
 
 leftOuterJoin: !join
   name: Left Outer Join
-  leftInput: ->input1
-  rightInput: ->input2
-  output: ->joinOutput
-  outputSchema: ->outputSchema
+  leftInput: input1
+  rightInput: input2
+  output: joinOutput
+  outputSchema: outputSchema
   comparator:
     name: Name
     type: string

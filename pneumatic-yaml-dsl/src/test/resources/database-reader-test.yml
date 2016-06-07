@@ -13,11 +13,11 @@ output: !pipe
 rejectionOutput: !pipe
 databaseReader: !databaseReader
   name: Database Reader
-  output: ->output
-  outputSchema: ->outputSchema
-  dataSource: ->dataSource
+  output: output
+  outputSchema: outputSchema
+  dataSource: dataSource
   sql: select * from table where name = ?
   parameters:
     - Trance
   rejection:
-    output: ->rejectionOutput
+    output: rejectionOutput

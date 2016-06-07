@@ -13,5 +13,5 @@ fileReaderOutput: !pipe
 fileWriter: !fileWriter
   name: File Writer
   fileResource: file:output/output1.txt
-  input: ->fileReaderOutput
-  inputSchema: ->mtbSchema
+  input: fileReaderOutput
+  inputSchema: mtbSchema

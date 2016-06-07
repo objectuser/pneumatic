@@ -27,20 +27,20 @@ Next, here are the YAML-based Pneumatic declarations. Generally, the first line 
   mtbFileReader:
     name: File Reader
     fileResource: data/mtb.txt
-    output: ->fileReaderOutput # reference to fileReaderOutput
-    outputSchema: ->mtbSchema # reference to mtbSchema
+    output: fileReaderOutput # reference to fileReaderOutput
+    outputSchema: mtbSchema # reference to mtbSchema
   
   # Declare a database writer to read from the pipe and write to the mtb table
   mtbDatabaseWriter:
     name: Database Writer
-    input: ->fileReaderOutput
-    inputSchema: ->mtbSchema
-    dataSource: ->dataSource # Reference the data source declared in Spring XML
+    input: fileReaderOutput
+    inputSchema: mtbSchema
+    dataSource: dataSource # Reference the data source declared in Spring XML
     insertInto: mtb
 
 The schema declaration (``mtbSchema``) is used to declare the structure of records in the job. A pipe (``fileReaderOutput``) provides a conduit from one processing element (called "filters") to another.
 
-A file reader (``mtbFileReader``) reads a file, creating records according to its schema (``outputSchema: ->mtbSchema``) and sending them to the pipe referenced in its ``output``.
+A file reader (``mtbFileReader``) reads a file, creating records according to its schema (``outputSchema: mtbSchema``) and sending them to the pipe referenced in its ``output``.
 
 A database writer (``mtbDatabaseWriter``) writes records from the pipe referenced in its ``input`` to a table available in the data source: the ``mtb`` table referenced in the ``insertInto`` property in this case. The data source is specified using the Spring framework::
 

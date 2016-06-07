@@ -4,11 +4,11 @@ splitterOutput1: !pipe
 splitterOutput2: !pipe
 splitter: !splitter
   name: Splitter
-  input: ->fileReaderOutput
+  input: fileReaderOutput
   outputConditions:
     - name: Output One
-      output: ->splitterOutput1
+      output: splitterOutput1
       outputCondition: "#v2 > 0"
     - name: Output Two
-      output: ->splitterOutput2
+      output: splitterOutput2
       outputCondition: "#v2 <= 0"

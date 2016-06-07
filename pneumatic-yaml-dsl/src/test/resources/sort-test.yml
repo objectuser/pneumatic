@@ -13,8 +13,8 @@ input: !pipe
 output: !pipe
 sort: !sort
   name: Sort
-  input: ->input
-  output: ->output
+  input: input
+  output: output
   comparator:
     name: Name
     type: string

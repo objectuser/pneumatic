@@ -14,7 +14,7 @@ transformerOutput1: !pipe
 transformerOutput2: !pipe
 transformer: !transformer
   name: Transformer
-  input: ->fileReaderOutput
+  input: fileReaderOutput
   variables:
     # yaml removes the quotes, but SpEL requires this to be a string
     # and that requires quotes
@@ -26,8 +26,8 @@ transformer: !transformer
   outputConfigurations:
     - name: Output One
       recordName: record1
-      output: ->transformerOutput1
-      outputSchema: ->inputSchema
+      output: transformerOutput1
+      outputSchema: inputSchema
       outputCondition: "#v2 > 0"
       expressions:
         - "#outputRecord.Name = #inputRecord.Name"
@@ -35,8 +35,8 @@ transformer: !transformer
         - "#outputRecord.Price = #inputRecord.Price"
     - name: Output Two
       recordName: record2
-      output: ->transformerOutput2
-      outputSchema: ->inputSchema
+      output: transformerOutput2
+      outputSchema: inputSchema
       outputCondition: "#v2 <= 0"
       expressions:
         - "#outputRecord.Name = #inputRecord.Name"

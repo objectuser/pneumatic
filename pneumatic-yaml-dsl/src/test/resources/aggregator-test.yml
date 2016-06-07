@@ -19,9 +19,9 @@ input: !pipe
 aggregatorOutput: !pipe
 aggregator: !aggregator
   name: Test Aggregator
-  input: ->input
-  output: ->aggregatorOutput
-  outputSchema: ->aggregatorSchema
+  input: input
+  output: aggregatorOutput
+  outputSchema: aggregatorSchema
   function: !sum
     in:
       name: Price

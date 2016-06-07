@@ -32,10 +32,10 @@ output: !pipe
 
 columnMapper: !mapper
   name: Column Mapper
-  input: ->input
-  inputSchema: ->inputSchema
-  output: ->output
-  outputSchema: ->outputSchema1
+  input: input
+  inputSchema: inputSchema
+  output: output
+  outputSchema: outputSchema1
   mappings:
     - from:
         name: Name
@@ -52,8 +52,8 @@ columnMapper: !mapper
 
 nameMapper: !mapper
   name: Name Mapper
-  input: ->input
-  inputSchema: ->inputSchema
-  output: ->output
-  outputSchema: ->outputSchema2
+  input: input
+  inputSchema: inputSchema
+  output: output
+  outputSchema: outputSchema2
         

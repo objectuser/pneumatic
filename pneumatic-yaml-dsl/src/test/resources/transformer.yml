@@ -22,7 +22,7 @@ countSchema: !schema
 
 validatingTransformer: !transformer
   name: Validating Transformer
-  input: ->input
+  input: input
   variables:
     orderingProblem: false
     orderingProblemCount: 0
@@ -32,8 +32,8 @@ validatingTransformer: !transformer
     - "#lastName = #inputRecord.Name"
   outputConfigurations:
     - name: transformerOutput
-      output: ->output1
-      outputSchema: ->inputSchema
+      output: output1
+      outputSchema: inputSchema
       recordName: outputRecord
       outputCondition: "!#orderingProblem"
       expressions:
@@ -41,8 +41,8 @@ validatingTransformer: !transformer
         - "#outputRecord.Count = #inputRecord.Count"
         - "#outputRecord.Price = #inputRecord.Price"
     - name: transformerOrderOutput
-      output: ->output2
-      outputSchema: ->inputSchema
+      output: output2
+      outputSchema: inputSchema
       recordName: outputRecord
       outputCondition: "#orderingProblem"
       expressions:
@@ -50,8 +50,8 @@ validatingTransformer: !transformer
         - "#invalidRecord.Count = #inputRecord.Count"
         - "#invalidRecord.Price = #inputRecord.Price"
     - name: transformerOrderCountOutput
-      output: ->output3
-      outputSchema: ->countSchema
+      output: output3
+      outputSchema: countSchema
       recordName: invalidCountRecord
       outputCondition: "#input.complete"
       expressions:

@@ -16,6 +16,7 @@ Contents:
    about
    getting-involved
    overview
+   writing-jobs
    filters
    testing
    extending

@@ -71,15 +71,18 @@ public class FileReaderFilter extends GuardedFilter {
     }
 
     @PostConstruct
-    public void setupRejectionStrategy() {
-        if (rejectRecordStrategy == null) {
-            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
-        }
-
+    public void initalizeItemReader() {
         DefaultLineMapper<String[]> lineMapper = new DefaultLineMapper<String[]>();
         lineMapper.setLineTokenizer(new DelimitedLineTokenizer());
         lineMapper.setFieldSetMapper(new ArrayFieldSetMapper());
         itemReader.setLineMapper(lineMapper);
+    }
+
+    @PostConstruct
+    public void setupRejectionStrategy() {
+        if (rejectRecordStrategy == null) {
+            rejectRecordStrategy = new LogRejectRecordStrategy(getName());
+        }
     }
 
     public void setOutputSchema(Schema schema) {

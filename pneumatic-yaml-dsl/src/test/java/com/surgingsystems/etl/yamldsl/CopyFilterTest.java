@@ -27,7 +27,7 @@ public class CopyFilterTest {
     public void parseFile() {
         yamlParser.parse("copy-test.yml");
 
-        CopyFilter copy = applicationContext.getBean("copyInTriplicate", CopyFilter.class);
+        CopyFilter copy = applicationContext.getBean("tripleCopy", CopyFilter.class);
         Assert.assertNotNull("Found the bean", copy);
         copy.validate();
 

@@ -51,17 +51,17 @@ fileReader:
   fileResource:
     location: classpath:data/companylist.csv
     linesToSkip: 1
-  output: ->fileReaderOutput
-  outputSchema: ->inputSchema  
+  output: fileReaderOutput
+  outputSchema: inputSchema  
   
 mapperOutput:
 mapperRejectionOutput:
 nameMapper:
   name: Remove Trailing Empty Column Mapper
-  input: ->fileReaderOutput
-  inputSchema: ->inputSchema
-  output: ->mapperOutput
-  outputSchema: ->stockSchema
+  input: fileReaderOutput
+  inputSchema: inputSchema
+  output: mapperOutput
+  outputSchema: stockSchema
 
 copyOutputToSort: !pipe
 copyOutputToCount: !pipe
@@ -69,18 +69,18 @@ copyOutputToAveragePrice: !pipe
 copyOutputToTotalCap: !pipe
 copy:
   name: Copy
-  input: ->mapperOutput
+  input: mapperOutput
   outputs:
-    - ->copyOutputToSort
-    - ->copyOutputToCount
-    - ->copyOutputToAveragePrice
-    - ->copyOutputToTotalCap
+    - copyOutputToSort
+    - copyOutputToCount
+    - copyOutputToAveragePrice
+    - copyOutputToTotalCap
 
 sortOutput:
 symbolSort:
   name: Symbol Sorter
-  input: ->copyOutputToSort
-  output: ->sortOutput
+  input: copyOutputToSort
+  output: sortOutput
   comparator:
     name: Symbol
     type: string
@@ -88,8 +88,8 @@ symbolSort:
 fileWriter:
   name: File Writer 1
   fileResource: file:output/output1.csv
-  input: ->sortOutput
-  inputSchema: ->stockSchema
+  input: sortOutput
+  inputSchema: stockSchema
 
 # Count
 countSchema:
@@ -101,9 +101,9 @@ countSchema:
 countFunctionOutput:
 countAggregator:
   name: Counter
-  input: ->copyOutputToCount
-  output: ->countFunctionOutput
-  outputSchema: ->countSchema
+  input: copyOutputToCount
+  output: countFunctionOutput
+  outputSchema: countSchema
   function: !count
     out:
       name: Count
@@ -112,8 +112,8 @@ countAggregator:
 countFileWriter:
   name: Count File Writer
   fileResource: file:output/count-output.txt
-  input: ->countFunctionOutput
-  inputSchema: ->countSchema
+  input: countFunctionOutput
+  inputSchema: countSchema
 
 # Average Price
 averagePriceSchema:
@@ -125,10 +125,10 @@ averagePriceSchema:
 averagePriceFunctionOutput:
 averagePriceAggregator:
   name: Average Price
-  input: ->copyOutputToAveragePrice
-  inputSchema: ->stockSchema
-  output: ->averagePriceFunctionOutput
-  outputSchema: ->averagePriceSchema
+  input: copyOutputToAveragePrice
+  inputSchema: stockSchema
+  output: averagePriceFunctionOutput
+  outputSchema: averagePriceSchema
   function: !average
     in:
       name: LastSale
@@ -140,8 +140,8 @@ averagePriceAggregator:
 averagePriceFileWriter:
   name: Average Price File Writer
   fileResource: file:output/average-price-output.txt
-  input: ->averagePriceFunctionOutput
-  inputSchema: ->averagePriceSchema
+  input: averagePriceFunctionOutput
+  inputSchema: averagePriceSchema
 
 # Total Cap
 totalCapSchema:
@@ -153,10 +153,10 @@ totalCapSchema:
 totalCapFunctionOutput:
 totalCapAggregator:
   name: Total Cap
-  input: ->copyOutputToTotalCap
-  inputSchema: ->stockSchema
-  output: ->totalCapFunctionOutput
-  outputSchema: ->totalCapSchema
+  input: copyOutputToTotalCap
+  inputSchema: stockSchema
+  output: totalCapFunctionOutput
+  outputSchema: totalCapSchema
   function: !sum
     in:
       name: MarketCap
@@ -168,5 +168,5 @@ totalCapAggregator:
 totalCapFileWriter:
   name: Total Cap File Writer
   fileResource: file:output/total-cap-output.txt
-  input: ->totalCapFunctionOutput
-  inputSchema: ->totalCapSchema
+  input: totalCapFunctionOutput
+  inputSchema: totalCapSchema

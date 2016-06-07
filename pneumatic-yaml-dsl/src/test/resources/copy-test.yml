@@ -4,10 +4,10 @@ output1: !pipe
 output2: !pipe
 output3: !pipe
 
-copyInTriplicate: !copy
+tripleCopy:
   name: Copy in Triplicate
-  input: ->input
+  input: input
   outputs:
-    - ->output1
-    - ->output2
-    - ->output3
+    - output1
+    - output2
+    - output3

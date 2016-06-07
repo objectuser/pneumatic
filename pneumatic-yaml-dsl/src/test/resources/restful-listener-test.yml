@@ -13,5 +13,5 @@ restfulListenerOutput: !pipe
 restfulListener: !restfulListener
   name: Restful Listener
   path: mtb
-  output: ->restfulListenerOutput
-  outputSchema: ->mtbSchema
+  output: restfulListenerOutput
+  outputSchema: mtbSchema

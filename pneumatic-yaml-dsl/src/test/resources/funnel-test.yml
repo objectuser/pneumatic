@@ -15,6 +15,6 @@ funnelOutput: !pipe
 funnel: !funnel
   name: Test Funnel
   inputs:
-    - ->input1
-    - ->input2
-  output: ->funnelOutput
+    - input1
+    - input2
+  output: funnelOutput
