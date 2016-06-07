@@ -1,5 +1,5 @@
 
-# Quick Intro to Pneumatic.IO
+# Pneumatic.IO - The Open Source ETL Platform
 
 [Pneumatic.IO](http://pneumatic.io) is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required.
 
