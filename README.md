@@ -56,6 +56,8 @@ A database writer (`mtbDatabaseWriter`) writes records from the pipe referenced 
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
 
+Pneumatic embeds Spring Boot and can be used to create simple RESTful services connected to a database with no programming, or use an expression language (SpEL) to provide some validation.
+
 Ready for more? Read the full docs [here](http://pneumatic.io/pneumatic/) and get updates [here](http://pneumatic.io/).
 
 Ready to get started? Clone this repository and run one of the sample jobs:
