@@ -14,15 +14,15 @@ Consider the following example::
   rejectionOutput: !pipe
   databaseReader: !databaseReader
     name: Database Reader
-    output: ->output
-    outputSchema: ->outputSchema
-    dataSource: ->dataSource
+    output: output
+    outputSchema: outputSchema
+    dataSource: dataSource
     sql: select * from mtb where name = ? and year = ?
     parameters:
       - #job.name
       - #job.model_year
     rejection:
-      output: ->rejectionOutput
+      output: rejectionOutput
 
 Here is the same example in XML::
 

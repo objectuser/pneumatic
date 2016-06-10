@@ -10,12 +10,12 @@ The copy filter has a single input pipe. It may have any number of output pipes.
 
   output1: !pipe
   output2: !pipe
-  duplicate: !copy
+  duplicateCopy:
     name: Duplicate
-    input: ->fileReaderOutput
+    input: fileReaderOutput
     outputs:
-      - ->output1
-      - ->output2
+      - output1
+      - output2
 
 Here's the same example in XML, which has a slightly different form::
 

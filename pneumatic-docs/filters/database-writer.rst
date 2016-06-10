@@ -11,9 +11,9 @@ The database writer writes records from its input pipe to a database table. In i
   input: !pipe
   databaseWriter: !databaseWriter
     name: Database Writer
-    input: ->input
-    inputSchema: ->mtbSchema
-    dataSource: ->dataSource
+    input: input
+    inputSchema: mtbSchema
+    dataSource: dataSource
     insertInto: mtb
 
 The equivalent in XML is::
@@ -33,9 +33,9 @@ The database writer has a second form for updates.  The following is an example:
   input: !pipe
   databaseWriter: !databaseWriter
     name: Database Writer
-    input: ->input
-    inputSchema: ->mtbSchema
-    dataSource: ->dataSource
+    input: input
+    inputSchema: mtbSchema
+    dataSource: dataSource
     updateWith:
       sql: update mtb set year = ?, cost = ? where name = ?
       parameters:

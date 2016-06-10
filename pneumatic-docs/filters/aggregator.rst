@@ -16,9 +16,9 @@ Consider the following example::
   aggregatorOutput:
   aggregator:
     name: Test Aggregator
-    input: ->input
-    output: ->aggregatorOutput
-    outputSchema: ->aggregatorSchema
+    input: input
+    output: aggregatorOutput
+    outputSchema: aggregatorSchema
     function: !sum
       in:
         name: Price
@@ -92,11 +92,11 @@ Then simply reference the function::
   aggregatorOutput:
   aggregator:
     name: Test Aggregator
-    input: ->input
-    inputSchema: ->inputSchema
-    output: ->aggregatorOutput
-    outputSchema: ->aggregatorSchema
-    function: ->myAverageFunction
+    input: input
+    inputSchema: inputSchema
+    output: aggregatorOutput
+    outputSchema: aggregatorSchema
+    function: myAverageFunction
 
 In this case, we are referencing the underlying Java class (``SumFunction``). Any function that implements the internal Function interface may be used. That interface is::
 

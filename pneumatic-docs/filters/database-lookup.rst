@@ -22,11 +22,11 @@ Consider the following example::
   output:
   databaseLookup:
     name: Database Lookup
-    input: ->input
-    inputSchema: ->mtbSchema
-    output: ->output
-    outputSchema: ->sqlSelectSchema
-    dataSource: ->dataSource
+    input: input
+    inputSchema: mtbSchema
+    output: output
+    outputSchema: sqlSelectSchema
+    dataSource: dataSource
     sql: select cost from mtb where name = ? and year = ?
     parameters:
       - "#inputRecord.name"
