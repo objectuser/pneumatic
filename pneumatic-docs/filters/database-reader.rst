@@ -46,7 +46,7 @@ Here is the same example in XML::
 
 The output is given by ``ref="databaseReaderOutput"``.
 
-The output schema (``outputSchema"``) is used to define the output records. Columns from the select statement that match the names of the columns in the output schema are used to provide the values to the output record.
+The output schema (``outputSchema``) is used to define the output records. Columns from the select statement that match the names of the columns in the output schema are used to provide the values to the output record.
 
 The ``sql`` element SQL select statement, with the ``parameters`` applied in order. The parameters are optional. Job parameters may be used to provide values to the SQL parameters.
 

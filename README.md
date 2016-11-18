@@ -3,11 +3,11 @@
 
 [Pneumatic.IO](http://pneumatic.io) is a fresh approach to ETL and structured IO. It's a development platform, but little to no programming is required.
 
-Pneumatic is declarative, using either a custom YAML markup, or XML markup based on Spring's support for extensible markup. I hope in the future there will be a GUI for creating Pneumatic jobs. But for now, the texutal forms provide a proof of concept that still makes creating ETL jobs really easy.
+Pneumatic is declarative, using either a custom YAML markup, or XML markup based on Spring's support for extensible markup. They work equally well, but the YAML syntax is much easier to read, I think, and easier to write, so that's what I recommend.
 
 As a quick example, here's how you might read from a file and write its contents to a database in Pneumatic.
 
-First, here is a Spring data source definition:
+First, here is a Spring data source definition (Pneumatic relies heavily on Spring under the covers):
 
 ```XML
 	<jdbc:embedded-database id="dataSource" type="HSQL">
@@ -48,15 +48,23 @@ mtbDatabaseWriter:
   insertInto: mtb
 ```
 
+Visually, the job looks like this:
+
+![Simple Job](http://pneumatic.io/pneumatic/images/SimpleJob.png)
+
 The first declaration (id="dataSource") is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
 Next is a schema declaration (`mtbSchema`)  used to declare the structure of records in the job. A pipe (`fileReaderOutput`) provides a conduit from one processing element (called "filters") to another. A file reader (`mtbFileReader`) reads a file, creating records and sending them to the pipe referenced in its `output`.
 
-A database writer (`mtbDatabaseWriter`) writes records from the pipe referenced in its `input` to a table available in the data source: the `mtb` table referenced in the `insertInto` property in this case.
+A database writer (`mtbDatabaseWriter`) writes records from the pipe referenced in its `input` to a table available in the data source: the `mtb` table referenced in the `insertInto` property in this case. The `mtb` table must share the same schema as the `input`.
 
 Declaring these elements provides Pneumatic enough information to read all the records in the file and write them to the database. When there are no more records to process, Pneumatic shuts down. That's it.
 
-Pneumatic embeds Spring Boot and can be used to create simple RESTful services connected to a database with no programming, or use an expression language (SpEL) to provide some validation.
+Pneumatic can do much more than this. It can:
+* validate data
+* aggregate data (counting, summation, averages, or anything else)
+* read from and write to RESTful endpoints
+* transform data
 
 Ready for more? Read the full docs [here](http://pneumatic.io/pneumatic/) and get updates [here](http://pneumatic.io/).
 

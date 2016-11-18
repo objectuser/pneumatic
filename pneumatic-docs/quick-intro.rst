@@ -8,7 +8,7 @@ Pneumatic is declarative, using either a custom YAML markup, or XML markup based
 
 As a quick example, here's how you might read from a file and write its contents to a database.
 
-Next, here are the YAML-based Pneumatic declarations. Generally, the first line of a declaration is the item's "identifier" (like ``mtbSchema``), optionally followed by a YAML tag indicating the type of the item (``!schema`` means this item is of the ``schema`` type). If the item is named according to convention, the type tag may be omitted. For example, because ``mtbSchema`` ends in ``Schema`` Pneumatic knows it's a schema.
+Here are the YAML-based Pneumatic declarations. Generally, the first line of a declaration is the item's "identifier" (like ``mtbSchema``), optionally followed by a YAML tag indicating the type of the item (``!schema`` means this item is of the ``schema`` type). If the item is named according to Pneumatci convention, the type tag may be omitted. For example, because ``mtbSchema`` ends in ``Schema`` Pneumatic knows it's a schema.::
 
   # Declare a schema that defines our records
   mtbSchema:
@@ -37,6 +37,10 @@ Next, here are the YAML-based Pneumatic declarations. Generally, the first line 
     inputSchema: mtbSchema
     dataSource: dataSource # Reference the data source declared in Spring XML
     insertInto: mtb
+
+Visually, the job looks like this:
+
+.. image:: images/SimpleJob.png
 
 The schema declaration (``mtbSchema``) is used to declare the structure of records in the job. A pipe (``fileReaderOutput``) provides a conduit from one processing element (called "filters") to another.
 
