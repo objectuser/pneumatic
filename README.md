@@ -50,7 +50,7 @@ mtbDatabaseWriter:
 
 Visually, the job looks like this:
 
-![Simple Job](http://pneumatic.io/pneumatic/images/SimpleJob.png)
+![Simple Job](http://pneumatic.io/pneumatic/_images/SimpleJob.png)
 
 The first declaration (id="dataSource") is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
