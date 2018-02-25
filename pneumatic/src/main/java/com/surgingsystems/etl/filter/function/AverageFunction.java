@@ -17,7 +17,7 @@ public class AverageFunction implements Function<Double> {
 
     private ColumnDefinition<Double> outputColumnDefinition;
 
-    private Double result = new Double(0.0);
+    private Double result = Double.valueOf(0.0);
 
     private long recordCount = 0L;
 

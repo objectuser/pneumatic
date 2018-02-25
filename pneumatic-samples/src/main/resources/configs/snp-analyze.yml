@@ -1,0 +1,132 @@
+---
+
+inputSchema:
+  name: Input File Schema
+  columns:
+    - name: Symbol
+      type: string
+    - name: Name
+      type: string
+    - name: LastSale
+      type: string
+    - name: MarketCap
+      type: string
+    - name: ADR TSO
+      type: string
+    - name: IPOyear
+      type: string
+    - name: Sector
+      type: string
+    - name: industry
+      type: string
+    - name: Summary Quote
+      type: string
+    - name: Empty
+      type: string
+
+allStocksFileReaderOutput:
+allStocksFileReader:
+  name: All Stocks File Reader
+  fileResource:
+    location: classpath:data/companylist.csv
+    linesToSkip: 1
+  output: allStocksFileReaderOutput
+  outputSchema: inputSchema
+
+sortAllStocksOutput:
+stocksSort:
+  name: Sort All Stocks
+  input: allStocksFileReaderOutput
+  output: sortAllStocksOutput
+  comparator:
+    name: Symbol
+    type: string
+
+snpSchema:
+  name: Input File Schema
+  columns:
+    - name: Symbol
+      type: string
+    - name: Name
+      type: string
+    - name: Sector
+      type: string
+    - name: Price
+      type: decimal
+    - name: Dividend Yield
+      type: decimal
+    - name: Price/Earnings
+      type: decimal
+    - name: Earnings/Share
+      type: decimal
+    - name: Book Value
+      type: decimal
+    - name: 52 week low
+      type: decimal
+    - name: 52 week high
+      type: decimal
+    - name: Market Cap
+      type: decimal
+    - name: EBITDA
+      type: decimal
+    - name: Price/Sales
+      type: decimal
+    - name: Price/Book
+      type: decimal
+    - name: SEC Filings
+      type: string
+
+snpFileReaderOutput:
+snpFileReader:
+  name: All Stocks File Reader
+  fileResource:
+    location: classpath:data/snp-constituents-financials.csv
+    linesToSkip: 1
+  output: snpFileReaderOutput
+  outputSchema: snpSchema
+
+sortSnpOutput:
+snpSort:
+  name: Sort S&P 500
+  input: snpFileReaderOutput
+  output: sortSnpOutput
+  comparator:
+    name: Symbol
+    type: string
+
+joinSchema:
+  name: Input File Schema
+  columns:
+    - name: Symbol
+      type: string
+    - name: Name
+      type: string
+    - name: IPOyear
+      type: string
+    - name: Sector
+      type: string
+    - name: Price
+      type: decimal
+    - name: Dividend Yield
+      type: decimal
+    - name: Price/Earnings
+      type: decimal
+    - name: Earnings/Share
+      type: decimal
+
+joinOutput:
+stocksJoin:
+  name: Stocks Join
+  leftInput: sortAllStocksOutput
+  rightInput: sortSnpOutput
+  output: joinOutput
+  outputSchema: joinSchema
+  comparator:
+    name: Symbol
+    type: string
+
+joinFileWriter:
+  name: Join File Writer
+  fileResource: file:output/output1.csv
+  input: joinOutput
+  inputSchema: joinSchema

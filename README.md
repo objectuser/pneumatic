@@ -7,7 +7,7 @@ Pneumatic is declarative, using either a custom YAML markup, or XML markup based
 
 As a quick example, here's how you might read from a file and write its contents to a database in Pneumatic.
 
-First, here is a Spring data source definition (Pneumatic relies heavily on Spring under the covers):
+First, here is a Spring data source definition (Pneumatic relies heavily on [Spring](https://projects.spring.io/spring-framework/) under the covers):
 
 ```XML
 	<jdbc:embedded-database id="dataSource" type="HSQL">
@@ -52,7 +52,7 @@ Visually, the job looks like this:
 
 ![Simple Job](http://pneumatic.io/pneumatic/_images/SimpleJob.png)
 
-The first declaration (id="dataSource") is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
+The first declaration (`id="dataSource"` in XML) is a Spring embedded data source. A data source is an object that provides connections to a database like Oracle, SQL Server, MySQL, etc.
 
 Next is a schema declaration (`mtbSchema`)  used to declare the structure of records in the job. A pipe (`fileReaderOutput`) provides a conduit from one processing element (called "filters") to another. A file reader (`mtbFileReader`) reads a file, creating records and sending them to the pipe referenced in its `output`.
 

@@ -18,44 +18,44 @@ import com.surgingsystems.etl.schema.StringColumnType;
 import com.surgingsystems.etl.schema.TabularSchema;
 
 public class TransformerBeanResolverTest {
-    
+
     private Pipe in1 = new BlockingQueuePipe();
-    
+
     private Pipe out1 = new BlockingQueuePipe();
-    
+
     private TabularSchema outputSchema = new TabularSchema("Output Schema");
-    
+
     private StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
-    
+
     private DataRecord inRecord;
-    
+
     private DataRecord outRecord;
-    
+
     @Before
     public void setup() {
-        
+
         evaluationContext.addPropertyAccessor(new RecordPropertyAccessor());
-        
+
         inRecord = new DataRecord();
         inRecord.addColumn(new Column<String>(new ColumnDefinition<String>("Name", new StringColumnType()), "Fred"));
         inRecord.addColumn(new Column<Integer>(new ColumnDefinition<Integer>("Count", new IntegerColumnType()), 1));
-        inRecord.addColumn(new Column<Double>(new ColumnDefinition<Double>("Price", new DecimalColumnType()), new Double(100.0)));
-        
+        inRecord.addColumn(new Column<Double>(new ColumnDefinition<Double>("Price", new DecimalColumnType()), Double.valueOf(100.0)));
+
         outRecord = new DataRecord();
         outRecord.addColumn(new Column<String>(new ColumnDefinition<String>("Name", new StringColumnType()), null));
         outRecord.addColumn(new Column<Integer>(new ColumnDefinition<Integer>("Count", new IntegerColumnType()), null));
         outRecord.addColumn(new Column<Double>(new ColumnDefinition<Double>("Price", new DecimalColumnType()), null));
-        
+
         evaluationContext.setVariable("in1", in1);
         evaluationContext.setVariable("out1", out1);
         evaluationContext.setVariable("inputRecord", inRecord);
         evaluationContext.setVariable("outputRecord", outRecord);
-        
+
         outputSchema.addColumn(new ColumnDefinition<String>("Name", new StringColumnType()));
         outputSchema.addColumn(new ColumnDefinition<Integer>("Count", new IntegerColumnType()));
         outputSchema.addColumn(new ColumnDefinition<Double>("Price", new DecimalColumnType()));
     }
-    
+
     @Test
     public void resolveBean() {
         SpelExpressionParser expressionParser = new SpelExpressionParser();

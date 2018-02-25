@@ -428,10 +428,13 @@ public class YamlParser {
             for (NodeTuple nodeTuple : node.getValue()) {
                 ScalarNode key = (ScalarNode) nodeTuple.getKeyNode();
                 String beanIdentifier = key.getValue();
-                logger.debug("Building bean named %s", beanIdentifier);
-
-                BeanDefinition beanDefinition = createBeanDefinition(beanIdentifier, nodeTuple.getValueNode());
-                applicationContext.registerBeanDefinition(beanIdentifier, beanDefinition);
+                try {
+                    BeanDefinition beanDefinition = createBeanDefinition(beanIdentifier, nodeTuple.getValueNode());
+                    applicationContext.registerBeanDefinition(beanIdentifier, beanDefinition);
+                } catch (Exception exception) {
+                    logger.error("Unable to handle key: '%s'", beanIdentifier);
+                    throw new RuntimeException(String.format("Unable to handle key: '%s'", beanIdentifier), exception);
+                }
             }
         } catch (Exception exception) {
             throw new RuntimeException(String.format("Error parsing '%s'", yamlFile), exception);

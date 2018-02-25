@@ -3,20 +3,28 @@ apply plugin: 'eclipse'
 
 def springVersion = '4.1.+'
 
-task run(type: JavaExec, dependsOn:[classes]) { 
+task run(type: JavaExec, dependsOn:[classes]) {
 	main = "com.surgingsystems.etl.YamlRunner"
 	classpath = sourceSets.main.runtimeClasspath
-    if (project.hasProperty("args")) {  
+    if (project.hasProperty("args")) {
         args project.args.split('\\s+')
-    }  
+    }
 }
 
-task boot(type: JavaExec, dependsOn:[classes]) { 
+task runXml(type: JavaExec, dependsOn:[classes]) {
+	main = "com.surgingsystems.etl.XmlRunner"
+	classpath = sourceSets.main.runtimeClasspath
+    if (project.hasProperty("args")) {
+        args project.args.split('\\s+')
+    }
+}
+
+task boot(type: JavaExec, dependsOn:[classes]) {
 	main = "com.surgingsystems.etl.BootRunner"
 	classpath = sourceSets.main.runtimeClasspath
-    if (project.hasProperty("args")) {  
+    if (project.hasProperty("args")) {
         args project.args.split('\\s+')
-    }  
+    }
 }
 
 task cleanHsql(type: Delete) {
@@ -37,7 +45,7 @@ dependencies {
 	compile "org.springframework:spring-jdbc:$springVersion"
 	compile "org.springframework:spring-oxm:$springVersion"
 	compile "org.springframework:spring-webmvc:$springVersion"
-	
+
 	compile "org.springframework.batch:spring-batch-core:3.0.+"
 
 	compile "org.springframework.boot:spring-boot-starter-log4j2:1.2.+"
@@ -48,17 +56,17 @@ dependencies {
 
 	compile "org.apache.logging.log4j:log4j-api:2.1"
 	compile "org.apache.logging.log4j:log4j-core:2.1"
-	
+
 	runtime ("org.springframework.boot:spring-boot-starter-web:1.2.+") {
 		exclude module: 'spring-boot-starter-logging'
 	}
-	
+
 	runtime "org.hsqldb:hsqldb:2.3.2"
-    
+
     runtime "mysql:mysql-connector-java:5.1.34"
-	
+
 	testCompile project(path: ":pneumatic", configuration: "testOutput")
-	
+
 	testCompile "junit:junit:4.11"
 	testCompile "commons-io:commons-io:2.4"
 	testCompile "org.springframework:spring-test:$springVersion"
